@@ -88,18 +88,8 @@ export default function ReportViewPage({ report, onStartNewScreening }) {
           {/* Printable Hospital / Clinic Letterhead Header */}
           <div className="print-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid var(--primary)', paddingBottom: '16px', marginBottom: '24px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ background: 'var(--primary-light)', color: 'var(--primary)', padding: '6px', borderRadius: '8px' }}>
-                  <Eye size={26} />
-                </div>
-                <div>
-                  <h1 style={{ margin: 0, fontSize: '1.6rem', color: 'var(--text-main)' }}>
-                    {t('appName')}
-                  </h1>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    {t('appTagline')}
-                  </div>
-                </div>
+              <div style={{ height: '52px', display: 'flex', alignItems: 'center' }}>
+                <img src="/aarogyalogo.jpeg" alt="AarogyaNetra" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
               </div>
             </div>
 

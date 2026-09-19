@@ -77,28 +77,22 @@ export default function WelcomePage({ onStartScreening, onViewReports, onOpenHel
             {/* Logo Badge */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
               <div style={{
-                width: 80, height: 80, borderRadius: 24,
-                background: 'linear-gradient(160deg, #e3f2fd, #cae7ff)',
-                border: '1px solid rgba(255,255,255,0.9)',
-                boxShadow: '0 4px 20px rgba(9,134,212,0.18)',
+                width: 280, height: 115, borderRadius: 24,
+                overflow: 'hidden',
+                background: '#ffffff',
+                border: '1px solid rgba(255,255,255,0.95)',
+                boxShadow: '0 8px 30px rgba(9,134,212,0.18)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: 20,
+                padding: '10px 16px',
+                marginBottom: 16,
                 transition: 'transform 0.3s ease',
               }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               >
-                <svg style={{ width: 40, height: 40, color: '#0986d4' }} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                  <circle fill="#0986d4" cx="12" cy="12" r="3.4" />
-                  <circle fill="white" cx="13" cy="11" r="1" />
-                </svg>
+                <img src="/aarogyalogo.jpeg" alt="AarogyaNetra" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
-              <h2 style={{ margin: 0, fontSize: '1.9rem', fontWeight: 800, color: '#111d36', letterSpacing: '-0.02em' }}>
-                {t('appName')}
-              </h2>
-              <p style={{ margin: '6px 0 0', fontSize: 15, fontWeight: 700, color: '#078bd0' }}>{t('appTagline')}</p>
-              <p style={{ margin: '10px 0 0', fontSize: 13.5, color: '#475569', maxWidth: 390, lineHeight: 1.5 }}>
+              <p style={{ margin: '6px 0 0', fontSize: 14, color: '#475569', maxWidth: 410, lineHeight: 1.5, fontWeight: 500 }}>
                 {t('appSubtitle')}
               </p>
             </div>

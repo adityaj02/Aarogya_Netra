@@ -80,17 +80,9 @@ export default function Header({ currentView, setCurrentView, onOpenHelp }) {
         <div aria-hidden="true" className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#078dcc]/30 to-transparent pointer-events-none"></div>
         
         {/* Brand Identity */}
-        <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => setCurrentView('welcome')}>
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#d7eeff] to-[#f4faff] border border-sky-200 shadow-sm flex items-center justify-center text-sky-600 transition hover:scale-105" data-purpose="brand-icon">
-            <svg className="w-6 h-6 stroke-sky-600 fill-none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-              <circle className="fill-sky-500/20 stroke-sky-600" cx="12" cy="12" r="3.2"></circle>
-              <circle className="fill-sky-600" cx="12" cy="12" r="1.2"></circle>
-            </svg>
-          </div>
-          <div>
-            <span className="text-xl font-bold tracking-tight text-[#142642] block leading-tight">{t('appName')}</span>
-            <span className="text-[11.5px] font-medium text-slate-500 tracking-normal block">{t('appTagline')}</span>
+        <div className="flex items-center cursor-pointer transition hover:opacity-95" onClick={() => setCurrentView('welcome')} data-purpose="brand-logo">
+          <div className="h-13 w-auto flex items-center justify-center p-1 bg-white rounded-xl border border-sky-100 shadow-xs">
+            <img src="/aarogyalogo.jpeg" alt="AarogyaNetra" className="h-11 w-auto object-contain rounded-lg" />
           </div>
         </div>
 
@@ -151,24 +143,24 @@ export default function Header({ currentView, setCurrentView, onOpenHelp }) {
 
             {/* Custom Dropdown Menu */}
             {isLangOpen && (
-              <div className="absolute top-full right-0 mt-3 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 transform origin-top-right transition-all max-h-72 overflow-y-auto">
-                <div className="p-1.5 flex flex-col gap-1">
+              <div className="absolute top-full right-0 mt-3 w-60 min-w-[240px] bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 transform origin-top-right transition-all max-h-80 overflow-y-auto p-2">
+                <div className="flex flex-col gap-1">
                   {languages.map((l) => (
                     <button
                       key={l.code}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium flex items-center justify-between transition-colors ${
-                        lang === l.code ? 'bg-sky-50 text-sky-700' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                      className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between transition-colors ${
+                        lang === l.code ? 'bg-sky-50 text-sky-700 font-semibold' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                       onClick={() => {
                         setLang(l.code);
                         setIsLangOpen(false);
                       }}
                     >
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-[15px] leading-tight">{l.native}</span>
-                        <span className="text-[11px] opacity-70 leading-none">{l.label}</span>
+                      <div className="flex flex-col gap-0.5 pr-2 min-w-0">
+                        <span className="text-[15px] leading-tight block truncate">{l.native}</span>
+                        <span className="text-[11px] opacity-70 leading-none block truncate">{l.label}</span>
                       </div>
-                      {lang === l.code && <Check className="w-4 h-4 text-sky-600" />}
+                      {lang === l.code && <Check className="w-4 h-4 text-sky-600 shrink-0 ml-3" />}
                     </button>
                   ))}
                 </div>
