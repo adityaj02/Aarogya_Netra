@@ -149,6 +149,7 @@ async def screen_image(
     # ── IQA REJECT: short-circuit response ─────────────────────────────────
     if result.get("Final_Grade") == "UNGRADABLE" and result.get("recommendation") == "RECAPTURE":
         iqa = result.get("IQA", {})
+        reject_reason = result.get("reason") or iqa.get("reason") or "Image quality insufficient for analysis."
         return {
             "id": None,
             "stage1Outcome": "UNGRADABLE",
@@ -158,7 +159,8 @@ async def screen_image(
             "confidenceScore": 0.0,
             "referralKey": "recRoutine",
             "timelineKey": "recRoutineTimeline",
-            "explanation": iqa.get("reason", "Image quality insufficient for analysis."),
+            "explanation": reject_reason,
+            "reason": reject_reason,
             "imageData": f"/uploads/{img_id}_temp.jpg",
             "heatmapDataUrl": f"/uploads/{img_id}_temp.jpg",
             "overlayDataUrl": f"/uploads/{img_id}_temp.jpg",

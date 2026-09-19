@@ -77,15 +77,33 @@ export default function ResultsPage({
           {/* Outcome Box */}
           {isUngradable && (
             <div className="result-status-card ungradable" style={{ borderLeft: '6px solid #dc2626', backgroundColor: '#fff1f2', padding: '16px', borderRadius: '12px', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <AlertTriangle size={36} style={{ flexShrink: 0, color: '#e11d48' }} />
-                <div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <AlertTriangle size={36} style={{ flexShrink: 0, color: '#e11d48', marginTop: '2px' }} />
+                <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#9f1239' }}>
                     Quality Insufficient / Ungradable
                   </div>
-                  <div style={{ fontSize: '0.9rem', color: '#be123c', marginTop: '4px' }}>
-                    The uploaded image quality is too low (e.g. severe blur, opacity, or poor lighting) to guarantee an accurate AI DR diagnosis.
+                  <div style={{ fontSize: '0.95rem', color: '#be123c', marginTop: '6px', fontWeight: 600 }}>
+                    Rejection Reason: {result.explanation || result.reason || (result.iqaDetails && result.iqaDetails.reason) || "The uploaded image quality is too low to guarantee an accurate AI DR diagnosis."}
                   </div>
+                  {result.iqaDetails && (
+                    <div style={{ marginTop: '10px', fontSize: '0.85rem', background: '#ffe4e6', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecdd3', color: '#881337', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <div style={{ fontWeight: 700, marginBottom: '2px' }}>IQA Diagnostic Details:</div>
+                      {result.iqaDetails.reason && <div>• <strong>Primary Check:</strong> {result.iqaDetails.reason}</div>}
+                      {result.iqaDetails.failed_checks && result.iqaDetails.failed_checks.length > 0 && (
+                        <div>• <strong>Failed Quality Gates:</strong> {result.iqaDetails.failed_checks.join(', ')}</div>
+                      )}
+                      {result.iqaDetails.blurScore !== undefined && result.iqaDetails.blurScore !== null && (
+                        <div>• <strong>Blur Score:</strong> {typeof result.iqaDetails.blurScore === 'number' ? result.iqaDetails.blurScore.toFixed(2) : result.iqaDetails.blurScore}</div>
+                      )}
+                      {result.iqaDetails.brightness !== undefined && result.iqaDetails.brightness !== null && (
+                        <div>• <strong>Brightness:</strong> {typeof result.iqaDetails.brightness === 'number' ? result.iqaDetails.brightness.toFixed(1) : result.iqaDetails.brightness}</div>
+                      )}
+                      {result.iqaDetails.fovRatio !== undefined && result.iqaDetails.fovRatio !== null && (
+                        <div>• <strong>Field of View (FOV):</strong> {(result.iqaDetails.fovRatio * 100).toFixed(1)}%</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
