@@ -28,7 +28,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp }) {
       <div aria-hidden="true" className="fixed bottom-0 right-10 w-[620px] h-[620px] rounded-full bg-blue-200/40 blur-[130px] pointer-events-none -z-10"></div>
       <div aria-hidden="true" className="fixed bottom-10 left-10 w-[420px] h-[420px] rounded-full bg-teal-100/40 blur-[100px] pointer-events-none -z-10"></div>
 
-      <header className="sticky top-0 z-40 w-full px-6 lg:px-14 py-3 bg-white border-b border-slate-200 flex items-center justify-between" data-purpose="site-navigation">
+      <header className="sticky top-0 z-40 w-full px-6 lg:px-14 py-3 bg-white/95 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between animate-nav" data-purpose="site-navigation">
         
         {/* Brand Identity */}
         <div className="flex items-center cursor-pointer transition hover:opacity-95 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg" onClick={() => setCurrentView('welcome')} data-purpose="brand-logo" tabIndex="0" aria-label="AarogyaNetra Home">

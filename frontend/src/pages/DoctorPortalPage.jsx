@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Activity, CheckCircle, AlertTriangle, FileText, ArrowLeft, LogOut, Loader2, Inbox } from 'lucide-react';
+import { User, Activity, CheckCircle, AlertTriangle, FileText, ArrowLeft, LogOut, Loader2, Inbox, ChevronRight } from 'lucide-react';
 import { fetchReportById } from '../services/api';
 
 export default function DoctorPortalPage({ onBack, onSelectReport }) {
@@ -117,6 +117,26 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
       currentAngle += angle;
       return segment;
     }).filter(s => s.count > 0);
+
+    const assignedTotal = Object.values(distribution).reduce((a, b) => a + b, 0);
+    const unassignedCount = stats.total_reviews - assignedTotal;
+    
+    if (unassignedCount > 0) {
+      const percentage = (unassignedCount / stats.total_reviews) * 100;
+      const angle = (percentage / 100) * 360;
+      segments.push({
+        grade: 'pending',
+        count: unassignedCount,
+        percentage,
+        color: '#cbd5e1',
+        label: 'Pending / Confirmed',
+        startAngle: currentAngle,
+        endAngle: currentAngle + angle
+      });
+      currentAngle += angle;
+    }
+    
+    return segments;
   };
 
   const segments = stats ? getPieChartSegments(stats.grade_distribution) : [];
@@ -229,7 +249,7 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
                   <FileText size={28} />
                 </div>
                 <div>
-                  <p className="text-slate-500 font-medium text-sm mb-1">Total Validations</p>
+                  <p className="text-slate-600 font-medium text-sm mb-1">Total Validations</p>
                   <h3 className="text-3xl font-bold text-slate-800">{stats.total_reviews}</h3>
                 </div>
               </div>
@@ -238,7 +258,7 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
                   <CheckCircle size={28} />
                 </div>
                 <div>
-                  <p className="text-slate-500 font-medium text-sm mb-1">AI Agreement (Accuracy)</p>
+                  <p className="text-slate-600 font-medium text-sm mb-1">AI Agreement (Accuracy)</p>
                   <h3 className="text-3xl font-bold text-slate-800">{stats.accuracy.toFixed(1)}%</h3>
                 </div>
               </div>
@@ -253,7 +273,7 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
                   <p>No validation data available yet.</p>
                 </div>
               ) : (
-                <div className="flex flex-col md:flex-row items-center gap-12">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-12">
                   {/* CSS Conic Gradient Pie Chart */}
                   <div className="relative w-64 h-64 shrink-0">
                     <div 
@@ -313,11 +333,11 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
-                        <th className="pb-4 font-semibold pl-2">Patient Name</th>
-                        <th className="pb-4 font-semibold">Date</th>
-                        <th className="pb-4 font-semibold">Predicted Grade</th>
-                        <th className="pb-4 font-semibold">Actual Grade</th>
-                        <th className="pb-4 font-semibold text-right pr-2">Action</th>
+                        <th className="pb-4 font-semibold pl-2 text-slate-600">Patient Name</th>
+                        <th className="pb-4 font-semibold text-slate-600">Date</th>
+                        <th className="pb-4 font-semibold text-slate-600">Predicted Grade</th>
+                        <th className="pb-4 font-semibold text-center text-slate-600">Actual Grade</th>
+                        <th className="pb-4 font-semibold text-right pr-2 text-slate-600">Action</th>
                       </tr>
                     </thead>
                     <tbody className="text-sm">
@@ -332,16 +352,18 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
                               {rep.predicted_grade !== null ? `Grade ${rep.predicted_grade}` : 'N/A'}
                             </span>
                           </td>
-                          <td className="py-4">
+                          <td className="py-4 text-center">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                              rep.is_correct ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                              rep.is_correct ? 'bg-emerald-100 text-emerald-700' : 
+                              rep.actual_grade !== null && rep.actual_grade !== undefined ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'
                             }`}>
-                              Grade {rep.actual_grade}
+                              {rep.actual_grade !== null && rep.actual_grade !== undefined ? `Grade ${rep.actual_grade}` : 'Pending'}
                             </span>
                           </td>
                           <td className="py-4 text-right pr-2">
-                            {/* In a real app we might fetch the full report. We'll just show the feedback ID for now */}
-                            <span className="text-xs text-slate-400">{rep.feedback_id}</span>
+                            <button className="text-xs font-semibold text-sky-600 hover:text-sky-800 hover:underline flex items-center gap-1 justify-end w-full">
+                              View <ChevronRight size={14} />
+                            </button>
                           </td>
                         </tr>
                       ))}
