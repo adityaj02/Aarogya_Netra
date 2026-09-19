@@ -76,6 +76,14 @@ export default function App() {
     setCurrentView('welcome');
   };
 
+  // IQA rejected: go straight back to upload, keep patient info intact
+  const handleRecaptureImage = () => {
+    setSelectedImage(null);
+    setSelectedSampleMeta(null);
+    setScreeningResult(null);
+    setCurrentView('image_upload');
+  };
+
   // Open past report from list
   const handleSelectReportFromList = (rep) => {
     setSelectedReportToView(rep);
@@ -137,6 +145,7 @@ export default function App() {
             result={screeningResult}
             onViewReport={handleViewReport}
             onStartNewScreening={handleStartNewScreening}
+            onRecapture={handleRecaptureImage}
           />
         )}
 

@@ -24,8 +24,13 @@ export default function ReportViewPage({ report, onStartNewScreening }) {
   };
 
   const handleDownload = () => {
-    // Print window configured to save as PDF in standard browsers
+    // Set document title temporarily so the browser's print-to-PDF dialog
+    // suggests a meaningful filename (e.g. "AarogyaNetra_Report_AN-2026-XXXX.pdf")
+    const previousTitle = document.title;
+    document.title = `AarogyaNetra_Report_${report.id || 'screening'}_${new Date().toISOString().slice(0, 10)}`;
     window.print();
+    // Restore title after dialog opens
+    setTimeout(() => { document.title = previousTitle; }, 2000);
   };
 
   const isHealthy = report.stage1Outcome === 'NO_DR';

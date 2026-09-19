@@ -129,6 +129,10 @@ Model Confidence Matrix:
 
 Please generate the personalized explanation."""
 
+        # Non-English scripts (Hindi, Tamil, Telugu, etc.) are token-dense:
+        # 256 tokens cuts off mid-sentence. Scale up for all non-English targets.
+        max_tok = 256 if target_language == "English" else 512
+
         try:
             response = self.client.chat.completions.create(
                 messages=[
@@ -137,7 +141,7 @@ Please generate the personalized explanation."""
                 ],
                 model=self.model_name,
                 temperature=0.1, # Keep it deterministic and strict
-                max_tokens=256
+                max_tokens=max_tok
             )
             
             explanation_text = response.choices[0].message.content.strip()

@@ -5,6 +5,8 @@ import {
   FileText,
   Printer,
   RotateCcw,
+  RefreshCw,
+  Camera,
   Sparkles,
   ArrowRight,
   ShieldCheck,
@@ -18,7 +20,8 @@ import DoctorValidationPanel from '../components/DoctorValidationPanel';
 export default function ResultsPage({
   result,
   onViewReport,
-  onStartNewScreening
+  onStartNewScreening,
+  onRecapture
 }) {
   const { t } = useLanguage();
 
@@ -81,29 +84,60 @@ export default function ResultsPage({
                 <AlertTriangle size={36} style={{ flexShrink: 0, color: '#e11d48', marginTop: '2px' }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#9f1239' }}>
-                    Quality Insufficient / Ungradable
+                    {t('outcomeUngradable')}
                   </div>
                   <div style={{ fontSize: '0.95rem', color: '#be123c', marginTop: '6px', fontWeight: 600 }}>
-                    Rejection Reason: {result.explanation || result.reason || (result.iqaDetails && result.iqaDetails.reason) || "The uploaded image quality is too low to guarantee an accurate AI DR diagnosis."}
+                    {result.explanation || result.reason || (result.iqaDetails && result.iqaDetails.reason) || t('iqaSubtitle')}
                   </div>
                   {result.iqaDetails && (
                     <div style={{ marginTop: '10px', fontSize: '0.85rem', background: '#ffe4e6', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecdd3', color: '#881337', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <div style={{ fontWeight: 700, marginBottom: '2px' }}>IQA Diagnostic Details:</div>
                       {result.iqaDetails.reason && <div>• <strong>Primary Check:</strong> {result.iqaDetails.reason}</div>}
+                      {/* Support both normalized schema (failed_checks[]) and legacy */}
                       {result.iqaDetails.failed_checks && result.iqaDetails.failed_checks.length > 0 && (
                         <div>• <strong>Failed Quality Gates:</strong> {result.iqaDetails.failed_checks.join(', ')}</div>
                       )}
-                      {result.iqaDetails.blurScore !== undefined && result.iqaDetails.blurScore !== null && (
-                        <div>• <strong>Blur Score:</strong> {typeof result.iqaDetails.blurScore === 'number' ? result.iqaDetails.blurScore.toFixed(2) : result.iqaDetails.blurScore}</div>
-                      )}
-                      {result.iqaDetails.brightness !== undefined && result.iqaDetails.brightness !== null && (
-                        <div>• <strong>Brightness:</strong> {typeof result.iqaDetails.brightness === 'number' ? result.iqaDetails.brightness.toFixed(1) : result.iqaDetails.brightness}</div>
-                      )}
-                      {result.iqaDetails.fovRatio !== undefined && result.iqaDetails.fovRatio !== null && (
-                        <div>• <strong>Field of View (FOV):</strong> {(result.iqaDetails.fovRatio * 100).toFixed(1)}%</div>
+                      {/* Blur score: new schema uses metrics.blur_score, legacy uses blurScore */}
+                      {(() => {
+                        const blur = result.iqaDetails.metrics?.blur_score ?? result.iqaDetails.blurScore;
+                        return blur != null ? <div>• <strong>Blur Score:</strong> {typeof blur === 'number' ? blur.toFixed(2) : blur}</div> : null;
+                      })()}
+                      {(() => {
+                        const bright = result.iqaDetails.metrics?.brightness ?? result.iqaDetails.brightness;
+                        return bright != null ? <div>• <strong>Brightness:</strong> {typeof bright === 'number' ? bright.toFixed(1) : bright}</div> : null;
+                      })()}
+                      {(() => {
+                        const fov = result.iqaDetails.metrics?.fov_ratio ?? result.iqaDetails.fovRatio;
+                        return fov != null ? <div>• <strong>Field of View (FOV):</strong> {(fov * 100).toFixed(1)}%</div> : null;
+                      })()}
+                      {result.iqaDetails.engine && (
+                        <div style={{ marginTop: '4px', opacity: 0.7, fontSize: '0.8rem' }}>IQA Engine: {result.iqaDetails.engine}</div>
                       )}
                     </div>
                   )}
+                  {/* Recapture action buttons */}
+                  <div className="btn-group" style={{ marginTop: '16px' }}>
+                    {onRecapture && (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={onRecapture}
+                        style={{ flex: 2 }}
+                      >
+                        <Camera size={18} />
+                        <span>{t('recRecapture')}</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={onStartNewScreening}
+                      style={{ flex: 1 }}
+                    >
+                      <RotateCcw size={16} />
+                      <span>{t('startNewScreening')}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

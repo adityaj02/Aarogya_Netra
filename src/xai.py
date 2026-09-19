@@ -2,8 +2,11 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 import cv2
+import logging
 from PIL import Image
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 class GradCAM:
     """
@@ -87,18 +90,18 @@ class GradCAM:
         else:
             cam = np.zeros_like(cam)
 
-        print("\n===== GRAD-CAM DIAGNOSTICS =====")
-        print("Target layer:", self.target_layer_name)
-        print("Activation shape:", tuple(self.activations.shape))
-        print("Gradient shape:", tuple(self.gradients.shape))
-        print("CAM shape:", tuple(cam.shape))
-        print("CAM min:", float(cam.min()))
-        print("CAM max:", float(cam.max()))
-        print("CAM mean:", float(cam.mean()))
-        print("CAM nonzero:", float(np.mean(cam > 0)))
-        print("RAW CAM:")
-        print(np.round(cam, 3))
-        print("================================\n")
+        logger.debug(
+            "[Grad-CAM] layer=%s  act=%s  grad=%s  cam=%s  min=%.4f  max=%.4f  mean=%.4f  nonzero=%.3f",
+            self.target_layer_name,
+            tuple(self.activations.shape),
+            tuple(self.gradients.shape),
+            tuple(cam.shape),
+            float(cam.min()),
+            float(cam.max()),
+            float(cam.mean()),
+            float(np.mean(cam > 0)),
+        )
+        logger.debug("[Grad-CAM RAW]\n%s", np.round(cam, 3))
             
         if was_training:
             self.model.train()

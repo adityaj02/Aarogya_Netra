@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, AlertTriangle, Send } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertTriangle, Send, User } from 'lucide-react';
 import { submitClinicalFeedback } from '../services/api';
 
 export default function DoctorValidationPanel({ result }) {
   const [reviewStatus, setReviewStatus] = useState(null);
   const [actualGrade, setActualGrade] = useState('');
   const [comments, setComments] = useState('');
+  const [reviewerId, setReviewerId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +26,10 @@ export default function DoctorValidationPanel({ result }) {
   }
 
   const handleSubmit = async () => {
+    if (!reviewerId.trim()) {
+      setError('Please enter your Reviewer ID / Staff ID before submitting.');
+      return;
+    }
     if (reviewStatus === 'corrected_prediction' && actualGrade === '') {
       setError('Please select the actual grade.');
       return;
@@ -42,7 +47,7 @@ export default function DoctorValidationPanel({ result }) {
         review_status: reviewStatus,
         actual_grade: reviewStatus === 'corrected_prediction' ? parseInt(actualGrade) : null,
         doctor_comments: comments,
-        reviewer_id: "DR_MOCK_USER_001", // TODO: Replace with actual auth user
+        reviewer_id: reviewerId.trim(),
         inference_snapshot: result.probabilities
       });
       setSubmitted(true);
@@ -106,8 +111,27 @@ export default function DoctorValidationPanel({ result }) {
 
       {reviewStatus && (
         <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: '6px', fontSize: '0.95rem' }}>
+            <User size={14} style={{ display: 'inline', marginRight: '5px', verticalAlign: 'text-bottom' }} />
+            Reviewer ID / Staff ID <span style={{ color: '#dc2626' }}>*</span>
+          </label>
+          <input
+            type="text"
+            style={{ width: '100%', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: `1px solid ${!reviewerId.trim() ? '#fca5a5' : 'var(--border)'}`, fontFamily: 'inherit', fontSize: '0.95rem' }}
+            placeholder="e.g. DR-SHARMA-01 or Staff ID"
+            value={reviewerId}
+            onChange={(e) => { setReviewerId(e.target.value); setError(null); }}
+          />
+          {!reviewerId.trim() && (
+            <div style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '4px' }}>Required to attribute clinical feedback.</div>
+          )}
+        </div>
+      )}
+
+      {reviewStatus && (
+        <div style={{ marginBottom: '20px' }}>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px', fontSize: '0.95rem' }}>Clinical Comments (Optional)</label>
-          <textarea 
+          <textarea
             style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', minHeight: '80px', fontFamily: 'inherit', resize: 'vertical' }}
             placeholder="Add any notes about anomalies, image quality, or pathology..."
             value={comments}
@@ -119,11 +143,11 @@ export default function DoctorValidationPanel({ result }) {
       {error && <div style={{ color: '#dc2626', marginBottom: '16px', fontSize: '0.9rem', fontWeight: 600 }}>{error}</div>}
 
       {reviewStatus && (
-        <button 
-          className="btn btn-primary" 
-          style={{ width: '100%' }} 
+        <button
+          className="btn btn-primary"
+          style={{ width: '100%' }}
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !reviewerId.trim()}
         >
           {isSubmitting ? 'Submitting...' : 'Submit Validation'}
           {!isSubmitting && <Send size={18} />}

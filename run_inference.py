@@ -120,43 +120,75 @@ class InferencePipeline:
         return result
 
     def run(self, img_path: str, language: str = "en", generate_cams: bool = True, generate_explanation: bool = True) -> Dict[str, Any]:
-        # 1. Robust Dual-Engine IQA Gate (MATLAB Engine + Python OpenCV Fallback)
+        """
+        IQA Gate Architecture:
+        ─────────────────────
+        MATLAB available?
+             │
+         YES ┤   → MATLAB is canonical gate
+             │      ACCEPT → proceed to ML pipeline
+             │      REJECT → UNGRADABLE
+             │
+         NO  ┤   → Python OpenCV fallback is gate
+                    ACCEPT → proceed to ML pipeline
+                    REJECT → UNGRADABLE
+
+        The engine used is recorded in IQA result as "engine": "MATLAB" | "Python-Fallback".
+        """
+        import logging as _logging
+        _iqa_log = _logging.getLogger("aarogya.iqa")
+
         iqa_result = None
         iqa_rejected = False
         iqa_reason = ""
 
-        # Step 1A: Attempt MATLAB Engine Assessment if initialized
+        # ── Step 1A: MATLAB Engine (canonical gate) ─────────────────────────────
         if self.iqa_engine is not None:
             try:
-                matlab_res = self.iqa_engine.assess(img_path)
-                iqa_result = matlab_res
-                if matlab_res.get("status") == "REJECT":
+                iqa_result = self.iqa_engine.assess(img_path)  # already normalised schema
+                if iqa_result.get("status") == "REJECT":
                     iqa_rejected = True
-                    iqa_reason = f"MATLAB IQA Rejected: {matlab_res.get('reason', 'Quality criteria not met')}"
+                    iqa_reason = f"MATLAB IQA: {iqa_result.get('reason', 'Quality criteria not met')}"
+                    _iqa_log.warning("[IQA MATLAB] REJECT — %s", iqa_reason)
                 else:
-                    print(f"[IQA MATLAB] ACCEPT — brightness={matlab_res.get('brightness', 0):.1f}, blurScore={matlab_res.get('blurScore', 0):.2f}")
-            except Exception as e:
-                print(f"[IQA MATLAB] Warning: MATLAB engine call failed ({e}). Reverting to Python OpenCV IQA.")
+                    m = iqa_result.get("metrics", {})
+                    _iqa_log.info(
+                        "[IQA MATLAB] ACCEPT — brightness=%.1f  blur=%.3f",
+                        m.get("brightness") or 0.0,
+                        m.get("blur_score") or 0.0,
+                    )
+            except Exception as exc:
+                _iqa_log.warning(
+                    "[IQA MATLAB] Engine call failed (%s). Falling back to Python OpenCV IQA.", exc
+                )
+                iqa_result = None  # will trigger Python fallback below
 
-        # Step 1B: Python OpenCV Assessment (Run if MATLAB is unavailable or as secondary filter)
-        py_iqa_res = assess_image_file(img_path)
-        if not iqa_result:
-            iqa_result = py_iqa_res.to_dict()
+        # ── Step 1B: Python OpenCV fallback (only when MATLAB unavailable) ───────
+        if iqa_result is None:
+            py_iqa_res = assess_image_file(img_path)
+            failed_checks = py_iqa_res.failed_checks if not py_iqa_res.passed else []
+            iqa_result = {
+                "engine":        "Python-Fallback",
+                "status":        "REJECT" if not py_iqa_res.passed else "ACCEPT",
+                "reason":        f"Failed checks: {', '.join(failed_checks)}" if failed_checks else "",
+                "failed_checks": failed_checks,
+                "metrics":       getattr(py_iqa_res, "scores", {}),
+            }
+            if not py_iqa_res.passed:
+                iqa_rejected = True
+                iqa_reason = f"Python IQA: [{', '.join(failed_checks)}]"
+                _iqa_log.warning("[IQA Python-Fallback] REJECT — %s", iqa_reason)
+            else:
+                _iqa_log.info("[IQA Python-Fallback] ACCEPT")
 
-        if not py_iqa_res.passed:
-            iqa_rejected = True
-            failed_str = ", ".join(py_iqa_res.failed_checks)
-            if not iqa_reason:
-                iqa_reason = f"Image failed OpenCV quality checks: [{failed_str}]"
-
-        # Step 1C: Reject if either engine flagged quality failure
+        # ── Step 1C: Gate decision ────────────────────────────────────────────────
         if iqa_rejected:
-            print(f"[IQA GATE] REJECT — {iqa_reason}")
+            _iqa_log.info("[IQA GATE] REJECT — %s", iqa_reason)
             return {
-                "IQA": iqa_result if isinstance(iqa_result, dict) else py_iqa_res.to_dict(),
+                "IQA": iqa_result,
                 "Final_Grade": "UNGRADABLE",
                 "recommendation": "RECAPTURE",
-                "reason": iqa_reason
+                "reason": iqa_reason,
             }
 
         # 2. Preprocessing
@@ -209,10 +241,12 @@ class InferencePipeline:
                 final_grade_num = int(0)
                 model_name = "M0ALL"
                 interpretation = "Regions contributing most strongly to the selected model's No-DR prediction."
-                
-                gradcam_save_path = f"{original_stem}_gradcam_{model_name}_G{final_grade_num}.png"
-                raw_cam_save_path = f"{original_stem}_raw_cam_{model_name}_G{final_grade_num}.npy"
-                original_save_path = f"{original_stem}_original.jpg"
+
+                # Save all artifacts beside the input image, not in CWD
+                img_dir = Path(img_path).parent
+                gradcam_save_path = str(img_dir / f"{original_stem}_gradcam_{model_name}_G{final_grade_num}.png")
+                raw_cam_save_path = str(img_dir / f"{original_stem}_raw_cam_{model_name}_G{final_grade_num}.npy")
+                original_save_path = str(img_dir / f"{original_stem}_original.jpg")
                 
                 pil_img.save(original_save_path)
                 
@@ -295,10 +329,12 @@ class InferencePipeline:
             final_grade_num = int(final_argmax)
             model_name = "M1234"
             interpretation = "Regions contributing most strongly to the selected model's prediction."
-            
-            gradcam_save_path = f"{original_stem}_gradcam_{model_name}_G{final_grade_num}.png"
-            raw_cam_save_path = f"{original_stem}_raw_cam_{model_name}_G{final_grade_num}.npy"
-            original_save_path = f"{original_stem}_original.jpg"
+
+            # Save all artifacts beside the input image, not in CWD
+            img_dir = Path(img_path).parent
+            gradcam_save_path = str(img_dir / f"{original_stem}_gradcam_{model_name}_G{final_grade_num}.png")
+            raw_cam_save_path = str(img_dir / f"{original_stem}_raw_cam_{model_name}_G{final_grade_num}.npy")
+            original_save_path = str(img_dir / f"{original_stem}_original.jpg")
             
             # Save the original for clinical comparison
             pil_img.save(original_save_path)

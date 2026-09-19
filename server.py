@@ -1,13 +1,23 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 import uuid
 import json
-import random
-from io import BytesIO
 from datetime import datetime
 import shutil
+import logging
 import numpy as np
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# ── Project-root-relative MATLAB path (portability) ──────────────────────────
+_PROJECT_ROOT = Path(__file__).resolve().parent
+IQA_MATLAB_PATH = os.environ.get(
+    "IQA_MATLAB_PATH",
+    str(_PROJECT_ROOT / "src" / "IQA_Matlab")
+)
 
 
 class _NumpyEncoder(json.JSONEncoder):
@@ -70,8 +80,6 @@ app.mount("/uploads", StaticFiles(directory="frontend/public/uploads"), name="up
 
 pipeline_instance = None
 matlab_iqa = None
-
-IQA_MATLAB_PATH = r"D:\Projects\AarogyaNetra\src\IQA_Matlab"
 
 @app.on_event("startup")
 def load_models():
@@ -150,15 +158,20 @@ async def screen_image(
     if result.get("Final_Grade") == "UNGRADABLE" and result.get("recommendation") == "RECAPTURE":
         iqa = result.get("IQA", {})
         reject_reason = result.get("reason") or iqa.get("reason") or "Image quality insufficient for analysis."
-        return {
+        # Ensure failed_checks is always present for frontend rendering
+        if "failed_checks" not in iqa:
+            iqa["failed_checks"] = []
+        # Keep temp file alive so the frontend can show the image; it will be
+        # garbage-collected on a future successful upload or server restart.
+        response_payload = {
             "id": None,
             "stage1Outcome": "UNGRADABLE",
             "grade": 0,
             "severityKey": "severityNone",
             "confidence": "REVIEW",
             "confidenceScore": 0.0,
-            "referralKey": "recRoutine",
-            "timelineKey": "recRoutineTimeline",
+            "referralKey": "recRecapture",
+            "timelineKey": "recRecaptureTimeline",
             "explanation": reject_reason,
             "reason": reject_reason,
             "imageData": f"/uploads/{img_id}_temp.jpg",
@@ -169,26 +182,39 @@ async def screen_image(
             "iqaDetails": iqa,
             "probabilities": {}
         }
+        return response_payload
     # ───────────────────────────────────────────────────────────────────────
 
 
-    original_cwd_path = f"{img_id}_temp_original.jpg"
-    final_original = f"frontend/public/uploads/{img_id}_original.jpg"
-    if os.path.exists(original_cwd_path):
-        shutil.move(original_cwd_path, final_original)
+    # ── Artifact collection ───────────────────────────────────────────────────
+    # run_inference.py now saves original/gradcam/npy into the same directory
+    # as the input (frontend/public/uploads/). We just need to rename them to
+    # stable report-ID-based filenames and clean up the temp upload.
+    uploads_dir = Path("frontend/public/uploads")
+    final_original = str(uploads_dir / f"{img_id}_original.jpg")
+    final_heatmap  = str(uploads_dir / f"{img_id}_heatmap.png")
+
+    # Original image saved by run_inference.py alongside the temp input
+    inferred_original = str(uploads_dir / f"{img_id}_temp_original.jpg")
+    if os.path.exists(inferred_original):
+        shutil.move(inferred_original, final_original)
     elif os.path.exists(temp_path):
-        # Fallback to temp image if original not created
         shutil.copy(temp_path, final_original)
-        
+
     xai = result.get("xai", {})
     heatmap_file = xai.get("heatmap")
-    final_heatmap = f"frontend/public/uploads/{img_id}_heatmap.png"
+    # heatmap_file path comes from run_inference.py — already in uploads dir
     if heatmap_file and os.path.exists(heatmap_file):
         shutil.move(heatmap_file, final_heatmap)
-    else:
-        # Fallback if heatmap failed
-        if os.path.exists(final_original):
-            shutil.copy(final_original, final_heatmap)
+    elif os.path.exists(final_original):
+        shutil.copy(final_original, final_heatmap)
+
+    # Clean up the raw temp upload (the permanent original is now stored above)
+    if os.path.exists(temp_path) and temp_path != final_original:
+        try:
+            os.remove(temp_path)
+        except OSError as exc:
+            logger.warning("Could not delete temp upload %s: %s", temp_path, exc)
 
     # Extract final grade 
     final_grade_str = result.get("Final_Grade", "Grade 0")
@@ -251,8 +277,9 @@ async def screen_image(
 
     confidence_val = "HIGH" if conf_score >= 0.8 else "REVIEW"
 
-    report_id = f"AN-{datetime.now().year}-{random.randint(1000, 9999)}"
-    
+    # UUID-based report ID: AN-2026-<8 uppercase hex chars> — effectively collision-free
+    report_id = f"AN-{datetime.now().year}-{uuid.uuid4().hex[:8].upper()}"
+
     db_report = ScreeningReport(
         id=report_id,
         patient_id=pid,
@@ -266,7 +293,8 @@ async def screen_image(
         explanation_text=explanation_text,
         probabilities_json=_json_dumps(result),
         image_path=f"/uploads/{img_id}_original.jpg",
-        heatmap_path=f"/uploads/{img_id}_heatmap.png"
+        heatmap_path=f"/uploads/{img_id}_heatmap.png",
+        iqa_passed=True,      # Explicit: image passed IQA gate to reach this point
     )
     db.add(db_report)
     db.commit()
@@ -320,15 +348,30 @@ def get_reports(db: Session = Depends(get_db)):
 
 @app.post("/api/feedback")
 def submit_feedback(feedback: ClinicalFeedbackCreate):
+    """
+    Clinical feedback submission.
+    Returns HTTP 503 with a user-facing message if MongoDB is unavailable,
+    so that a MongoDB outage never takes down the screening service.
+    """
     try:
         result = feedback_service.submit_feedback(feedback)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        err_msg = str(e)
+        if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
+            raise HTTPException(
+                status_code=503,
+                detail="Clinical feedback service is temporarily unavailable. "
+                       "The screening result has been saved. Please try submitting feedback later."
+            )
+        raise HTTPException(status_code=500, detail=err_msg)
 
 @app.get("/api/feedback/{report_id}")
 def get_feedback(report_id: str):
     try:
         return feedback_service.get_feedback_by_report(report_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        err_msg = str(e)
+        if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
+            raise HTTPException(status_code=503, detail="Feedback service unavailable.")
+        raise HTTPException(status_code=500, detail=err_msg)

@@ -286,7 +286,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
             onClick={handleProceed}
             style={{ flex: 2 }}
           >
-            <span>{t('proceedToQualityCheck')}</span>
+            <span>{t('proceedToAnalysis')}</span>
             <ArrowRight size={18} />
           </button>
         </div>
