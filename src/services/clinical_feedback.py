@@ -66,3 +66,69 @@ class ClinicalFeedbackService:
             results.append(ClinicalFeedbackInDB(**doc))
         return results
 
+    def get_doctor_reports(self, doctor_name: str) -> List[dict]:
+        """
+        Retrieves all feedback records (reports) validated by a specific doctor.
+        """
+        collection = self._get_collection()
+        cursor = collection.find({"reviewer_id": doctor_name}).sort("timestamp", -1)
+        results = []
+        for doc in cursor:
+            if "_id" in doc:
+                del doc["_id"]
+            results.append(doc)
+        return results
+
+    def get_doctor_stats(self, doctor_name: str) -> dict:
+        """
+        Retrieves aggregated statistics for a specific doctor.
+        Calculates total reviews, AI agreement (accuracy), and the distribution of actual grades.
+        """
+        collection = self._get_collection()
+        
+        pipeline_grades = [
+            {"$match": {"reviewer_id": doctor_name}},
+            {"$group": {
+                "_id": "$actual_grade",
+                "count": {"$sum": 1}
+            }}
+        ]
+        grade_distribution_cursor = collection.aggregate(pipeline_grades)
+        
+        distribution = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}
+        total_reviews = 0
+        correct_reviews = 0
+        
+        for doc in grade_distribution_cursor:
+            grade = doc["_id"]
+            if grade is not None and isinstance(grade, int) and 0 <= grade <= 4:
+                distribution[grade] = doc["count"]
+        
+        pipeline_correct = [
+            {"$match": {"reviewer_id": doctor_name}},
+            {"$group": {
+                "_id": "$is_correct",
+                "count": {"$sum": 1}
+            }}
+        ]
+        correct_cursor = collection.aggregate(pipeline_correct)
+        
+        for doc in correct_cursor:
+            count = doc["count"]
+            total_reviews += count
+            if doc["_id"] is True:
+                correct_reviews += count
+                
+        return {
+            "total_reviews": total_reviews,
+            "accuracy": (correct_reviews / total_reviews * 100) if total_reviews > 0 else 0,
+            "grade_distribution": distribution
+        }
+
+    def get_all_doctors(self) -> List[str]:
+        """
+        Retrieves a list of unique reviewer_ids (doctors) who have submitted feedback.
+        """
+        collection = self._get_collection()
+        doctors = collection.distinct("reviewer_id")
+        return [d for d in doctors if d]

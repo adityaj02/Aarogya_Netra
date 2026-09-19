@@ -18,7 +18,11 @@ import {
    MAIN PAGE
 ========================================================= */
 
+import { useLanguage } from '../context/LanguageContext';
+import Stepper from '../components/Stepper';
+
 const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     name: initialData?.name || "",
     dob: initialData?.dob || "",
@@ -86,24 +90,24 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
               {/* Card Header */}
               <div style={{ marginBottom: "24px" }}>
                 <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#0f172a", letterSpacing: "-0.025em", margin: 0 }}>
-                  Patient Information
+                  {t("patientInfoTitle", "Patient Information")}
                 </h2>
                 <p style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px", fontWeight: 400 }}>
-                  Please enter basic details required for the screening record.
+                  {t("patientInfoSubtitle", "Please enter basic details required for the screening record.")}
                 </p>
               </div>
 
               {/* ── Stepper ── */}
-              <StepperIndicator />
+              <Stepper currentStep={1} />
 
               {/* ── Form Fields ── */}
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
                 {/* Full Name */}
-                <FieldWrapper label="Full Name" required>
+                <FieldWrapper label={t("fullName", "Full Name")} required>
                   <InputField
                     icon={<User size={16} color="#0ea5e9" />}
-                    placeholder="Enter patient's full name"
+                    placeholder={t("fullNamePlaceholder", "Enter patient's full name")}
                     value={form.name}
                     onChange={(e) => updateField("name", e.target.value)}
                   />
@@ -113,7 +117,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
 
                   {/* Date of Birth */}
-                  <FieldWrapper label="Date of Birth" required>
+                  <FieldWrapper label={t("dob", "Date of Birth")} required>
                     <div style={{ position: "relative" }}>
                       <div style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", zIndex: 1 }}>
                         <Calendar size={16} color="#0ea5e9" />
@@ -153,7 +157,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                   </FieldWrapper>
 
                   {/* Gender Segmented Selector */}
-                  <FieldWrapper label="Gender" required>
+                  <FieldWrapper label={t("gender", "Gender")} required>
                     <div style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr 1fr",
@@ -165,7 +169,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                       height: "40px",
                       alignItems: "center",
                     }}>
-                      {[["male", "Male"], ["female", "Female"], ["other", "Other"]].map(([val, lbl]) => (
+                      {[["male", t("genderMale", "Male")], ["female", t("genderFemale", "Female")], ["other", t("genderOther", "Other")]].map(([val, lbl]) => (
                         <button
                           key={val}
                           type="button"
@@ -197,7 +201,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                 </div>
 
                 {/* Diabetes Duration */}
-                <FieldWrapper label="Diabetes Duration" required>
+                <FieldWrapper label={t("diabetesDuration", "Diabetes Duration")} required>
                   <div style={{ position: "relative" }}>
                     <div style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", zIndex: 1 }}>
                       <Activity size={16} color="#0ea5e9" />
@@ -227,19 +231,19 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                       onFocus={(e) => { e.target.style.border = "1px solid #0ea5e9"; e.target.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.15)"; }}
                       onBlur={(e) => { e.target.style.border = "1px solid #cbd5e1"; e.target.style.boxShadow = "none"; }}
                     >
-                      <option value="" disabled>Select duration</option>
-                      <option value="&lt;1">Less than 1 year</option>
+                      <option value="" disabled>{t("diabetesDurationSelect", "Select duration")}</option>
+                      <option value="&lt;1">{t("durationUnder1", "Less than 1 year")}</option>
                       <option value="1-5">1–5 years</option>
                       <option value="5-10">5–10 years</option>
                       <option value="10-15">10–15 years</option>
-                      <option value="15+">More than 15 years</option>
+                      <option value="15+">{t("durationOver10", "More than 15 years")}</option>
                     </select>
                     <ChevronDown size={15} color="#94a3b8" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                   </div>
                 </FieldWrapper>
 
                 {/* Mobile Number */}
-                <FieldWrapper label="Mobile Number" optional>
+                <FieldWrapper label={t("mobileNumber", "Mobile Number")} optional>
                   <div style={{ display: "flex", height: "40px", borderRadius: "12px", border: "1px solid #cbd5e1", overflow: "hidden", background: "rgba(255,255,255,0.7)" }}>
                     {/* Country code */}
                     <div style={{
@@ -261,7 +265,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                       type="tel"
                       maxLength={10}
                       inputMode="numeric"
-                      placeholder="Enter 10-digit mobile number"
+                      placeholder={t("mobilePlaceholder", "Enter 10-digit mobile number")}
                       value={form.mobile}
                       onChange={(e) => updateField("mobile", e.target.value.replace(/\D/g, "").slice(0, 10))}
                       style={{
@@ -309,8 +313,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                     onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.8)"; e.currentTarget.style.borderColor = "rgba(203,213,225,0.9)"; }}
                   >
                     <ArrowLeft size={16} />
-                    Back
-                  </button>
+                    {t("back", "Back")}`n                  </button>
                 )}
 
                 <button
@@ -337,8 +340,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                   onMouseOver={(e) => { e.currentTarget.style.boxShadow = "0 12px 25px rgba(14,165,233,0.4)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseOut={(e) => { e.currentTarget.style.boxShadow = "0 8px 20px rgba(14,165,233,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
                 >
-                  Continue
-                  <ArrowRight size={16} style={{ transition: "transform 0.15s" }} />
+                  {t("continue", "Continue")}`n                  <ArrowRight size={16} style={{ transition: "transform 0.15s" }} />
                 </button>
               </div>
 
@@ -573,62 +575,6 @@ const RightPanel = () => (
 
 
 /* =========================================================
-   STEPPER INDICATOR
-========================================================= */
-
-const StepperIndicator = () => {
-  const steps = [
-    { n: "1", label: "Patient Information", active: true },
-    { n: "2", label: "Eye Scan", active: false },
-    { n: "3", label: "Results", active: false },
-  ];
-
-  return (
-    <div style={{ marginBottom: "28px" }}>
-      <div style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", maxWidth: "480px", margin: "0 auto" }}>
-        {/* Base track */}
-        <div style={{ position: "absolute", top: "16px", left: "28px", right: "28px", height: "2.5px", background: "#e2e8f0", zIndex: 0 }} />
-        {/* Active progress (step 1 → 2 partial) */}
-        <div style={{ position: "absolute", top: "16px", left: "28px", width: "33%", height: "2.5px", background: "#0ea5e9", zIndex: 0, transition: "width 0.4s" }} />
-
-        {steps.map(({ n, label, active }) => (
-          <div key={n} style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", width: "33.33%" }}>
-            <div style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "9999px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              background: active ? "#0ea5e9" : "#e2e8f0",
-              color: active ? "#ffffff" : "#64748b",
-              boxShadow: active ? "0 4px 12px rgba(14,165,233,0.35)" : "none",
-              outline: active ? "4px solid rgba(14,165,233,0.15)" : "none",
-              outlineOffset: "0px",
-            }}>
-              {n}
-            </div>
-            <span style={{
-              fontSize: "0.65rem",
-              fontWeight: active ? 700 : 500,
-              color: active ? "#0284c7" : "#64748b",
-              marginTop: "8px",
-              whiteSpace: "nowrap",
-              textAlign: "center",
-            }}>
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-
-/* =========================================================
    FIELD WRAPPER
 ========================================================= */
 
@@ -688,3 +634,4 @@ const InputField = ({ icon, placeholder, value, onChange, type = "text" }) => (
 
 
 export default PatientInfoPage;
+

@@ -75,26 +75,19 @@ export default function WelcomePage({ onStartScreening, onViewReports, onOpenHel
             <div style={{ position: 'absolute', bottom: -80, right: -80, width: 192, height: 192, borderRadius: '50%', background: 'rgba(190,214,255,0.35)', filter: 'blur(32px)', pointerEvents: 'none' }} />
 
             {/* Logo Badge */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
-              <div style={{
-                width: 280, height: 115, borderRadius: 24,
-                overflow: 'hidden',
-                background: '#ffffff',
-                border: '1px solid rgba(255,255,255,0.95)',
-                boxShadow: '0 8px 30px rgba(9,134,212,0.18)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '10px 16px',
-                marginBottom: 16,
-                transition: 'transform 0.3s ease',
-              }}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', marginBottom: 16 }}>
+              <img 
+                src="/aarogyanetra_logo.svg" 
+                alt="AarogyaNetra" 
+                style={{ 
+                  width: 380, 
+                  height: 160, 
+                  objectFit: 'contain',
+                  transition: 'transform 0.3s ease'
+                }} 
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                <img src="/aarogyalogo.jpeg" alt="AarogyaNetra" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-              </div>
-              <p style={{ margin: '6px 0 0', fontSize: 14, color: '#475569', maxWidth: 410, lineHeight: 1.5, fontWeight: 500 }}>
-                {t('appSubtitle')}
-              </p>
+              />
             </div>
 
             {/* Feature Trio */}

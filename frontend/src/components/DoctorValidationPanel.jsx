@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, AlertTriangle, Send, User } from 'lucide-react';
 import { submitClinicalFeedback } from '../services/api';
 
@@ -10,10 +10,32 @@ export default function DoctorValidationPanel({ result }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
+  const [availableDoctors, setAvailableDoctors] = useState([]);
+  const [existingFeedback, setExistingFeedback] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/doctors')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setAvailableDoctors(data);
+      })
+      .catch(err => console.error('Error fetching doctors:', err));
+
+    if (result && result.id) {
+      fetch(`/api/feedback/${result.id}`)
+        .then(res => res.json())
+        .then(data => {
+           if (Array.isArray(data) && data.length > 0) {
+             setExistingFeedback(data[0]); // Show the latest validation
+           }
+        })
+        .catch(err => console.error('Error fetching existing feedback:', err));
+    }
+  }, [result]);
 
   if (!result || submitted) {
     return submitted ? (
-      <div className="clean-card" style={{ padding: '24px', backgroundColor: '#ecfdf5', borderColor: '#a7f3d0' }}>
+      <div className="clean-card" style={{ padding: '24px', backgroundColor: '#ecfdf5', borderColor: '#a7f3d0', marginTop: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#065f46' }}>
           <CheckCircle2 size={24} />
           <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Feedback Submitted Successfully</h3>
@@ -23,6 +45,60 @@ export default function DoctorValidationPanel({ result }) {
         </p>
       </div>
     ) : null;
+  }
+
+  if (existingFeedback) {
+    const isCorrect = existingFeedback.is_correct;
+    
+    return (
+      <div className="clean-card" style={{ marginTop: '24px', borderTop: '4px solid var(--primary)', backgroundColor: '#f8fafc' }}>
+        <h3 style={{ margin: '0 0 16px 0', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#334155' }}>
+          <CheckCircle2 color="#0ea5e9" size={20} /> Clinical Validation (Read-only)
+        </h3>
+        
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
+          <div style={{ flex: 1, minWidth: '150px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Reviewer ID</span>
+            <div style={{ fontWeight: 600, color: '#0f172a' }}>{existingFeedback.reviewer_id}</div>
+          </div>
+          <div style={{ flex: 1, minWidth: '150px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Date</span>
+            <div style={{ fontWeight: 600, color: '#0f172a' }}>{new Date(existingFeedback.timestamp).toLocaleDateString()}</div>
+          </div>
+        </div>
+
+        <div style={{ 
+          padding: '16px', 
+          borderRadius: '12px', 
+          backgroundColor: isCorrect ? '#ecfdf5' : '#fef2f2',
+          border: `1px solid ${isCorrect ? '#a7f3d0' : '#fecaca'}`,
+          marginBottom: '16px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <span style={{ fontSize: '0.85rem', color: isCorrect ? '#065f46' : '#991b1b' }}>AI Predicted Grade: <strong>{existingFeedback.predicted_grade !== null ? existingFeedback.predicted_grade : 'N/A'}</strong></span>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.85rem', color: isCorrect ? '#065f46' : '#991b1b' }}>Clinician Validated Grade: <strong>{existingFeedback.actual_grade !== null ? existingFeedback.actual_grade : 'N/A'}</strong></span>
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '12px', fontWeight: 600, color: isCorrect ? '#059669' : '#dc2626', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {isCorrect ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+            {isCorrect ? 'AI Detection was Correct' : 'AI Detection was Incorrect/Changed'}
+          </div>
+        </div>
+
+        {existingFeedback.doctor_comments && (
+          <div>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Clinical Comments</span>
+            <div style={{ padding: '12px', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '0.9rem', marginTop: '4px', color: '#334155' }}>
+              {existingFeedback.doctor_comments}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   const handleSubmit = async () => {
@@ -117,11 +193,17 @@ export default function DoctorValidationPanel({ result }) {
           </label>
           <input
             type="text"
+            list="validation-doctor-list"
             style={{ width: '100%', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: `1px solid ${!reviewerId.trim() ? '#fca5a5' : 'var(--border)'}`, fontFamily: 'inherit', fontSize: '0.95rem' }}
             placeholder="e.g. DR-SHARMA-01 or Staff ID"
             value={reviewerId}
             onChange={(e) => { setReviewerId(e.target.value); setError(null); }}
           />
+          <datalist id="validation-doctor-list">
+            {availableDoctors.map(doc => (
+              <option key={doc} value={doc} />
+            ))}
+          </datalist>
           {!reviewerId.trim() && (
             <div style={{ fontSize: '0.8rem', color: '#ef4444', marginTop: '4px' }}>Required to attribute clinical feedback.</div>
           )}

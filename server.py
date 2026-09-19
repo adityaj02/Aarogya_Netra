@@ -38,7 +38,7 @@ def _json_dumps(obj):
     return json.dumps(obj, cls=_NumpyEncoder)
 
 from typing import Optional
-from fastapi import FastAPI, File, UploadFile, Depends, Form, HTTPException
+from fastapi import FastAPI, File, UploadFile, Depends, Form, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -374,4 +374,46 @@ def get_feedback(report_id: str):
         err_msg = str(e)
         if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
             raise HTTPException(status_code=503, detail="Feedback service unavailable.")
+        raise HTTPException(status_code=500, detail=err_msg)
+
+@app.get("/api/doctor/stats")
+def get_doctor_stats(doctor_name: str = Query(...)):
+    try:
+        return feedback_service.get_doctor_stats(doctor_name)
+    except Exception as e:
+        err_msg = str(e)
+        if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
+            raise HTTPException(status_code=503, detail="Feedback service unavailable.")
+        raise HTTPException(status_code=500, detail=err_msg)
+
+@app.get("/api/doctor/reports")
+def get_doctor_reports(doctor_name: str = Query(...), db: Session = Depends(get_db)):
+    try:
+        reports = feedback_service.get_doctor_reports(doctor_name)
+        # Enrich with patient name from SQLite
+        for r in reports:
+            report_id_str = r.get("report_id")
+            if report_id_str:
+                db_report = db.query(ScreeningReport).filter(ScreeningReport.id == report_id_str).first()
+                if db_report and db_report.patient:
+                    r["patient_name"] = db_report.patient.name
+                else:
+                    r["patient_name"] = "Unknown"
+            else:
+                r["patient_name"] = "Unknown"
+        return reports
+    except Exception as e:
+        err_msg = str(e)
+        if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
+            raise HTTPException(status_code=503, detail="Feedback service unavailable.")
+        raise HTTPException(status_code=500, detail=err_msg)
+
+@app.get("/api/doctors")
+def get_all_doctors():
+    try:
+        return feedback_service.get_all_doctors()
+    except Exception as e:
+        err_msg = str(e)
+        if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
+            return [] # Fail gracefully if mongo is down
         raise HTTPException(status_code=500, detail=err_msg)

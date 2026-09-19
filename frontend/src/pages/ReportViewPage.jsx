@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import DoctorValidationPanel from '../components/DoctorValidationPanel';
+import Stepper from '../components/Stepper';
 
 export default function ReportViewPage({ report, onStartNewScreening }) {
   const { t } = useLanguage();
@@ -39,6 +40,7 @@ export default function ReportViewPage({ report, onStartNewScreening }) {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <Stepper currentStep={3} />
       {/* Top Action Bar (hidden in print) */}
       <div
         className="no-print"
@@ -87,11 +89,7 @@ export default function ReportViewPage({ report, onStartNewScreening }) {
         <div className="clean-card" style={{ flex: '1 1 650px', padding: '36px', background: '#fff', minWidth: '300px' }}>
           {/* Printable Hospital / Clinic Letterhead Header */}
           <div className="print-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid var(--primary)', paddingBottom: '16px', marginBottom: '24px' }}>
-            <div>
-              <div style={{ height: '52px', display: 'flex', alignItems: 'center' }}>
-                <img src="/aarogyalogo.jpeg" alt="AarogyaNetra" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
-              </div>
-            </div>
+            <img src="/aarogyanetra_logo.svg" alt="AarogyaNetra" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} />
 
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>

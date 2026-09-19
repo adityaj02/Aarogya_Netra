@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Camera, Upload, Trash2, ArrowLeft, ArrowRight, CheckCircle2, Video, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getSampleFundusImages } from '../utils/sampleImages';
+import Stepper from '../components/Stepper';
 
 export default function ImageUploadPage({ onImageSelected, onBack }) {
   const { t } = useLanguage();
@@ -118,6 +119,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
 
   return (
     <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+      <Stepper currentStep={2} />
       <div className="clean-card">
         <h2 style={{ marginBottom: '4px' }}>{t('uploadTitle')}</h2>
         <p className="subtitle" style={{ marginBottom: '16px' }}>

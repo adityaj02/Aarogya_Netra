@@ -10,6 +10,7 @@ import AnalysisPage from './pages/AnalysisPage';
 import ResultsPage from './pages/ResultsPage';
 import ReportViewPage from './pages/ReportViewPage';
 import PreviousReportsPage from './pages/PreviousReportsPage';
+import DoctorPortalPage from './pages/DoctorPortalPage';
 
 export default function App() {
   // Navigation views: 'welcome' | 'patient_info' | 'image_upload' | 'analysis' | 'result' | 'report' | 'reports'
@@ -160,6 +161,13 @@ export default function App() {
           <PreviousReportsPage
             onSelectReport={handleSelectReportFromList}
             onBack={() => setCurrentView('welcome')}
+          />
+        )}
+
+        {currentView === 'doctor_portal' && (
+          <DoctorPortalPage
+            onBack={() => setCurrentView('welcome')}
+            onSelectReport={handleSelectReportFromList}
           />
         )}
       </main>
