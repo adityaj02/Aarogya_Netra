@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, ArrowLeft, FileText, ChevronRight, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Search, Filter, ArrowLeft, FileText, ChevronRight, CheckCircle2, AlertCircle, AlertTriangle, Loader2, Inbox } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { fetchReports } from '../services/api';
 
@@ -108,21 +108,27 @@ export default function PreviousReportsPage({ onSelectReport, onBack }) {
 
         {/* Report List */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-            Loading reports...
+          <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--primary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+            <Loader2 size={36} className="animate-spin" />
+            <span style={{ fontSize: '1.05rem', fontWeight: 500 }}>Loading reports...</span>
           </div>
         ) : reports.length === 0 ? (
           <div
             style={{
               textAlign: 'center',
-              padding: '48px 20px',
+              padding: '64px 20px',
               backgroundColor: 'var(--surface-subtle)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--text-muted)'
+              borderRadius: 'var(--radius-lg)',
+              color: 'var(--text-muted)',
+              border: '1px dashed var(--border-subtle)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '12px'
             }}
           >
-            <FileText size={36} style={{ margin: '0 auto 12px', opacity: 0.5 }} />
-            <p>{t('noReportsFound')}</p>
+            <Inbox size={48} style={{ opacity: 0.4 }} />
+            <p style={{ fontSize: '1.1rem', fontWeight: 500, margin: 0 }}>{t('noReportsFound') || "No records found"}</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

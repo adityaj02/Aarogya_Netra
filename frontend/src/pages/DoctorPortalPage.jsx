@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Activity, CheckCircle, AlertTriangle, FileText, ArrowLeft, LogOut } from 'lucide-react';
+import { User, Activity, CheckCircle, AlertTriangle, FileText, ArrowLeft, LogOut, Loader2, Inbox } from 'lucide-react';
 import { fetchReportById } from '../services/api';
 
 export default function DoctorPortalPage({ onBack, onSelectReport }) {
@@ -207,9 +207,9 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Activity className="animate-spin mb-4" size={32} />
-            <p>Loading your validation statistics...</p>
+          <div className="flex flex-col items-center justify-center py-20 text-sky-600 gap-3">
+            <Loader2 className="animate-spin" size={36} />
+            <span className="font-medium">Loading your validation statistics...</span>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl flex items-center gap-4">
@@ -291,8 +291,22 @@ export default function DoctorPortalPage({ onBack, onSelectReport }) {
               <h3 className="text-lg font-bold text-slate-800 mb-6">Recent Validations</h3>
               
               {reports.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
-                  <p>No recent reports found.</p>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '64px 20px',
+                    backgroundColor: 'var(--surface-subtle)',
+                    borderRadius: 'var(--radius-lg)',
+                    color: 'var(--text-muted)',
+                    border: '1px dashed var(--border-subtle)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}
+                >
+                  <Inbox size={48} style={{ opacity: 0.4 }} />
+                  <p style={{ fontSize: '1.1rem', fontWeight: 500, margin: 0 }}>No recent reports found.</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">

@@ -172,6 +172,11 @@ export default function App() {
         )}
       </main>
 
+      {/* Universal Footer */}
+      <footer style={{ textAlign: 'center', padding: '24px', fontSize: '0.85rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-default)' }}>
+        AarogyaNetra is an AI-assistive tool, not a replacement for clinical judgment.
+      </footer>
+
       {/* Help & Guidance Modal */}
       <HelpModal
         isOpen={isHelpOpen}
