@@ -1,142 +1,622 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Eye, HelpCircle, FileText, ChevronDown, Check, User } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Eye, FileText, HelpCircle, User, LogOut,
+  Globe, ChevronDown, Check, Menu, X,
+  LayoutDashboard, Clock, Users, MapPin
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSelectedState } from '../context/StateContext';
+import hospitalDirectory from '../data/hospital_directory.json';
 
-export default function Header({ currentView, setCurrentView, onOpenHelp }) {
+const STATE_LIST = Object.keys(hospitalDirectory).sort();
+
+/* ─── Animation variants ─────────────────────────────────────────── */
+const drawerVariants = {
+  hidden:  { x: '100%', opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } },
+  exit:    { x: '100%', opacity: 0, transition: { duration: 0.22, ease: 'easeIn' } },
+};
+const backdropVariants = {
+  hidden:  { opacity: 0 },
+  visible: { opacity: 1 },
+  exit:    { opacity: 0 },
+};
+const itemVariants = {
+  hidden:  { opacity: 0, x: 20 },
+  visible: (i) => ({ opacity: 1, x: 0, transition: { delay: i * 0.04, duration: 0.2 } }),
+};
+const dropdownVariants = {
+  hidden:  { opacity: 0, y: -8, scale: 0.97 },
+  visible: { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.18, ease: 'easeOut' } },
+  exit:    { opacity: 0, y: -6, scale: 0.97, transition: { duration: 0.14 } },
+};
+
+export default function Header({ currentView, setCurrentView, onOpenHelp, doctorName = null, onDoctorLogout = null }) {
   const { lang, setLang, t, languages } = useLanguage();
-  const [isLangOpen, setIsLangOpen] = useState(false);
-  const dockRef = useRef(null);
+  const { selectedState, setSelectedState } = useSelectedState();
+  const [isLangOpen,     setIsLangOpen]     = useState(false);
+  const [isStateOpen,    setIsStateOpen]    = useState(false);
+  const [isMobileOpen,   setIsMobileOpen]   = useState(false);
+  const [isElevated,     setIsElevated]     = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  // Close dropdown on outside click
+  const langRef     = useRef(null);
+  const stateRef    = useRef(null);
+  const userMenuRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
+  const isClinicianView = !!doctorName;
+
+  /* scroll elevation */
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dockRef.current && !dockRef.current.contains(event.target)) {
-        setIsLangOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const onScroll = () => setIsElevated(window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const currentLangLabel = languages.find(l => l.code === lang)?.label || 'English';
+  /* close dropdowns on outside click */
+  useEffect(() => {
+    const handler = (e) => {
+      if (langRef.current     && !langRef.current.contains(e.target))     setIsLangOpen(false);
+      if (stateRef.current    && !stateRef.current.contains(e.target))    setIsStateOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setIsUserMenuOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  /* body scroll lock when drawer open */
+  useEffect(() => {
+    document.body.style.overflow = isMobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileOpen]);
+
+  /* Escape key closes overlays */
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key !== 'Escape') return;
+      if (isMobileOpen) { setIsMobileOpen(false); hamburgerRef.current?.focus(); }
+      setIsLangOpen(false);
+      setIsStateOpen(false);
+      setIsUserMenuOpen(false);
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isMobileOpen]);
+
+  const navigate = useCallback((view) => {
+    setCurrentView(view);
+    setIsMobileOpen(false);
+  }, [setCurrentView]);
+
+  const isActive = (view) => {
+    if (view === 'patient_info') {
+      return ['patient_info', 'image_upload', 'analysis', 'result'].includes(currentView);
+    }
+    if (view.startsWith('doctor_portal')) {
+      // 'report' can be reached from doctor portal; keep portal nav highlighted
+      if (currentView === 'report' && isClinicianView) return true;
+      // Exact match for the sub-tabs
+      return currentView === view;
+    }
+    return currentView === view;
+  };
+
+  /* Nav items depend on role */
+  const patientNavItems = [
+    { view: 'patient_info', label: t('startScreening', 'Start Screening'), icon: Eye },
+    { view: 'reports',      label: t('previousReports', 'My Reports'),      icon: FileText },
+  ];
+  const clinicianNavItems = [
+    { view: 'doctor_portal', label: 'Dashboard',       icon: LayoutDashboard },
+    { view: 'doctor_portal_pending', label: 'Pending Reviews', icon: Clock },
+    { view: 'doctor_portal_patients', label: 'My Patients',     icon: Users },
+  ];
+  const navItems = isClinicianView ? clinicianNavItems : patientNavItems;
+
+  const currentLangObj = languages.find(l => l.code === lang) || languages[0];
+
+  /* ── Shared nav button renderer ─────────────────────────────────── */
+  const NavBtn = ({ view, label, icon: Icon, index }) => {
+    const active = isActive(view);
+    return (
+      <div key={label} style={{ position: 'relative' }}>
+        <button
+          type="button"
+          className={`nav-item${active ? ' active' : ''}`}
+          aria-current={active ? 'page' : undefined}
+          onClick={() => navigate(view)}
+        >
+          <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
+          <span>{label}</span>
+        </button>
+        {active && (
+          <motion.div
+            layoutId="nav-indicator"
+            style={{
+              position: 'absolute', bottom: 0, left: 8, right: 8,
+              height: 2, background: 'var(--primary)', borderRadius: 1,
+            }}
+            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
-      {/* Ambient Background Layers (moved behind everything) */}
-      <div aria-hidden="true" className="fixed inset-0 subtle-grid pointer-events-none z-0"></div>
-      <div aria-hidden="true" className="fixed top-12 left-1/4 w-[480px] h-[480px] rounded-full bg-sky-200/50 blur-[110px] pointer-events-none -z-10"></div>
-      <div aria-hidden="true" className="fixed bottom-0 right-10 w-[620px] h-[620px] rounded-full bg-blue-200/40 blur-[130px] pointer-events-none -z-10"></div>
-      <div aria-hidden="true" className="fixed bottom-10 left-10 w-[420px] h-[420px] rounded-full bg-teal-100/40 blur-[100px] pointer-events-none -z-10"></div>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
 
-      <header className="sticky top-0 z-40 w-full px-6 lg:px-14 py-3 bg-white/95 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between animate-nav" data-purpose="site-navigation">
-        
-        {/* Brand Identity */}
-        <div className="flex items-center cursor-pointer transition hover:opacity-95 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg" onClick={() => setCurrentView('welcome')} data-purpose="brand-logo" tabIndex="0" aria-label="AarogyaNetra Home">
-          <img src="/aarogyanetra_logo.svg" alt="" className="h-12 w-auto object-contain" />
-        </div>
+      {/* ── Navbar ───────────────────────────────────────────────── */}
+      <header
+        className={`nav-header${isElevated ? ' elevated' : ''}`}
+        role="banner"
+      >
+        <div className="nav-inner">
 
-        {/* Screening Indicator (Visible during active screening flow) */}
-        {(currentView === 'patient_info' || currentView === 'upload') && (
-          <div className="hidden md:flex items-center gap-2 text-sm text-sky-700 bg-sky-50 px-3 py-1.5 rounded-full border border-sky-100 font-medium ml-4 mr-auto">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-            </span>
-            Screening in progress
-          </div>
-        )}
-
-        {/* Clean Right Navigation Row */}
-        <nav ref={dockRef} aria-label="Site Navigation" className="flex items-center bg-white rounded-full px-4 py-2 shadow-[var(--shadow-sm)] border border-slate-200 gap-6">
-          
-          {/* Quick Scan */}
-          <button 
-            aria-label="Quick Scan" 
-            className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-sky-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-md" 
-            onClick={() => setCurrentView('patient_info')}
+          {/* Logo */}
+          <button
+            type="button"
+            onClick={() => navigate('welcome')}
+            aria-label="AarogyaNetra — go to home"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              background: 'none', border: 'none', cursor: 'pointer',
+              borderRadius: 8, padding: '4px 6px', flexShrink: 0,
+            }}
           >
-            <Eye className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden sm:inline">Quick Scan</span>
+            <img
+              src="/aarogyanetra_logo.svg"
+              alt="AarogyaNetra logo"
+              style={{ height: 36, width: 'auto' }}
+              onError={e => { e.target.style.display = 'none'; }}
+            />
           </button>
 
-          {/* Previous Reports */}
-          <button 
-            aria-label="Past Reports"
-            className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-sky-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-md" 
-            onClick={() => setCurrentView('reports')}
-          >
-            <FileText className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden sm:inline">{t('previousReports', 'Past Reports')}</span>
-          </button>
+          {/* ── Desktop center nav ── (CSS-controlled, not Tailwind) */}
+          <nav aria-label="Main" className="nav-desktop">
+            {navItems.map(({ view, label, icon: Icon }, i) => (
+              <NavBtn key={label} view={view} label={label} icon={Icon} index={i} />
+            ))}
+          </nav>
 
-          {/* Doctor Portal */}
-          <button 
-            aria-label="Doctor Portal"
-            className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-sky-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-md" 
-            onClick={() => setCurrentView('doctor_portal')}
-          >
-            <User className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden md:inline">Doctor Portal</span>
-          </button>
+          {/* ── Desktop right cluster ── */}
+          <div className="nav-desktop-right">
+            {/* Help */}
+            {!isClinicianView && (
+              <button type="button" className="nav-item" onClick={onOpenHelp} aria-label="Help">
+                <HelpCircle size={18} strokeWidth={1.5} aria-hidden="true" />
+                <span>{t('help', 'Help')}</span>
+              </button>
+            )}
 
-          {/* Help & Guidance */}
-          <button 
-            aria-label="Help Guide"
-            className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-sky-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-md" 
-            onClick={onOpenHelp}
-          >
-            <HelpCircle className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden md:inline">{t('help')}</span>
-          </button>
+            {/* Divider */}
+            <div style={{ width: 1, height: 20, background: 'var(--border-subtle)' }} aria-hidden="true" />
 
-          {/* Separator */}
-          <div className="w-[1px] h-4 bg-slate-200 hidden sm:block"></div>
+            {/* Language selector */}
+            <div ref={langRef} style={{ position: 'relative' }}>
+              <button
+                type="button"
+                className="lang-btn"
+                aria-label={`Change language, current: ${currentLangObj.label}`}
+                aria-expanded={isLangOpen}
+                aria-haspopup="listbox"
+                onClick={() => setIsLangOpen(p => !p)}
+              >
+                <Globe size={15} strokeWidth={1.5} aria-hidden="true" />
+                <span>{currentLangObj.native}</span>
+                <motion.span
+                  animate={{ rotate: isLangOpen ? 180 : 0 }}
+                  transition={{ duration: 0.18 }}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <ChevronDown size={13} strokeWidth={1.5} aria-hidden="true" />
+                </motion.span>
+              </button>
 
-          {/* Language Dropdown */}
-          <div className="relative">
-            <button 
-              aria-label={`Change Language, current is ${currentLangLabel}`}
-              className="flex items-center gap-2 text-[14px] font-medium text-slate-600 hover:text-sky-600 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-md"
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              aria-expanded={isLangOpen}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" x2="22" y1="12" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
-              <span>{currentLangLabel}</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
-            </button>
+              <AnimatePresence>
+                {isLangOpen && (
+                  <motion.div
+                    variants={dropdownVariants}
+                    initial="hidden" animate="visible" exit="exit"
+                    role="listbox"
+                    aria-label="Select language"
+                    style={{
+                      position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                      width: 220, background: 'white',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-lg)',
+                      boxShadow: 'var(--shadow-lg)',
+                      zIndex: 100, padding: 8,
+                    }}
+                  >
+                    {languages.map((l) => (
+                      <button
+                        key={l.code}
+                        type="button"
+                        role="option"
+                        aria-selected={lang === l.code}
+                        onClick={() => { setLang(l.code); setIsLangOpen(false); }}
+                        style={{
+                          width: '100%', textAlign: 'left',
+                          padding: '9px 12px', borderRadius: 'var(--radius-sm)',
+                          border: 'none', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          gap: 8, fontFamily: 'inherit',
+                          background: lang === l.code ? 'var(--primary-light)' : 'transparent',
+                          color: lang === l.code ? 'var(--primary)' : 'var(--text-secondary)',
+                          minHeight: 44,
+                        }}
+                      >
+                        <div>
+                          <div style={{ fontSize: '0.9375rem', fontWeight: 600 }}>{l.native}</div>
+                          <div style={{ fontSize: '0.75rem', opacity: 0.65 }}>{l.label}</div>
+                        </div>
+                        {lang === l.code && <Check size={15} strokeWidth={2.5} aria-hidden="true" />}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-            {isLangOpen && (
-              <div className="absolute top-full right-0 mt-3 w-60 min-w-[240px] bg-white border border-slate-200 rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] z-50 p-2">
-                <div className="flex flex-col gap-1">
-                  {languages.map((l) => (
+            {/* Divider */}
+            <div style={{ width: 1, height: 20, background: 'var(--border-subtle)' }} aria-hidden="true" />
+
+            {/* ── State selector ── */}
+            <div ref={stateRef} style={{ position: 'relative' }}>
+              <button
+                type="button"
+                className="lang-btn"
+                aria-label={selectedState ? `Selected state: ${selectedState}` : 'Select your state'}
+                aria-expanded={isStateOpen}
+                aria-haspopup="listbox"
+                onClick={() => setIsStateOpen(p => !p)}
+                title={selectedState || 'Select state'}
+                style={{
+                  maxWidth: 140,
+                  background: selectedState ? 'var(--primary-light)' : undefined,
+                  color: selectedState ? 'var(--primary)' : undefined,
+                  borderColor: selectedState ? 'var(--primary)' : undefined,
+                }}
+              >
+                <MapPin size={14} strokeWidth={1.75} aria-hidden="true" />
+                <span style={{ maxWidth: 88, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
+                  {selectedState || 'Select State'}
+                </span>
+                <motion.span
+                  animate={{ rotate: isStateOpen ? 180 : 0 }}
+                  transition={{ duration: 0.18 }}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <ChevronDown size={13} strokeWidth={1.5} aria-hidden="true" />
+                </motion.span>
+              </button>
+
+              <AnimatePresence>
+                {isStateOpen && (
+                  <motion.div
+                    variants={dropdownVariants}
+                    initial="hidden" animate="visible" exit="exit"
+                    role="listbox"
+                    aria-label="Select state"
+                    style={{
+                      position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                      width: 240, background: 'white',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-lg)',
+                      boxShadow: 'var(--shadow-lg)',
+                      zIndex: 100, padding: 8,
+                      maxHeight: 320, overflowY: 'auto',
+                    }}
+                  >
+                    {/* Clear option */}
                     <button
-                      key={l.code}
-                      className={`w-full text-left px-4 py-2.5 rounded-[var(--radius-md)] text-sm font-medium flex items-center justify-between transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 outline-none ${
-                        lang === l.code ? 'bg-sky-50 text-sky-700' : 'text-slate-700 hover:bg-slate-50'
-                      }`}
-                      onClick={() => {
-                        setLang(l.code);
-                        setIsLangOpen(false);
+                      type="button"
+                      role="option"
+                      aria-selected={!selectedState}
+                      onClick={() => { setSelectedState(''); setIsStateOpen(false); }}
+                      style={{
+                        width: '100%', textAlign: 'left',
+                        padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+                        border: 'none', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        gap: 8, fontFamily: 'inherit', fontSize: '0.875rem',
+                        background: !selectedState ? 'var(--primary-light)' : 'transparent',
+                        color: !selectedState ? 'var(--primary)' : 'var(--text-tertiary)',
+                        fontWeight: 500,
                       }}
-                      aria-pressed={lang === l.code}
                     >
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <span className="text-[14px] leading-tight truncate">{l.native}</span>
-                        <span className="text-[12px] opacity-70 leading-none truncate">{l.label}</span>
-                      </div>
-                      {lang === l.code && <Check className="w-4 h-4 shrink-0 ml-3" aria-hidden="true" />}
+                      All States
+                      {!selectedState && <Check size={14} strokeWidth={2.5} aria-hidden="true" />}
                     </button>
-                  ))}
-                </div>
+                    <div style={{ height: 1, background: 'var(--border-subtle)', margin: '4px 0' }} />
+                    {STATE_LIST.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        role="option"
+                        aria-selected={selectedState === s}
+                        onClick={() => { setSelectedState(s); setIsStateOpen(false); }}
+                        style={{
+                          width: '100%', textAlign: 'left',
+                          padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+                          border: 'none', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          gap: 8, fontFamily: 'inherit', fontSize: '0.875rem',
+                          background: selectedState === s ? 'var(--primary-light)' : 'transparent',
+                          color: selectedState === s ? 'var(--primary)' : 'var(--text-secondary)',
+                          fontWeight: selectedState === s ? 700 : 500,
+                          minHeight: 36,
+                        }}
+                      >
+                        {s}
+                        {selectedState === s && <Check size={13} strokeWidth={2.5} aria-hidden="true" />}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Divider */}
+            <div style={{ width: 1, height: 20, background: 'var(--border-subtle)' }} aria-hidden="true" />
+
+            {/* Doctor Portal / User menu */}
+            {isClinicianView ? (
+              <div ref={userMenuRef} style={{ position: 'relative' }}>
+                <button
+                  type="button"
+                  className="nav-item"
+                  aria-expanded={isUserMenuOpen}
+                  aria-haspopup="menu"
+                  onClick={() => setIsUserMenuOpen(p => !p)}
+                  style={{ gap: 8 }}
+                >
+                  <div style={{
+                    width: 28, height: 28, borderRadius: '50%',
+                    background: 'var(--primary-light)', color: 'var(--primary)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.8125rem', fontWeight: 800, flexShrink: 0,
+                  }}>
+                    {doctorName.charAt(0).toUpperCase()}
+                  </div>
+                  <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {doctorName.startsWith('Dr.') ? doctorName : `Dr. ${doctorName}`}
+                  </span>
+                  <ChevronDown size={13} strokeWidth={1.5} aria-hidden="true" />
+                </button>
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      variants={dropdownVariants}
+                      initial="hidden" animate="visible" exit="exit"
+                      role="menu"
+                      style={{
+                        position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                        width: 180, background: 'white',
+                        border: '1px solid var(--border-subtle)',
+                        borderRadius: 'var(--radius-lg)',
+                        boxShadow: 'var(--shadow-lg)',
+                        zIndex: 100, padding: 6,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={() => { setIsUserMenuOpen(false); onDoctorLogout?.(); }}
+                        style={{
+                          width: '100%', textAlign: 'left', padding: '10px 12px',
+                          borderRadius: 'var(--radius-sm)', border: 'none',
+                          display: 'flex', alignItems: 'center', gap: 8,
+                          color: '#dc2626', fontWeight: 600, fontSize: '0.9rem',
+                          cursor: 'pointer', background: 'transparent', fontFamily: 'inherit',
+                        }}
+                      >
+                        <LogOut size={15} strokeWidth={1.5} aria-hidden="true" />
+                        Sign out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+            ) : (
+              <button
+                type="button"
+                className="nav-clinician-btn"
+                onClick={() => navigate('doctor_portal')}
+                aria-label="Doctor Portal — clinician access"
+              >
+                <User size={15} strokeWidth={1.5} aria-hidden="true" />
+                <span>Doctor Portal</span>
+              </button>
             )}
           </div>
-        </nav>
+
+          {/* ── Mobile hamburger ── (CSS-controlled) */}
+          <button
+            ref={hamburgerRef}
+            type="button"
+            className="nav-mobile-btn"
+            aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileOpen}
+            aria-controls="mobile-drawer"
+            onClick={() => setIsMobileOpen(p => !p)}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {isMobileOpen
+                ? <motion.span key="x"   initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }} style={{ display: 'flex' }}><X    size={22} strokeWidth={2} aria-hidden="true" /></motion.span>
+                : <motion.span key="ham" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }} style={{ display: 'flex' }}><Menu size={22} strokeWidth={1.75} aria-hidden="true" /></motion.span>
+              }
+            </AnimatePresence>
+          </button>
+        </div>
       </header>
+
+      {/* ── Mobile Drawer ─────────────────────────────────────────── */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <>
+            <motion.div
+              className="drawer-backdrop"
+              variants={backdropVariants}
+              initial="hidden" animate="visible" exit="exit"
+              onClick={() => setIsMobileOpen(false)}
+              aria-hidden="true"
+            />
+            <motion.nav
+              id="mobile-drawer"
+              className="drawer-panel"
+              role="navigation"
+              aria-label="Mobile navigation"
+              variants={drawerVariants}
+              initial="hidden" animate="visible" exit="exit"
+            >
+              {/* Drawer header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
+                <img src="/aarogyanetra_logo.svg" alt="AarogyaNetra" style={{ height: 32 }} onError={e => e.target.style.display = 'none'} />
+                <button type="button" className="nav-mobile-btn" onClick={() => setIsMobileOpen(false)} aria-label="Close menu">
+                  <X size={20} strokeWidth={2} />
+                </button>
+              </div>
+
+              {/* Nav items */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                {navItems.map(({ view, label, icon: Icon }, i) => (
+                  <motion.button
+                    key={label}
+                    type="button"
+                    custom={i} variants={itemVariants} initial="hidden" animate="visible"
+                    className={`nav-item${isActive(view) ? ' active' : ''}`}
+                    aria-current={isActive(view) ? 'page' : undefined}
+                    onClick={() => navigate(view)}
+                    style={{
+                      width: '100%', textAlign: 'left', justifyContent: 'flex-start',
+                      padding: '12px 16px', fontSize: '1rem',
+                      background: isActive(view) ? 'var(--primary-light)' : undefined,
+                    }}
+                  >
+                    <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+                    {label}
+                  </motion.button>
+                ))}
+
+                {!isClinicianView && (
+                  <motion.button
+                    type="button"
+                    custom={navItems.length} variants={itemVariants} initial="hidden" animate="visible"
+                    className="nav-item"
+                    onClick={() => { setIsMobileOpen(false); onOpenHelp?.(); }}
+                    style={{ width: '100%', textAlign: 'left', justifyContent: 'flex-start', padding: '12px 16px', fontSize: '1rem' }}
+                  >
+                    <HelpCircle size={20} strokeWidth={1.5} aria-hidden="true" />
+                    {t('help', 'Help')}
+                  </motion.button>
+                )}
+
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '12px 0' }} />
+
+                {isClinicianView ? (
+                  <motion.button
+                    type="button"
+                    custom={navItems.length + 1} variants={itemVariants} initial="hidden" animate="visible"
+                    onClick={() => { setIsMobileOpen(false); onDoctorLogout?.(); }}
+                    style={{
+                      width: '100%', textAlign: 'left', justifyContent: 'flex-start',
+                      padding: '12px 16px', fontSize: '1rem',
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      color: '#dc2626', fontWeight: 600, background: 'transparent',
+                      border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    <LogOut size={20} strokeWidth={1.5} aria-hidden="true" />
+                    Sign out
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    type="button"
+                    custom={navItems.length + 1} variants={itemVariants} initial="hidden" animate="visible"
+                    className="nav-clinician-btn"
+                    onClick={() => navigate('doctor_portal')}
+                    style={{ width: '100%', justifyContent: 'center', padding: '12px 16px' }}
+                  >
+                    <User size={18} strokeWidth={1.5} aria-hidden="true" />
+                    Doctor Portal
+                  </motion.button>
+                )}
+              </div>
+
+              {/* State selector in drawer */}
+              <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' }}>
+                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <MapPin size={12} aria-hidden="true" /> Select State
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedState('')}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+                    background: !selectedState ? 'var(--primary-light)' : 'transparent',
+                    color: !selectedState ? 'var(--primary)' : 'var(--text-secondary)',
+                    fontWeight: 500, fontSize: '0.875rem',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', marginBottom: 2,
+                  }}
+                >
+                  All States
+                  {!selectedState && <Check size={13} aria-hidden="true" />}
+                </button>
+                {STATE_LIST.map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => { setSelectedState(s); setIsMobileOpen(false); }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '7px 12px', borderRadius: 'var(--radius-sm)',
+                      background: selectedState === s ? 'var(--primary-light)' : 'transparent',
+                      color: selectedState === s ? 'var(--primary)' : 'var(--text-secondary)',
+                      fontWeight: selectedState === s ? 700 : 500,
+                      fontSize: '0.875rem', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    {s} {selectedState === s && <Check size={13} aria-hidden="true" />}
+                  </button>
+                ))}
+              </div>
+
+              {/* Language at bottom */}
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' }}>
+                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
+                  Language
+                </p>
+                {languages.map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => { setLang(l.code); setIsMobileOpen(false); }}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+                      background: lang === l.code ? 'var(--primary-light)' : 'transparent',
+                      color: lang === l.code ? 'var(--primary)' : 'var(--text-secondary)',
+                      fontWeight: lang === l.code ? 700 : 500,
+                      fontSize: '0.9rem', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    <span>{l.native} <span style={{ opacity: 0.6, fontSize: '0.8rem' }}>({l.label})</span></span>
+                    {lang === l.code && <Check size={14} aria-hidden="true" />}
+                  </button>
+                ))}
+              </div>
+            </motion.nav>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

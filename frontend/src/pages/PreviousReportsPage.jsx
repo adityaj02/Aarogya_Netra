@@ -183,7 +183,7 @@ export default function PreviousReportsPage({ onSelectReport, onBack }) {
                       <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-main)' }}>
                         {rep.patient?.name || 'Anonymous Patient'}
                       </div>
-                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                         <span>ID: {rep.id}</span>
                         <span>•</span>
                         <span>{rep.date}</span>
@@ -191,6 +191,14 @@ export default function PreviousReportsPage({ onSelectReport, onBack }) {
                           <>
                             <span>•</span>
                             <span style={{ fontWeight: 600, color: '#991b1b' }}>{t(rep.severityKey)}</span>
+                          </>
+                        )}
+                        {rep.referral_hospital && (
+                          <>
+                            <span>•</span>
+                            <span style={{ fontWeight: 600, color: '#1d4ed8', background: '#eff6ff', padding: '1px 6px', borderRadius: 4, border: '1px solid #bfdbfe' }}>
+                              Referred: {rep.referral_hospital}
+                            </span>
                           </>
                         )}
                       </div>

@@ -321,7 +321,7 @@ def get_reports(db: Session = Depends(get_db)):
     reports = db.query(ScreeningReport).all()
     out = []
     for r in reports:
-        out.append({
+        report_data = {
             "id": r.id,
             "date": r.date,
             "patient": {
@@ -343,7 +343,18 @@ def get_reports(db: Session = Depends(get_db)):
             "imageData": r.image_path,
             "heatmapDataUrl": r.heatmap_path,
             "iqaPassed": r.iqa_passed
-        })
+        }
+        try:
+            feedbacks = feedback_service.get_feedback_by_report(r.id)
+            if feedbacks:
+                latest = feedbacks[0]
+                if getattr(latest, "referral_hospital", None):
+                    report_data["referral_hospital"] = latest.referral_hospital
+                if getattr(latest, "referral_state", None):
+                    report_data["referral_state"] = latest.referral_state
+        except Exception:
+            pass # Fail gracefully if mongo is down
+        out.append(report_data)
     return out
 
 @app.post("/api/feedback")

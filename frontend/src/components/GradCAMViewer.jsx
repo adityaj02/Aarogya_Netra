@@ -1,207 +1,185 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Layers, Eye, Flame, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+const TABS = [
+  { id: 'original', icon: Eye,    labelKey: 'viewOriginal', label: 'Original' },
+  { id: 'heatmap',  icon: Flame,  labelKey: 'viewHeatmap',  label: 'Heatmap' },
+  { id: 'overlay',  icon: Layers, labelKey: 'viewOverlay',  label: 'Overlay' },
+];
+
 export default function GradCAMViewer({ originalSrc, heatmapSrc, overlaySrc }) {
-  const [activeTab, setActiveTab] = useState('overlay'); // 'original', 'heatmap', 'overlay'
-  const [opacity, setOpacity] = useState(0.75);
+  const [activeTab, setActiveTab] = useState('overlay');
+  const [opacity, setOpacity]     = useState(0.75);
   const { t } = useLanguage();
 
+  const activeSrc = {
+    original: originalSrc,
+    heatmap:  heatmapSrc || originalSrc,
+    overlay:  null, // handled separately
+  };
+
   return (
-    <div className="gradcam-container" style={{ marginTop: '16px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Flame size={20} style={{ color: '#ea580c' }} aria-hidden="true" />
-          {t('gradcamTitle')}
+    <div style={{ padding: '20px 20px 16px' }}>
+      {/* Section heading */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <Flame size={18} style={{ color: '#ea580c', flexShrink: 0 }} aria-hidden="true" />
+        <h3 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-main)' }}>
+          {t('gradcamTitle', 'AI Attention Map (Grad-CAM)')}
         </h3>
       </div>
-
-      <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-        {t('gradcamSubtitle')}
+      <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', lineHeight: 1.5, marginBottom: 14 }}>
+        {t('gradcamSubtitle', 'Highlights the retinal regions the AI focused on when making its decision.')}
       </p>
 
-      {/* Tabs - Segmented Control */}
-      <div 
-        role="tablist" 
-        aria-label="Visualizations"
+      {/* Tabs — with Framer Motion layoutId indicator */}
+      <div
+        role="tablist"
+        aria-label="Image view modes"
         style={{
           display: 'flex',
           background: 'var(--surface-muted)',
-          padding: '4px',
-          borderRadius: 'var(--radius-sm)',
-          gap: '4px',
-          marginBottom: '16px',
-          border: '1px solid var(--border-subtle)'
-        }}
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'original'}
-          onClick={() => setActiveTab('original')}
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: 'var(--radius-sm)',
-            border: 'none',
-            background: activeTab === 'original' ? 'var(--surface-default)' : 'transparent',
-            boxShadow: activeTab === 'original' ? 'var(--shadow-sm)' : 'none',
-            color: activeTab === 'original' ? 'var(--text-main)' : 'var(--text-muted)',
-            fontWeight: activeTab === 'original' ? 600 : 500,
-            fontSize: '0.85rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <Eye size={15} />
-          {t('viewOriginal')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'heatmap'}
-          onClick={() => setActiveTab('heatmap')}
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: 'var(--radius-sm)',
-            border: 'none',
-            background: activeTab === 'heatmap' ? 'var(--surface-default)' : 'transparent',
-            boxShadow: activeTab === 'heatmap' ? 'var(--shadow-sm)' : 'none',
-            color: activeTab === 'heatmap' ? 'var(--text-main)' : 'var(--text-muted)',
-            fontWeight: activeTab === 'heatmap' ? 600 : 500,
-            fontSize: '0.85rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <Flame size={15} />
-          {t('viewHeatmap')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'overlay'}
-          onClick={() => setActiveTab('overlay')}
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: 'var(--radius-sm)',
-            border: 'none',
-            background: activeTab === 'overlay' ? 'var(--surface-default)' : 'transparent',
-            boxShadow: activeTab === 'overlay' ? 'var(--shadow-sm)' : 'none',
-            color: activeTab === 'overlay' ? 'var(--text-main)' : 'var(--text-muted)',
-            fontWeight: activeTab === 'overlay' ? 600 : 500,
-            fontSize: '0.85rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <Layers size={15} />
-          {t('viewOverlay')}
-        </button>
-      </div>
-
-      {/* Display Box */}
-      <div
-        className="preview-container"
-        style={{
+          padding: 4, borderRadius: 'var(--radius-sm)',
+          gap: 4, marginBottom: 14,
+          border: '1px solid var(--border-subtle)',
           position: 'relative',
-          backgroundColor: '#09090b',
-          aspectRatio: '1/1',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
         }}
       >
-        {activeTab === 'original' && (
-          <img src={originalSrc} alt="Retinal Fundus Original" className="preview-img" />
-        )}
-
-        {activeTab === 'heatmap' && (
-          <img src={heatmapSrc || originalSrc} alt="Grad-CAM Attention Heatmap" className="preview-img" />
-        )}
-
-        {activeTab === 'overlay' && (
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            {/* Base Image */}
-            <img
-              src={originalSrc}
-              alt="Retinal Base"
-              className="preview-img"
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-            />
-            {/* Heatmap Overlay with dynamic opacity */}
-            <img
-              src={heatmapSrc || overlaySrc}
-              alt="AI Attention Overlay"
-              className="preview-img"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: opacity,
-                mixBlendMode: 'screen',
-                pointerEvents: 'none'
-              }}
-            />
-          </div>
-        )}
+        {TABS.map(({ id, icon: Icon, labelKey, label }) => {
+          const isActive = activeTab === id;
+          return (
+            <div key={id} style={{ position: 'relative', flex: 1 }}>
+              {isActive && (
+                <motion.div
+                  layoutId="gradcam-tab-bg"
+                  style={{
+                    position: 'absolute', inset: 0,
+                    background: 'white',
+                    borderRadius: 'calc(var(--radius-sm) - 2px)',
+                    boxShadow: 'var(--shadow-sm)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                id={`tab-${id}`}
+                aria-controls={`tabpanel-${id}`}
+                onClick={() => setActiveTab(id)}
+                style={{
+                  position: 'relative', zIndex: 1,
+                  width: '100%', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', gap: 5,
+                  padding: '7px 8px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: isActive ? 'var(--primary)' : 'var(--text-secondary)',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: '0.8125rem',
+                  cursor: 'pointer',
+                  borderRadius: 'calc(var(--radius-sm) - 2px)',
+                  fontFamily: 'inherit',
+                  transition: 'color 0.15s ease',
+                  minHeight: 36,
+                }}
+              >
+                <Icon size={14} strokeWidth={isActive ? 2.5 : 1.75} aria-hidden="true" />
+                {t(labelKey, label)}
+              </button>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Opacity slider for overlay mode */}
-      {activeTab === 'overlay' && (
-        <div className="opacity-slider-wrapper">
-          <label htmlFor="overlay-slider" style={{ whiteSpace: 'nowrap' }}>
-            {t('overlayOpacity')}:
-          </label>
-          <input
-            id="overlay-slider"
-            type="range"
-            min="0.2"
-            max="1.0"
-            step="0.05"
-            value={opacity}
-            onChange={(e) => setOpacity(parseFloat(e.target.value))}
-            className="opacity-slider"
-            aria-label={t('overlayOpacity')}
-          />
-          <span style={{ minWidth: '36px', textAlign: 'right', fontWeight: 600 }}>
-            {Math.round(opacity * 100)}%
-          </span>
-        </div>
-      )}
-
-      {/* SRS Mandatory Safety Disclaimer */}
+      {/* Image display with AnimatePresence crossfade */}
       <div
+        role="tabpanel"
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
         style={{
-          marginTop: '12px',
-          padding: '10px 14px',
-          background: 'var(--surface-subtle)',
-          borderRadius: 'var(--radius-sm)',
-          fontSize: '0.85rem',
-          color: 'var(--text-muted)',
-          display: 'flex',
-          gap: '8px',
-          alignItems: 'flex-start'
+          position: 'relative', width: '100%', aspectRatio: '1/1',
+          background: '#09090b', borderRadius: 'var(--radius-md)',
+          overflow: 'hidden',
         }}
       >
-        <AlertCircle size={16} style={{ color: 'var(--primary)', flexShrink: 0, marginTop: '2px' }} aria-hidden="true" />
-        <span>{t('gradcamDisclaimer')}</span>
+        <AnimatePresence mode="wait" initial={false}>
+          {activeTab === 'overlay' ? (
+            <motion.div
+              key="overlay"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ position: 'absolute', inset: 0 }}
+            >
+              <img
+                src={originalSrc}
+                alt="Retinal fundus — original"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              <img
+                src={heatmapSrc || overlaySrc}
+                alt="Grad-CAM AI attention overlay"
+                style={{
+                  position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+                  opacity, mixBlendMode: 'screen', pointerEvents: 'none',
+                  transition: 'opacity 0.1s ease',
+                }}
+              />
+            </motion.div>
+          ) : (
+            <motion.img
+              key={activeTab}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              src={activeSrc[activeTab]}
+              alt={activeTab === 'original' ? 'Retinal fundus — original' : 'Grad-CAM attention heatmap'}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Opacity slider (only for overlay) */}
+      <AnimatePresence>
+        {activeTab === 'overlay' && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18 }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="opacity-slider-wrapper">
+              <label htmlFor="overlay-slider" style={{ whiteSpace: 'nowrap', fontSize: '0.8125rem', fontWeight: 600 }}>
+                {t('overlayOpacity', 'Overlay')}:
+              </label>
+              <input
+                id="overlay-slider"
+                type="range"
+                min="0.1" max="1.0" step="0.05"
+                value={opacity}
+                onChange={e => setOpacity(parseFloat(e.target.value))}
+                className="opacity-slider"
+                aria-label={`Heatmap overlay opacity: ${Math.round(opacity * 100)}%`}
+              />
+              <span style={{ minWidth: 38, textAlign: 'right', fontWeight: 700, fontSize: '0.875rem', color: 'var(--primary)' }}>
+                {Math.round(opacity * 100)}%
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Clinical disclaimer */}
+      <div style={{
+        marginTop: 12, padding: '8px 12px',
+        background: 'var(--surface-muted)', borderRadius: 'var(--radius-sm)',
+        fontSize: '0.75rem', color: 'var(--text-tertiary)',
+        display: 'flex', gap: 7, alignItems: 'flex-start',
+        border: '1px solid var(--border-subtle)',
+      }}>
+        <AlertCircle size={13} style={{ color: 'var(--primary)', flexShrink: 0, marginTop: 1 }} aria-hidden="true" />
+        <span>{t('gradcamDisclaimer', 'Highlighted areas indicate model attention — not confirmed pathology markers.')}</span>
       </div>
     </div>
   );

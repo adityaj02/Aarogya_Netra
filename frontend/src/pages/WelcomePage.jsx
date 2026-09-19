@@ -1,258 +1,271 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Zap, ShieldCheck, Users, Loader2, BarChart2, Image, Lock, Building2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function WelcomePage({ onStartScreening, onViewReports, onOpenHelp }) {
+const features = [
+  {
+    icon: Zap,
+    label: 'Fast & Simple',
+    sub: 'Upload a fundus image and get AI results in under 30 seconds.',
+  },
+  {
+    icon: ShieldCheck,
+    label: 'AI-Powered DR Detection',
+    sub: 'Trained on 88,000+ retinal images. Validated on diverse clinical datasets.',
+  },
+  {
+    icon: Users,
+    label: 'Clinician Support',
+    sub: 'Results are reviewed by ophthalmologists via the Doctor Portal.',
+  },
+];
+
+export default function WelcomePage({ onStartScreening }) {
   const { t } = useLanguage();
   const [isStarting, setIsStarting] = useState(false);
 
   const handleStart = () => {
+    if (isStarting) return;
     setIsStarting(true);
-    setTimeout(() => {
-      onStartScreening();
-    }, 400);
+    setTimeout(() => { onStartScreening(); }, 300);
   };
 
   return (
-    <div style={{
-      minHeight: 'calc(100vh - 68px)',
-      background: 'linear-gradient(135deg, #ebf5ff 0%, #e8f4fd 40%, #ddeeff 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* Background mesh orbs */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '8%', left: '6%', width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(circle, rgba(186,224,253,0.7) 0%, transparent 70%)', filter: 'blur(40px)' }} />
-        <div style={{ position: 'absolute', top: '15%', right: '5%', width: 380, height: 380, borderRadius: '50%', background: 'radial-gradient(circle, rgba(193,226,255,0.6) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        <div style={{ position: 'absolute', bottom: '10%', right: '12%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(180,218,255,0.5) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+    <div
+      style={{
+        flex: 1,
+        background: 'linear-gradient(145deg, #eef5ff 0%, #e8f4fd 50%, #ddeeff 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ── Ambient background blobs (aria-hidden, no pointer events) ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', inset: 0,
+          pointerEvents: 'none', overflow: 'hidden', zIndex: 0,
+        }}
+      >
+        <div style={{ position: 'absolute', top: '5%',  left: '3%',  width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(circle, rgba(186,224,253,0.65) 0%, transparent 70%)', filter: 'blur(50px)' }} />
+        <div style={{ position: 'absolute', top: '20%', right: '4%', width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(circle, rgba(190,210,255,0.55) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', bottom: '8%', left: '40%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(180,240,255,0.4) 0%, transparent 70%)', filter: 'blur(50px)' }} />
       </div>
 
-      {/* Main Grid */}
-      <div style={{
-        flex: 1,
-        maxWidth: 1280,
-        width: '100%',
-        margin: '0 auto',
-        padding: '40px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        zIndex: 1,
-      }}>
+      {/* ── Decorative retina graphic (desktop only, purely visual) ── */}
+      <div aria-hidden="true" className="welcome-retina-deco retina-pulse">
+        <div style={{ width: 340, height: 340, borderRadius: '50%', overflow: 'hidden' }}>
+          <svg width="340" height="340" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="rg1" cx="60%" cy="52%" r="55%">
+                <stop offset="0%"   stopColor="#ffecba"/>
+                <stop offset="18%"  stopColor="#f8a26c"/>
+                <stop offset="42%"  stopColor="#c95542"/>
+                <stop offset="70%"  stopColor="#692233"/>
+                <stop offset="100%" stopColor="#2a0d1e"/>
+              </radialGradient>
+              <radialGradient id="rg2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"   stopColor="#fff"    stopOpacity="1"/>
+                <stop offset="35%"  stopColor="#fff2b3" stopOpacity="0.9"/>
+                <stop offset="70%"  stopColor="#ff9944" stopOpacity="0.5"/>
+                <stop offset="100%" stopColor="#b0312d" stopOpacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect fill="url(#rg1)" width="400" height="400"/>
+            <g opacity="0.8" stroke="#96152a" strokeLinecap="round">
+              <path d="M 230 200 C 235 170, 245 130, 280 90"  fill="none" strokeWidth="4"/>
+              <path d="M 225 195 C 210 150, 180 110, 140 75"  fill="none" strokeWidth="3.5"/>
+              <path d="M 230 215 C 240 250, 260 290, 300 330" fill="none" strokeWidth="4"/>
+              <path d="M 225 215 C 205 260, 175 300, 130 335" fill="none" strokeWidth="3.5"/>
+            </g>
+            <circle cx="225" cy="205" fill="url(#rg2)" r="38"/>
+            <ellipse cx="227" cy="205" fill="#fff" opacity="0.85" rx="18" ry="24"/>
+          </svg>
+        </div>
+      </div>
 
-        {/* ── Center Card ── */}
-        <section style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <div style={{
-            width: '100%',
-            maxWidth: 640,
-            background: 'rgba(255,255,255,0.78)',
+      {/* ── Main scrollable content ── */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '48px 24px 56px',
+          position: 'relative',
+          zIndex: 1,         /* above ambient blobs */
+          gap: 32,
+          width: '100%',
+          maxWidth: 'var(--page-max-width)',
+          margin: '0 auto',
+        }}
+      >
+        {/* ── Hero Card ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          aria-labelledby="hero-heading"
+          style={{
+            width: '100%', maxWidth: 560,
+            background: 'rgba(255,255,255,0.88)',
             backdropFilter: 'blur(32px)',
             WebkitBackdropFilter: 'blur(32px)',
-            border: '1px solid rgba(255,255,255,0.92)',
-            borderRadius: 36,
-            boxShadow: '0 30px 80px -15px rgba(52,111,170,0.22), 0 0 0 1px rgba(255,255,255,0.8) inset',
-            padding: '40px 40px 36px',
-            position: 'relative',
-            overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.95)',
+            borderRadius: 28,
+            boxShadow: '0 24px 64px -12px rgba(52,111,170,0.18), 0 0 0 1px rgba(255,255,255,0.8) inset',
+            padding: '40px 36px 32px',
+          }}
+        >
+          {/* Logo */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+            <img
+              src="/aarogyanetra_logo.svg"
+              alt="AarogyaNetra"
+              style={{ height: 90, width: 'auto', objectFit: 'contain', maxWidth: 280 }}
+            />
+          </div>
+
+          {/* Hero text */}
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <h1
+              id="hero-heading"
+              style={{
+                fontSize: 'clamp(1.55rem, 3vw, 2rem)',
+                fontWeight: 800, color: '#0f172a',
+                lineHeight: 1.2, letterSpacing: '-0.02em', marginBottom: 10,
+              }}
+            >
+              {t('heroTitle', 'AI-Powered Diabetic Retinopathy Screening')}
+            </h1>
+            <p style={{ fontSize: '1rem', color: '#475569', lineHeight: 1.6, maxWidth: 420, margin: '0 auto' }}>
+              {t('heroSubtitle', 'Early detection for better outcomes. Upload a fundus image — get results in seconds.')}
+            </p>
+          </div>
+
+          {/* CTA */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 24 }}>
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.97 }}
+              onClick={handleStart}
+              disabled={isStarting}
+              style={{
+                width: '100%', maxWidth: 240,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                padding: '14px 24px',
+                borderRadius: 'var(--radius-md)',
+                border: 'none', cursor: isStarting ? 'wait' : 'pointer',
+                background: 'linear-gradient(135deg, #0284c7, #0ea5e9)',
+                color: 'white', fontWeight: 700, fontSize: '1rem',
+                boxShadow: '0 8px 24px -4px rgba(2,132,199,0.4)',
+                minHeight: 48, fontFamily: 'inherit',
+              }}
+            >
+              {isStarting ? (
+                <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true" /><span>Starting…</span></>
+              ) : (
+                <><span>{t('startScreening', 'Start Screening')}</span><ArrowRight size={18} aria-hidden="true" /></>
+              )}
+            </motion.button>
+
+            <p style={{ fontSize: '0.8125rem', color: '#64748b', textAlign: 'center' }}>
+              Upload a retinal fundus photo to begin
+            </p>
+          </div>
+
+          {/* Single in-card disclaimer */}
+          <div style={{
+            background: '#fffbeb', border: '1px solid #fde68a',
+            borderRadius: 'var(--radius-md)', padding: '10px 14px',
+            display: 'flex', gap: 10, alignItems: 'flex-start',
           }}>
-            {/* Subtle inner gradient orbs */}
-            <div style={{ position: 'absolute', top: -96, left: -96, width: 208, height: 208, borderRadius: '50%', background: 'rgba(186,224,253,0.4)', filter: 'blur(32px)', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', bottom: -80, right: -80, width: 192, height: 192, borderRadius: '50%', background: 'rgba(190,214,255,0.35)', filter: 'blur(32px)', pointerEvents: 'none' }} />
-
-            {/* Logo Badge */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', marginBottom: 24 }}>
-              <img 
-                src="/aarogyanetra_logo.svg" 
-                alt="AarogyaNetra" 
-                style={{ 
-                  width: 320, 
-                  height: 120, 
-                  objectFit: 'contain',
-                }} 
-              />
-            </div>
-            
-            {/* Title / Subtitle */}
-            <div style={{ textAlign: 'center', marginBottom: 32 }}>
-              <h1 style={{
-                fontSize: 'clamp(28px, 3vw, 40px)',
-                fontWeight: 800,
-                color: '#0f172a',
-                lineHeight: 1.2,
-                letterSpacing: '-0.02em',
-                margin: '0 0 8px 0',
-              }}>
-                For Healthier Eyes Tomorrow
-              </h1>
-              <p style={{ margin: 0, color: '#334155', fontWeight: 500, fontSize: 16 }}>
-                Early detection. Better outcomes. Brighter lives.
-              </p>
-            </div>
-
-            {/* Feature Trio */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 32 }}>
-              {[
-                { label: 'Fast & Simple', sub: 'Upload and get results', icon: (
-                  <svg style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.3" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-                )},
-                { label: 'AI-Powered', sub: 'Trained for DR screening', icon: (
-                  <svg style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></svg>
-                )},
-                { label: 'Clinician Support', sub: 'For better care decisions', icon: (
-                  <svg style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>
-                )},
-              ].map(({ label, sub, icon }) => (
-                <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px 8px', borderRadius: 'var(--radius-lg)', textAlign: 'center', background: 'rgba(241, 245, 249, 0.6)' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: '#e0f2fe', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, boxShadow: 'var(--shadow-sm)' }}>
-                    {icon}
-                  </div>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>{label}</span>
-                  <span style={{ fontSize: 11, color: '#475569', marginTop: 4, lineHeight: 1.3, fontWeight: 500 }}>{sub}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA Button */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-              <button
-                onClick={handleStart}
-                type="button"
-                className={`welcome-start-btn ${isStarting ? 'active' : ''}`}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-                  padding: '16px 24px', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer',
-                  background: 'linear-gradient(90deg, #0284c7, #0ea5e9)',
-                  color: '#fff', fontWeight: 700, fontSize: '1.05rem',
-                  boxShadow: 'var(--shadow-md)',
-                  transition: 'all 0.2s ease',
-                  transform: isStarting ? 'translateY(1px)' : 'translateY(0)',
-                }}
-                onMouseEnter={e => { if(!isStarting) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.filter = 'brightness(0.94)'; } }}
-                onMouseLeave={e => { if(!isStarting) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.filter = 'brightness(1)'; } }}
-              >
-                {isStarting ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Starting...</span>
-                  </>
-                ) : (
-                  <>
-                    <span style={{ letterSpacing: '0.02em' }}>{t('startScreening')}</span>
-                    <svg style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <line x1="5" x2="19" y1="12" y2="12" /><polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </>
-                )}
-              </button>
-              <p style={{ textAlign: 'center', fontSize: 13, color: '#475569', fontWeight: 500, margin: 0 }}>
-                Upload a retinal fundus image to begin
-              </p>
-            </div>
-
-            {/* Disclaimer */}
-            <div style={{
-              borderRadius: 'var(--radius-lg)', background: 'var(--outcome-warning-bg)', border: '1px solid var(--outcome-warning-border)',
-              padding: '16px', display: 'flex', alignItems: 'flex-start', gap: 14,
-            }}>
-              <div style={{ flexShrink: 0, width: 24, height: 24, color: 'var(--warning)', marginTop: -2 }}>
-                <svg style={{ width: '100%', height: '100%' }} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-              </div>
-              <div style={{ fontSize: 13, lineHeight: 1.5, color: '#78350f' }}>
-                <span style={{ fontWeight: 700, color: '#451a03', display: 'block' }}>AI-assisted screening support only.</span>
-                <span style={{ fontWeight: 500 }}>Results should be reviewed by an appropriate healthcare professional when indicated.</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Background Ambient Retina Graphic ── */}
-        <div aria-hidden="true" className="hidden lg:block" style={{
-          position: 'absolute',
-          right: '5%',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: -1,
-          opacity: 0.35,
-          pointerEvents: 'none'
-        }}>
-          {/* Fundus graphic container */}
-          <div style={{ position: 'relative', width: 400, height: 400 }}>
-            <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: 'radial-gradient(circle, transparent 60%, var(--bg-app) 100%)', zIndex: 1 }} />
-            {/* Fundus disc */}
-            <div className="retina-pulse" style={{
-              position: 'absolute', inset: 0,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.35)',
-              overflow: 'hidden',
-            }}>
-              <svg style={{ width: '100%', height: '100%', borderRadius: '50%' }} preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <radialGradient id="rg1" cx="60%" cy="52%" r="55%"><stop offset="0%" stopColor="#ffecba"/><stop offset="18%" stopColor="#f8a26c"/><stop offset="42%" stopColor="#c95542"/><stop offset="70%" stopColor="#692233"/><stop offset="100%" stopColor="#2a0d1e"/></radialGradient>
-                  <radialGradient id="rg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#fff" stopOpacity="1"/><stop offset="35%" stopColor="#fff2b3" stopOpacity="0.9"/><stop offset="70%" stopColor="#ff9944" stopOpacity="0.5"/><stop offset="100%" stopColor="#b0312d" stopOpacity="0"/></radialGradient>
-                  <radialGradient id="rg3" cx="30%" cy="25%" r="50%"><stop offset="0%" stopColor="#fff" stopOpacity="0.35"/><stop offset="60%" stopColor="#fff" stopOpacity="0"/></radialGradient>
-                </defs>
-                <rect fill="url(#rg1)" width="400" height="400"/>
-                <g opacity="0.85" stroke="#96152a" strokeLinecap="round">
-                  <path d="M 230 200 C 235 170, 245 130, 280 90 C 305 60, 340 50, 380 40" fill="none" strokeWidth="4.5"/>
-                  <path d="M 270 105 C 295 115, 330 115, 365 125" fill="none" strokeWidth="2.5"/>
-                  <path d="M 245 140 C 275 145, 310 160, 350 170" fill="none" strokeWidth="2"/>
-                  <path d="M 225 195 C 210 150, 180 110, 140 75 C 105 45, 70 40, 25 35" fill="none" strokeWidth="4"/>
-                  <path d="M 175 115 C 145 125, 110 135, 60 140" fill="none" strokeWidth="2"/>
-                  <path d="M 195 140 C 160 160, 120 180, 50 190" fill="none" strokeWidth="2.5"/>
-                  <path d="M 230 215 C 240 250, 260 290, 300 330 C 330 360, 365 375, 395 385" fill="none" strokeWidth="4.2"/>
-                  <path d="M 225 215 C 205 260, 175 300, 130 335 C 95 365, 55 375, 15 380" fill="none" strokeWidth="3.8"/>
-                </g>
-                <g opacity="0.75" stroke="#ff6b6b" strokeLinecap="round">
-                  <circle cx="280" cy="205" fill="#ff4d4d" opacity="0.6" r="3"/>
-                  <circle cx="265" cy="185" fill="#ff8585" opacity="0.7" r="2"/>
-                  <circle cx="295" cy="225" fill="#e03131" opacity="0.6" r="2.5"/>
-                </g>
-                <circle cx="225" cy="205" fill="url(#rg2)" r="38"/>
-                <ellipse cx="227" cy="205" fill="#fff" opacity="0.8" rx="18" ry="24"/>
-                <circle cx="200" cy="200" fill="url(#rg3)" r="198"/>
-                <circle cx="200" cy="200" fill="none" opacity="0.3" r="140" stroke="#fff" strokeDasharray="4 6" strokeWidth="0.8"/>
-                <circle cx="200" cy="200" fill="none" opacity="0.4" r="80" stroke="#38bdf8" strokeWidth="0.7"/>
-              </svg>
-            </div>
-            {/* Scanner arc */}
-            <div style={{ position: 'absolute', right: -8, top: '25%', width: 48, height: 96, borderRight: '4px solid rgba(56,189,248,0.75)', borderRadius: '0 9999px 9999px 0' }} />
-          </div>
-        </div>
-      </div>
-
-      {/* Footer bar */}
-      <footer style={{
-        position: 'relative', zIndex: 1,
-        maxWidth: 1280, width: '100%', margin: '0 auto',
-        padding: '16px 24px 20px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderTop: '1px solid rgba(148,188,220,0.3)',
-        flexWrap: 'wrap', gap: 12,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--surface-muted)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
-            <svg style={{ width: 20, height: 20 }} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <svg aria-hidden="true" style={{ width: 18, height: 18, flexShrink: 0, color: '#d97706', marginTop: 1 }} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
+            <p style={{ fontSize: '0.8125rem', color: '#92400e', lineHeight: 1.5, margin: 0 }}>
+              <strong>AI-assisted screening only.</strong>{' '}
+              Results must be reviewed by a qualified healthcare professional before any clinical decision.
+            </p>
           </div>
-          <div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', display: 'block' }}>Trusted AI Support</span>
-            <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>Screen • Detect • Care</span>
-          </div>
-        </div>
-        <p className="hidden sm:block" style={{ margin: 0, fontSize: 13, fontStyle: 'italic', fontWeight: 500, color: 'var(--text-tertiary)' }}>
-          "Clearer insights for a healthier tomorrow"
-        </p>
-      </footer>
+        </motion.section>
+
+        {/* ── Feature Cards ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            width: '100%', maxWidth: 820,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 16,
+          }}
+        >
+          {features.map(({ icon: Icon, label, sub }, i) => (
+            <motion.div
+              key={label}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: 'rgba(255,255,255,0.75)',
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255,255,255,0.92)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '20px',
+                display: 'flex', flexDirection: 'column', gap: 10,
+              }}
+            >
+              <div style={{
+                width: 44, height: 44, borderRadius: 'var(--radius-md)',
+                background: '#e0f2fe', color: '#0284c7',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Icon size={20} strokeWidth={1.75} aria-hidden="true" />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>{label}</h3>
+                <p style={{ fontSize: '0.8125rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>{sub}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* ── Trust signals (SVG icons, no emojis) ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.45, duration: 0.4 }}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}
+        >
+          {[
+            { icon: BarChart2, text: 'Model v2.1' },
+            { icon: Image,     text: 'Trained on 88,000+ images' },
+            { icon: Lock,      text: 'Data stays on device' },
+            { icon: Building2, text: 'Built for rural healthcare' },
+          ].map(({ icon: Icon, text }) => (
+            <span
+              key={text}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                background: 'rgba(255,255,255,0.72)', padding: '5px 14px',
+                borderRadius: 999, border: '1px solid rgba(255,255,255,0.9)',
+                fontSize: '0.8rem', color: '#475569', fontWeight: 500,
+              }}
+            >
+              <Icon size={13} strokeWidth={2} aria-hidden="true" style={{ color: '#0284c7', flexShrink: 0 }} />
+              {text}
+            </span>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }

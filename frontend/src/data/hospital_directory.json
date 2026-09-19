@@ -1,0 +1,2054 @@
+{
+  "Jharkhand": [
+    {
+      "id": "JHA-001",
+      "name": "LokNayak JayPrakash Eye Hospital, Bahera",
+      "branch": "Bahera (Ashram), Chouparan",
+      "address": "Bahera (Ashram), Chouparan, Hazaribagh, Jharkhand",
+      "district": "Hazaribagh",
+      "ownership": "NGO / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "JHA-002",
+      "name": "LokNayak JayPrakash Eye Hospital, Dumka",
+      "branch": "Dumka",
+      "address": "Jail Road, near Central Jail, Dumka, Jharkhand",
+      "district": "Dumka",
+      "ownership": "NGO / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "JHA-003",
+      "name": "Vimla Ramkrishna Bajaj Eye Hospital",
+      "branch": "Deoghar",
+      "address": "Deoghar, Jharkhand",
+      "district": "Deoghar",
+      "ownership": "NGO / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "JHA-004",
+      "name": "Nayi Roshni Eye Hospital",
+      "branch": "Meral, Garhwa",
+      "address": "Main Road, Meral, Garhwa, Jharkhand - 822133",
+      "district": "Garhwa",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "JHA-005",
+      "name": "Nayandeep Eye Hospital",
+      "branch": "Dhanbad",
+      "address": "Near Bhuliopre/Bhuiphore Mandir, Tundi-Govindpur-Dhanbad Road, Dhanbad, Jharkhand - 828109",
+      "district": "Dhanbad",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "JHA-006",
+      "name": "Kashyap Memorial Eye Hospital",
+      "branch": "Ranchi",
+      "address": "Dangratoli Chowk, Purulia Road, Ranchi - 834001, Jharkhand",
+      "district": "Ranchi",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved catchment"
+    },
+    {
+      "id": "JHA-007",
+      "name": "Purnima Netralaya",
+      "branch": "Tamolia",
+      "address": "Brahmananda Nagar, Village Tamolia, Saraikela Kharsawan / Jamshedpur, Jharkhand - 831012",
+      "district": "Saraikela Kharsawan",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / village catchment"
+    },
+    {
+      "id": "JHA-008",
+      "name": "Prakash Eye Care",
+      "branch": "Rehla, Palamu",
+      "address": "New Colony, Rehla, Palamu, Jharkhand - 822132/822124",
+      "district": "Palamu",
+      "ownership": "Private",
+      "facility_type": "Eye Care Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "JHA-009",
+      "name": "Netra Jyoti Hospital",
+      "branch": "Hisra Barwadih, Palamu",
+      "address": "Hisra Barwadih, Palamu, Jharkhand - 822123",
+      "district": "Palamu",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "JHA-010",
+      "name": "Akarshi Eye Hospital",
+      "branch": "Palamu",
+      "address": "Palamu district, Jharkhand",
+      "district": "Palamu",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "JHA-011",
+      "name": "Upkar Eye Hospital",
+      "branch": "Chandwa, Latehar",
+      "address": "Chandwa, Latehar, Jharkhand",
+      "district": "Latehar",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "JHA-012",
+      "name": "Purnima Netralaya",
+      "branch": "Adityapur",
+      "address": "3rd Floor, Umesh Tower, Opposite AIADA, Adityapur, Saraikela Kharsawan, Jharkhand",
+      "district": "Saraikela Kharsawan",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "Semi-urban regional catchment"
+    },
+    {
+      "id": "JHA-013",
+      "name": "Purnima Netralaya",
+      "branch": "Kadma",
+      "address": "Brahmlok, Air Base Colony, Kadma, Jamshedpur, Jharkhand",
+      "district": "East Singhbhum",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "Regional catchment"
+    },
+    {
+      "id": "JHA-014",
+      "name": "Purnima Netralaya",
+      "branch": "Jugsalai",
+      "address": "Station Road, Chowk Bazar, Jugsalai, Jamshedpur, Jharkhand - 831006",
+      "district": "East Singhbhum",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "Regional catchment"
+    },
+    {
+      "id": "JHA-015",
+      "name": "Purnima Netralaya",
+      "branch": "Sakchi",
+      "address": "SNP Area, Ambagan, Sakchi, Jamshedpur, Jharkhand - 831001",
+      "district": "East Singhbhum",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "Regional catchment"
+    },
+    {
+      "id": "JHA-016",
+      "name": "Trinetram Eye Hospital",
+      "branch": "Adityapur",
+      "address": "3rd Floor, Dayal Trade Centre, Shea-E-Punjab, Adityapur, Saraikela-Kharsawan, Jharkhand 831013",
+      "district": "Saraikela Kharsawan",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / regional"
+    },
+    {
+      "id": "JHA-017",
+      "name": "IRIS Superspeciality Eye Care Centre",
+      "branch": "Ranchi",
+      "address": "Line Tank Road, Back Side of Hotel Lelac, Ranchi, Jharkhand 834001",
+      "district": "Ranchi",
+      "ownership": "Private",
+      "facility_type": "Eye Centre",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "JHA-018",
+      "name": "Third Eye Clinic",
+      "branch": "Irba",
+      "address": "NH-33, Near Madarsa, Irba, Opp. New Medanta Building, Ranchi, Jharkhand 835219",
+      "district": "Ranchi",
+      "ownership": "Private",
+      "facility_type": "Eye Clinic",
+      "area_type": "Semi-rural"
+    },
+    {
+      "id": "JHA-019",
+      "name": "Sarada Netralaya & Maternity Centre",
+      "branch": "Jamshedpur",
+      "address": "Swastik Ambika Tower, H.No.-33, Near HDFC Bank, New Baradwari, Sakchi, Jamshedpur, Jharkhand 831001",
+      "district": "East Singhbhum",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital / Centre",
+      "area_type": "Urban / regional"
+    }
+  ],
+  "Bihar": [
+    {
+      "id": "BIH-001",
+      "name": "LokNayak JayPrakash Eye Hospital, Gaya",
+      "branch": "Kajha, Gaya",
+      "address": "Kajha, Gaya, Bihar",
+      "district": "Gaya",
+      "ownership": "NGO / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "BIH-002",
+      "name": "Akhand Jyoti Eye Hospital",
+      "branch": "Mastichak",
+      "address": "Shrirameshpuram, Mastichak, Saran, Bihar - 841219",
+      "district": "Saran",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "BIH-003",
+      "name": "Akhand Jyoti Eye Hospital",
+      "branch": "Purnia",
+      "address": "Purnia - Srinagar Road, Tara Nagar, Jageli, Purnia, Bihar - 854304",
+      "district": "Purnia",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "BIH-004",
+      "name": "Akhand Jyoti Eye Hospital",
+      "branch": "Dalsinghsarai",
+      "address": "Dalsinghsarai, Samastipur, Bihar",
+      "district": "Samastipur",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-urban"
+    },
+    {
+      "id": "BIH-005",
+      "name": "Akhand Jyoti Eye Hospital",
+      "branch": "Patna",
+      "address": "Patna, Bihar",
+      "district": "Patna",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Underserved catchment"
+    },
+    {
+      "id": "BIH-006",
+      "name": "Sharp Sight Eye Hospital",
+      "branch": "Patna",
+      "address": "Patna, Bihar",
+      "district": "Patna",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "BIH-007",
+      "name": "Bright Sight Eye Hospital",
+      "branch": "Patna",
+      "address": "26B Saket, 2nd Floor, Besides Disha Deaddiction Center, New Patliputra Colony, Patna, Bihar 800013",
+      "district": "Patna",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "BIH-008",
+      "name": "Banka Eye Hospital and Dental Care Centre",
+      "branch": "Patna",
+      "address": "Opp. P. Loyola School, Kurji, Patna, Bihar 800010",
+      "district": "Patna",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital & Dental Centre",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "BIH-009",
+      "name": "Drishtipunj Eye Hospital Pvt Ltd",
+      "branch": "Patna",
+      "address": "North of Rupaspur Nahar Overbridge, near Ishan International Girls School, Ramjaipal Nagar, Patna, Bihar 801503",
+      "district": "Patna",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "BIH-010",
+      "name": "Sarvdrishti Eye Hospital Pvt Ltd",
+      "branch": "Patna",
+      "address": "Near IC Honda, Rukanpura, Patna, Bihar 800014",
+      "district": "Patna",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "BIH-011",
+      "name": "Akhand Jyoti Eye Hospital – Mastichak",
+      "branch": "Mastichak",
+      "address": "Shrirameshpuram, Mastichak, Saran, Bihar 841219",
+      "district": "Saran",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional"
+    },
+    {
+      "id": "BIH-012",
+      "name": "Akhand Jyoti Eye Hospital – Purnia",
+      "branch": "Purnia",
+      "address": "Purnia, Bihar",
+      "district": "Purnia",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional"
+    },
+    {
+      "id": "BIH-013",
+      "name": "Akhand Jyoti Eye Hospital – Dalsinghsarai",
+      "branch": "Dalsinghsarai",
+      "address": "Dalsinghsarai, Samastipur, Bihar",
+      "district": "Samastipur",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional"
+    },
+    {
+      "id": "BIH-014",
+      "name": "Loknayak Jaiprakash Eye Hospital – Gaya",
+      "branch": "Gaya",
+      "address": "Gaya, Bihar",
+      "district": "Gaya",
+      "ownership": "Charitable / NGO",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional"
+    }
+  ],
+  "Uttar Pradesh": [
+    {
+      "id": "UTT-001",
+      "name": "Akhand Jyoti Eye Hospital",
+      "branch": "Ballia",
+      "address": "Ballia, Uttar Pradesh",
+      "district": "Ballia",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "UTT-002",
+      "name": "Singh Eye Care Hospital",
+      "branch": "Jagdishpur / Amethi",
+      "address": "Sambhai Chauraha, Gauriganj Road, Jagdishpur, Amethi, Uttar Pradesh - 227801",
+      "district": "Amethi",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "UTT-003",
+      "name": "Shaktipeeth Eye Hospital",
+      "branch": "Ballia",
+      "address": "Opposite Ramshala, Chitabdanga (Patel Nagar), Ballia, Uttar Pradesh",
+      "district": "Ballia",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "UTT-004",
+      "name": "C.L. Gupta Eye Institute",
+      "branch": "Moradabad",
+      "address": "Ram Ganga Vihar Phase-II, Moradabad, Uttar Pradesh - 244001",
+      "district": "Moradabad",
+      "ownership": "Charitable Foundation",
+      "facility_type": "Eye Institute / Hospital",
+      "area_type": "Underserved regional hub"
+    },
+    {
+      "id": "UTT-005",
+      "name": "Sankara Eye Hospital",
+      "branch": "Kanpur",
+      "address": "Village Panau Purwa, Amiliha, Post Tatyaganj, Kanpur Nagar, Uttar Pradesh - 209217",
+      "district": "Kanpur Nagar",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / peri-rural"
+    },
+    {
+      "id": "UTT-006",
+      "name": "Sankara Eye Hospital",
+      "branch": "Varanasi",
+      "address": "Madhopur, Pindra, Varanasi, Uttar Pradesh - 221003",
+      "district": "Varanasi",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / peri-rural"
+    },
+    {
+      "id": "UTT-007",
+      "name": "Indira Gandhi Eye Hospital & Research Centre",
+      "branch": "Munshiganj, Amethi",
+      "address": "Munshiganj, Amethi, Uttar Pradesh",
+      "district": "Amethi",
+      "ownership": "Charitable Trust",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "UTT-008",
+      "name": "Indira Gandhi Eye Hospital & Research Centre",
+      "branch": "Raebareli",
+      "address": "Raebareli, Uttar Pradesh",
+      "district": "Raebareli",
+      "ownership": "Charitable Trust",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Rural / underserved catchment"
+    },
+    {
+      "id": "UTT-009",
+      "name": "Indira Gandhi Eye Hospital & Research Centre",
+      "branch": "Fursatganj",
+      "address": "Fursatganj, Amethi district, Uttar Pradesh",
+      "district": "Amethi",
+      "ownership": "Charitable Trust",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Rural / underserved catchment"
+    },
+    {
+      "id": "UTT-010",
+      "name": "Sankara Eye Hospital - Kanpur",
+      "branch": "Kanpur",
+      "address": "Village Panau Purwa, Amiliha, Post Tatyaganj, Kanpur Nagar 209217, Uttar Pradesh",
+      "district": "Kanpur Nagar",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "UTT-011",
+      "name": "Sitapur Eye Hospital - Gorakhpur Branch",
+      "branch": "Gorakhpur",
+      "address": "Park Road, Gorakhpur, Uttar Pradesh",
+      "district": "Gorakhpur",
+      "ownership": "Charitable trust / Sitapur Eye Hospital network",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "District / rural catchment"
+    },
+    {
+      "id": "UTT-012",
+      "name": "AIIMS Gorakhpur - Ophthalmology",
+      "branch": "Gorakhpur",
+      "address": "Kunraghat, Gorakhpur, Uttar Pradesh 273008",
+      "district": "Gorakhpur",
+      "ownership": "Government institute",
+      "facility_type": "Ophthalmology Department",
+      "area_type": "Regional / rural outreach"
+    },
+    {
+      "id": "UTT-013",
+      "name": "Sitapur Eye Hospital – Lucknow",
+      "branch": "Lucknow",
+      "address": "11/19, Vikas Nagar, Lucknow, Uttar Pradesh 226022",
+      "district": "Lucknow",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional referral"
+    },
+    {
+      "id": "UTT-014",
+      "name": "Sitapur Eye Hospital – Sitapur",
+      "branch": "Sitapur",
+      "address": "Sitapur, Uttar Pradesh",
+      "district": "Sitapur",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district"
+    },
+    {
+      "id": "UTT-015",
+      "name": "CL Gupta Eye Institute – Amroha Vision Centre / Eye Care",
+      "branch": "Amroha",
+      "address": "Amroha, Uttar Pradesh",
+      "district": "Amroha",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital / Vision Centre",
+      "area_type": "Rural / district"
+    },
+    {
+      "id": "UTT-016",
+      "name": "Nirmal Eye Hospital",
+      "branch": "Ayodhya",
+      "address": "Ayodhya, Uttar Pradesh",
+      "district": "Ayodhya",
+      "ownership": "Private / charitable eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / regional"
+    },
+    {
+      "id": "UTT-017",
+      "name": "Sankara Eye Hospital – Kanpur Dehat / rural outreach",
+      "branch": "Kanpur Dehat",
+      "address": "Kanpur Dehat district, Uttar Pradesh",
+      "district": "Kanpur Dehat",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital / Outreach",
+      "area_type": "Rural"
+    }
+  ],
+  "Madhya Pradesh": [
+    {
+      "id": "MAD-001",
+      "name": "Sadguru Netra Chikitsalaya",
+      "branch": "Chitrakoot / Jankikund",
+      "address": "Jankikund, Chitrakoot, Satna district, Madhya Pradesh - 210204",
+      "district": "Satna",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / remote"
+    },
+    {
+      "id": "MAD-002",
+      "name": "Sadguru Sankalp Netra Chikitsalaya",
+      "branch": "Anandpur",
+      "address": "Tehsil Lateri, Anandpur, District Vidisha, Madhya Pradesh - 464112",
+      "district": "Vidisha",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / remote"
+    },
+    {
+      "id": "MAD-003",
+      "name": "Sight Care Eye Hospital",
+      "branch": "Gwalior",
+      "address": "118 Kailash Vihar, near Income Tax Office, Gwalior, Madhya Pradesh 474003",
+      "district": "Gwalior",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "MAD-004",
+      "name": "Sadguru Sankalp Netra Chikitsalaya",
+      "branch": "Anandpur, Vidisha",
+      "address": "Anandpur, Tehsil Lateri, District Vidisha 464112, Madhya Pradesh",
+      "district": "Vidisha",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / remote"
+    },
+    {
+      "id": "MAD-005",
+      "name": "Sewa Sadan Eye Hospital",
+      "branch": "Bhopal",
+      "address": "Behind Civil Hospital, Sant Hirdaram Nagar, Bairagarh, Bhopal, Madhya Pradesh 462030",
+      "district": "Bhopal",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional catchment"
+    },
+    {
+      "id": "MAD-006",
+      "name": "ASG Eye Hospital – Shivaji Nagar",
+      "branch": "Bhopal",
+      "address": "Mahadev Commercial Complex, Shivaji Nagar, Bhopal, Madhya Pradesh 462016",
+      "district": "Bhopal",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "MAD-007",
+      "name": "ASG Eye Hospital – Koh-e-Fiza",
+      "branch": "Bhopal",
+      "address": "A/6, Housing Board Colony, Koh-e-Fiza, Bhopal, Madhya Pradesh 462001",
+      "district": "Bhopal",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "MAD-008",
+      "name": "ASG Eye Hospital – City Center",
+      "branch": "Gwalior",
+      "address": "Nigotia Tower, C-1 City Centre, in front of Hotel Central Park, Gwalior, Madhya Pradesh 474002",
+      "district": "Gwalior",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "MAD-009",
+      "name": "ASG Eye Hospital – Mahatma Gandhi Road",
+      "branch": "Indore",
+      "address": "Embassy Tower, Plot No. 9/1/3, Mahatma Gandhi Road, near Treasure Island Mall, Indore, Madhya Pradesh",
+      "district": "Indore",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "MAD-010",
+      "name": "ASG Eye Hospital – Shastri Bridge",
+      "branch": "Jabalpur",
+      "address": "124, Napier Town, near Shastri Bridge, Jabalpur, Madhya Pradesh 482001",
+      "district": "Jabalpur",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "MAD-011",
+      "name": "ASG Eye Hospital – Englishpura",
+      "branch": "Sehore",
+      "address": "Plot No. 33, 38/3, 38/4, Sheet No. 122, Englishpura, Sehore, Madhya Pradesh 466001",
+      "district": "Sehore",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / semi-rural catchment"
+    },
+    {
+      "id": "MAD-012",
+      "name": "ASG Eye Hospital – Subhash Nagar",
+      "branch": "Ujjain",
+      "address": "D R Plaza, 1st & 2nd floor, Sanwer Road, Subhash Nagar, Ujjain, Madhya Pradesh 456010",
+      "district": "Ujjain",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional catchment"
+    },
+    {
+      "id": "MAD-013",
+      "name": "Dr Agarwal's Eye Hospital – Ashta",
+      "branch": "Ashta",
+      "address": "Ward No. 16, Maa Kamla Devi Palace, Bajrang Colony, Kannod Road, near Soni Lodge, Ashta, Sehore, Madhya Pradesh 466116",
+      "district": "Sehore",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / district catchment"
+    },
+    {
+      "id": "MAD-014",
+      "name": "Gomabai Netralaya",
+      "branch": "Neemuch",
+      "address": "Gomabai Marg, Vikas Nagar, Neemuch, Madhya Pradesh 458441",
+      "district": "Neemuch",
+      "ownership": "Trust-run eye institute",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional catchment"
+    },
+    {
+      "id": "MAD-015",
+      "name": "Saraswati Eye Hospital and Research Centre",
+      "branch": "Barwani",
+      "address": "Khargone–Barwani Highway, Barwani, Madhya Pradesh 451551",
+      "district": "Barwani",
+      "ownership": "Private regional eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal regional catchment"
+    },
+    {
+      "id": "MAD-016",
+      "name": "Kamla Eye Day Care Centre",
+      "branch": "Ratlam",
+      "address": "100, Gali No. 1, Shrimalivas, Bohra Baakhal, Ratlam, Madhya Pradesh 457001",
+      "district": "Ratlam",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional catchment"
+    },
+    {
+      "id": "MAD-017",
+      "name": "Roshani Eye Hospital – Dewas",
+      "branch": "Dewas",
+      "address": "Icon Building, 3-A Kalyani Bag, A.B. Road, Dewas City, Madhya Pradesh 455001",
+      "district": "Dewas",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / semi-rural catchment"
+    },
+    {
+      "id": "MAD-018",
+      "name": "Contacare Eye Hospital – Chhindwara",
+      "branch": "Chhindwara",
+      "address": "Opposite Kundipura Thana & near Petrol Pump, Chhindwara City, Chhindwara, Madhya Pradesh",
+      "district": "Chhindwara",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional catchment"
+    }
+  ],
+  "Maharashtra": [
+    {
+      "id": "MAH-001",
+      "name": "PBMA's Kanta Laxmi Shah Eye Hospital",
+      "branch": "Nandurbar",
+      "address": "Hole Tarfe Haveli, Near Gurukul Nagar, Shahada Bypass Road, Nandurbar, Maharashtra - 425412",
+      "district": "Nandurbar",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Tribal / rural"
+    },
+    {
+      "id": "MAH-002",
+      "name": "Aurangabad Chikalthana Lions Eye Hospital",
+      "branch": "Chikalthana / CIDCO",
+      "address": "N-1, Town Center, Near Radha Krishna Temple, CIDCO, Aurangabad, Maharashtra 431003",
+      "district": "Chhatrapati Sambhajinagar",
+      "ownership": "Lions charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved catchment"
+    },
+    {
+      "id": "MAH-003",
+      "name": "PBMA H.V. Desai Eye Hospital - Nandurbar",
+      "branch": "Nandurbar",
+      "address": "Hole Tarfe Haveli, Near Gurukul Nagar, Shahada Bypass Road, Nandurbar 425412, Maharashtra",
+      "district": "Nandurbar",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    },
+    {
+      "id": "MAH-004",
+      "name": "H.V. Desai Eye Hospital",
+      "branch": "Hadapsar, Pune",
+      "address": "93, Tarawade Vasti, Hadapsar, Pune 411028, Maharashtra",
+      "district": "Pune",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved Maharashtra"
+    },
+    {
+      "id": "MAH-005",
+      "name": "PBMA H.V. Desai Eye Hospital - Solapur",
+      "branch": "Solapur",
+      "address": "Shankar Sheth Sable Eye Hospital, Solapur, Maharashtra",
+      "district": "Solapur",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved Maharashtra"
+    },
+    {
+      "id": "MAH-006",
+      "name": "Shree Bhausaheb Hire Government Medical College & Hospital - Ophthalmology",
+      "branch": "Dhule",
+      "address": "Chakkarbardi, Dhule, Maharashtra",
+      "district": "Dhule",
+      "ownership": "Government",
+      "facility_type": "Ophthalmology Department / Eye Hospital",
+      "area_type": "Regional / tribal catchment"
+    },
+    {
+      "id": "MAH-007",
+      "name": "Vivekanand Eye Hospital",
+      "branch": "Dhule",
+      "address": "11, Jai Hind College Road, Mayur Colony, Deopur, Dhule, Maharashtra 424002",
+      "district": "Dhule",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional catchment"
+    },
+    {
+      "id": "MAH-008",
+      "name": "PBMA's H. V. Desai Eye Hospital – Kanta Laxmi Shah Eye Hospital",
+      "branch": "Nandurbar",
+      "address": "Nandurbar, Maharashtra",
+      "district": "Nandurbar",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    },
+    {
+      "id": "MAH-009",
+      "name": "PBMA's H. V. Desai Eye Hospital – Shankar Sheth Sable Eye Hospital",
+      "branch": "Solapur",
+      "address": "Solapur, Maharashtra",
+      "district": "Solapur",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional"
+    },
+    {
+      "id": "MAH-010",
+      "name": "Shri Ganapati Nethralaya",
+      "branch": "Deulgaon Raja",
+      "address": "Deulgaon Raja–Mantha Road, near Janta High School, Jalna, Maharashtra 431203",
+      "district": "Buldhana",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / district catchment"
+    },
+    {
+      "id": "MAH-011",
+      "name": "Shree Netralaya (Rahata-Shirdi) Eye Hospital",
+      "branch": "Rahata",
+      "address": "Near Rural Hospital, next to Kanade Hospital, Rahata, Maharashtra 423107",
+      "district": "Ahmednagar",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural"
+    }
+  ],
+  "Punjab": [
+    {
+      "id": "PUN-001",
+      "name": "Sankara Eye Hospital",
+      "branch": "Ludhiana",
+      "address": "Village Bhanohar, Post Dhaka, Ludhiana, Punjab - 141101",
+      "district": "Ludhiana",
+      "ownership": "Charitable Trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / peri-rural"
+    },
+    {
+      "id": "PUN-002",
+      "name": "Bajwa Eye Hospital",
+      "branch": "Batala",
+      "address": "Batala, Gurdaspur, Punjab",
+      "district": "Gurdaspur",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / regional catchment"
+    },
+    {
+      "id": "PUN-003",
+      "name": "Dr. Om Parkash Eye Institute",
+      "branch": "Tarn Taran",
+      "address": "Sarhali Road, near Sokhi Tent House, Tarn Taran Sahib, Punjab 143401",
+      "district": "Tarn Taran",
+      "ownership": "Private",
+      "facility_type": "Eye Institute",
+      "area_type": "Rural / regional catchment"
+    },
+    {
+      "id": "PUN-004",
+      "name": "Sankara Eye Hospital",
+      "branch": "Ludhiana",
+      "address": "Village Bhanohar, Post Dhaka, Ferozepur-Ludhiana Road, Ludhiana 141102",
+      "district": "Ludhiana",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "PUN-005",
+      "name": "Mata Amar Kaur Vivek Charitable Eye Hospital",
+      "branch": "Jaitu",
+      "address": "Chaina Road, Jaitu, Faridkot, Punjab 151202",
+      "district": "Faridkot",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / charitable"
+    },
+    {
+      "id": "PUN-006",
+      "name": "Mata Amar Kaur Charitable Eye Hospital – Mallewala",
+      "branch": "Mallewala",
+      "address": "Village Mallewala, District Faridkot, Punjab",
+      "district": "Faridkot",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / village"
+    },
+    {
+      "id": "PUN-007",
+      "name": "Shri Krishna Netralaya and Dantalaya",
+      "branch": "Nangal",
+      "address": "NH-503, Village Brahmpur, Nangal, Rupnagar, Punjab 140125",
+      "district": "Rupnagar",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-rural"
+    },
+    {
+      "id": "PUN-008",
+      "name": "JP Eye Hospital",
+      "branch": "Mohali",
+      "address": "#35, Phase VIII, Mohali, Punjab 160062",
+      "district": "SAS Nagar",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban / regional referral"
+    },
+    {
+      "id": "PUN-009",
+      "name": "Deep Eye Hospital",
+      "branch": "Hoshiarpur",
+      "address": "Tagore Nagar, Hoshiarpur, Punjab 146001",
+      "district": "Hoshiarpur",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional"
+    },
+    {
+      "id": "PUN-010",
+      "name": "Sethi Eye Hospital",
+      "branch": "Bathinda",
+      "address": "Bathinda, Punjab",
+      "district": "Bathinda",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional"
+    }
+  ],
+  "Andhra Pradesh": [
+    {
+      "id": "AND-001",
+      "name": "Sankar Foundation Eye Hospital & Institute",
+      "branch": "Vepagunta",
+      "address": "19-50, Sai Madhava Nagar, NaiduThota, Vepagunta, Visakhapatnam, Andhra Pradesh - 530047",
+      "district": "Visakhapatnam",
+      "ownership": "Public Charitable Trust",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Peri-urban / rural outreach hub"
+    },
+    {
+      "id": "AND-002",
+      "name": "Sankar Foundation Eye Hospital",
+      "branch": "Srikakulam",
+      "address": "Paidi Srinivasa Complex, Near Simha Dwaram, Venkatapuram Village, Fareedpeta Post, Srikakulam, Andhra Pradesh - 532410",
+      "district": "Srikakulam",
+      "ownership": "Public Charitable Trust",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / semi-rural"
+    },
+    {
+      "id": "AND-003",
+      "name": "Dr Kommareddy Raja Ram Mohan Rao Eye Centre",
+      "branch": "Gudavalli",
+      "address": "Beside Vanaja Chandra Public School, Gudavalli village, Cherukupalli Mandal, Bapatla, Andhra Pradesh - 522259",
+      "district": "Bapatla",
+      "ownership": "Non-profit / Eye-care Institute",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural"
+    },
+    {
+      "id": "AND-004",
+      "name": "Godavarthi Satyanarayana Murthy Eye Centre",
+      "branch": "Kapileswarapuram",
+      "address": "Opp. Andhra Bank, Kapileswarapuram, Dr B R Ambedkar Konaseema District, Andhra Pradesh - 533238",
+      "district": "Konaseema",
+      "ownership": "Non-profit / Eye-care Institute",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural"
+    },
+    {
+      "id": "AND-005",
+      "name": "Venkata Lakshmi Eye Centre",
+      "branch": "Karamchedu",
+      "address": "Karamchedu Village & Mandal, Bapatla, Andhra Pradesh 523168",
+      "district": "Bapatla",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / village"
+    },
+    {
+      "id": "AND-006",
+      "name": "V C Parekh Eye Centre",
+      "branch": "Madanapalle",
+      "address": "Bangalore Road, Madanapalle, Annamayya, Andhra Pradesh 517325",
+      "district": "Annamayya",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "AND-007",
+      "name": "Neelakantapuram Shantha & Jayaram Eye Centre",
+      "branch": "Neelakantapuram",
+      "address": "Neelakantapuram village, Madakasira Mandal, Sri Satya Sai District, Andhra Pradesh",
+      "district": "Sri Satya Sai",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / village"
+    },
+    {
+      "id": "AND-008",
+      "name": "Swarna Bharat Eye Centre",
+      "branch": "Venkatachalam",
+      "address": "Swarna Bharat Campus, Venkatachalam, SPS Nellore, Andhra Pradesh 524320",
+      "district": "SPS Nellore",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / mandal catchment"
+    },
+    {
+      "id": "AND-009",
+      "name": "Smt. Rajeswari Ramakrishnan Lions Eye Hospital",
+      "branch": "Nidadavole",
+      "address": "Gandhi Nagar, Nidadavole 534301, East Godavari, Andhra Pradesh",
+      "district": "East Godavari",
+      "ownership": "Lions charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal catchment"
+    },
+    {
+      "id": "AND-010",
+      "name": "Sankara Eye Hospital",
+      "branch": "Guntur",
+      "address": "Pedakakani, Guntur, Andhra Pradesh 522509",
+      "district": "Guntur",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "AND-011",
+      "name": "Sankara Foundation Eye Hospital",
+      "branch": "Srikakulam",
+      "address": "Paidi Srinivasa Complex, Near Simha Dwaram, Venkatapuram Village, Fareedpeta Post, Srikakulam 532410, Andhra Pradesh",
+      "district": "Srikakulam",
+      "ownership": "Trust / charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    }
+  ],
+  "Tamil Nadu": [
+    {
+      "id": "TAM-001",
+      "name": "Aravind Eye Hospital",
+      "branch": "Kovilpatti",
+      "address": "4/897, Puthu Appaneri, Thiruvengadam Main Road, G V N College Post, Kovilpatti, Tamil Nadu",
+      "district": "Thoothukudi",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Semi-rural"
+    },
+    {
+      "id": "TAM-002",
+      "name": "Aravind Eye Hospital",
+      "branch": "Chengalpattu",
+      "address": "19, Devadoss Street, Vedhachalam Nagar, Chengalpattu, Tamil Nadu - 603001",
+      "district": "Chengalpattu",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Semi-rural"
+    },
+    {
+      "id": "TAM-003",
+      "name": "Aravind Eye Hospital",
+      "branch": "Salem",
+      "address": "65/1A & 1B, Salem-Coimbatore National Highway, Near Karaburanathar Shivan Temple, Uthamacholapuram Village, Veerapandi Block, Salem East Taluk, Salem - 636010, Tamil Nadu",
+      "district": "Salem",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Rural / agricultural catchment"
+    },
+    {
+      "id": "TAM-004",
+      "name": "Aravind Eye Hospital",
+      "branch": "Theni",
+      "address": "371, Periyakulam Road, Theni - 625531, Tamil Nadu",
+      "district": "Theni",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / agricultural catchment"
+    },
+    {
+      "id": "TAM-005",
+      "name": "Aravind Eye Hospital",
+      "branch": "Tirunelveli",
+      "address": "S.N. High Road, Tirunelveli Junction, Tamil Nadu - 627001",
+      "district": "Tirunelveli",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / agricultural catchment"
+    },
+    {
+      "id": "TAM-006",
+      "name": "Aravind Eye Hospital",
+      "branch": "Tuticorin",
+      "address": "No. 37, Meenakshipuram West, Near Old Bus Stand, Tuticorin - 628002, Tamil Nadu",
+      "district": "Thoothukudi",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / coastal catchment"
+    },
+    {
+      "id": "TAM-007",
+      "name": "Aravind Eye Hospital",
+      "branch": "Thanjavur",
+      "address": "Kalaignar Nagar Road, New Bus Stand Backside, Thanjavur - 613004, Tamil Nadu",
+      "district": "Thanjavur",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Rural / agricultural catchment"
+    },
+    {
+      "id": "TAM-008",
+      "name": "Aravind Eye Hospital",
+      "branch": "Tirupur",
+      "address": "Opp. Vivekananda Matriculation Higher Secondary School, Dharapuram Main Road, K. Chettipalayam Post, Tirupur - 641608, Tamil Nadu",
+      "district": "Tiruppur",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / rural catchment"
+    },
+    {
+      "id": "TAM-009",
+      "name": "Aravind Eye Hospital",
+      "branch": "Udumalpet",
+      "address": "112, Dhalli Road, Opp. Palaniandavar Mills, Udumalpet - 642126, Tamil Nadu",
+      "district": "Tiruppur",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural catchment"
+    },
+    {
+      "id": "TAM-010",
+      "name": "Aravind Eye Hospital",
+      "branch": "Dindigul",
+      "address": "Thadicombu Road, Dindigul, Tamil Nadu",
+      "district": "Dindigul",
+      "ownership": "Non-profit / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural catchment"
+    },
+    {
+      "id": "TAM-011",
+      "name": "Sankara Eye Hospital",
+      "branch": "Kanchipuram",
+      "address": "Pillayarpalayam, Kanchipuram, Tamil Nadu",
+      "district": "Kanchipuram",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "TAM-012",
+      "name": "Aravind Eye Hospital",
+      "branch": "Salem",
+      "address": "65/1A & 1B, Salem-Coimbatore NH, near Karaburanathar Shivan Temple, Uthamacholapuram Village, Veerapandi Block, Salem 636010",
+      "district": "Salem",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment Tamil Nadu"
+    }
+  ],
+  "Haryana": [
+    {
+      "id": "HAR-001",
+      "name": "Krishna Eye Hospital",
+      "branch": "Charkhi Dadri",
+      "address": "Old Jhajjar Road, Charkhi Dadri, Haryana",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "HAR-002",
+      "name": "Krishna Eye Hospital",
+      "branch": "Narnaul",
+      "address": "Baba Kheta Nath Complex, Mahendragarh Road, Narnaul, Haryana",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "HAR-003",
+      "name": "Krishna Eye Hospital",
+      "branch": "Mahendergarh",
+      "address": "Near ASD Academy, College Road, Mahendergarh, Haryana",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "HAR-004",
+      "name": "Krishna Eye Hospital",
+      "branch": "Rewari",
+      "address": "Kanina Road, Rewari, Haryana",
+      "district": "Rewari",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-rural catchment"
+    },
+    {
+      "id": "HAR-005",
+      "name": "Krishna Eye Hospital",
+      "branch": "Kosli",
+      "address": "Tehsil Road, Kosli, Haryana",
+      "district": "Kosli",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "HAR-006",
+      "name": "Netrum Eye Hospital",
+      "branch": "Rewari",
+      "address": "19-20, Model Town, Bawal Road, Rewari, Haryana",
+      "district": "Rewari",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-rural catchment"
+    },
+    {
+      "id": "HAR-007",
+      "name": "Eye-Q Super Speciality Eye Hospital",
+      "branch": "Rewari",
+      "address": "Circular Road, Near Chowk, Ambedkar Chowk, Garhi Bolni, Rewari, Haryana",
+      "district": "Rewari",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-rural catchment"
+    },
+    {
+      "id": "HAR-008",
+      "name": "Govind Netralaya",
+      "branch": "Mahendragarh",
+      "address": "Narnaul–Mahendragarh Road, Sainipura, Mahendragarh, Haryana",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / semi-rural"
+    },
+    {
+      "id": "HAR-009",
+      "name": "Indira Gandhi Eye Hospital & Research Centre",
+      "branch": "Sohna",
+      "address": "Sohna, Gurugram district, Haryana",
+      "district": "Gurugram",
+      "ownership": "Charitable Trust",
+      "facility_type": "Secondary Eye Hospital",
+      "area_type": "Rural / underserved catchment"
+    }
+  ],
+  "Rajasthan": [
+    {
+      "id": "RAJ-001",
+      "name": "Devilal Memorial Eye Hospital",
+      "branch": "Chomu",
+      "address": "Railway Station Road, Chomu, Jaipur, Rajasthan",
+      "district": "",
+      "ownership": "Private / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / peri-rural"
+    },
+    {
+      "id": "RAJ-002",
+      "name": "Devilal Memorial Eye Hospital",
+      "branch": "Renwal",
+      "address": "Shriram Plaza, Near Maheshwari Dharamshala, Danta Road, Renwal, Rajasthan",
+      "district": "",
+      "ownership": "Private / Charitable",
+      "facility_type": "Eye Hospital / Branch",
+      "area_type": "Rural"
+    },
+    {
+      "id": "RAJ-003",
+      "name": "Dr Pawan Eye Hospital & Research Centre",
+      "branch": "Sawai Madhopur",
+      "address": "Khatri Ka Baag, Near Ranthambhore Circle, Ranthambhore Road, Sawai Madhopur, Rajasthan",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Ophthalmology Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "RAJ-004",
+      "name": "Goyal Eye Hospital",
+      "branch": "Gangapur City",
+      "address": "Udai Mod, Gangapur City, Sawai Madhopur, Rajasthan",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Ophthalmology Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "RAJ-005",
+      "name": "Vatsalya Eye & Dental Hospital",
+      "branch": "Sawai Madhopur",
+      "address": "Near Railway Bridge, Ranthambhore Circle, Sawai Madhopur, Rajasthan",
+      "district": "",
+      "ownership": "Private",
+      "facility_type": "Ophthalmology & Dentistry Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "RAJ-006",
+      "name": "Geeta Devi Memorial Eye Hospital",
+      "branch": "Lalsot",
+      "address": "Near New Mandi Tiraha, Gangapur Road, Lalsot, Dausa, Rajasthan 303503",
+      "district": "Dausa",
+      "ownership": "Private / Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural"
+    },
+    {
+      "id": "RAJ-007",
+      "name": "Acharya Mahapragya Eye Hospital",
+      "branch": "Vagdari, Dungarpur",
+      "address": "Vagdari, Bichiwara/Paldewal area, Dungarpur, Rajasthan - 314011",
+      "district": "Dungarpur",
+      "ownership": "Charitable / Social Service",
+      "facility_type": "Eye Hospital",
+      "area_type": "Tribal rural"
+    }
+  ],
+  "Odisha": [
+    {
+      "id": "ODI-001",
+      "name": "Dalmia OCL Eye Centre",
+      "branch": "Rajgangpur",
+      "address": "Ranibandh, Rajgangpur, Sundargarh, Odisha 770017",
+      "district": "Sundargarh",
+      "ownership": "Trust / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "ODI-002",
+      "name": "Arjun Waney Eye Centre",
+      "branch": "Berhampur",
+      "address": "Plot No. 860/6398 & 861, Ambapua, Near STPI, Berhampur, Ganjam, Odisha 760010",
+      "district": "Ganjam",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "ODI-003",
+      "name": "Naraindas & Morbai Budhrani Eye Centre",
+      "branch": "Remuna, Balasore",
+      "address": "Ganeswarpur, Remuna, P.O. Januganj, Balasore, Odisha 756019",
+      "district": "Balasore",
+      "ownership": "Trust / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "ODI-004",
+      "name": "Naraindas & Morbai Budhrani Eye Centre",
+      "branch": "Rayagada",
+      "address": "Plot No. 10/11(P), Pitamahal, I.I.D. Centre, Rayagada, Odisha 765002",
+      "district": "Rayagada",
+      "ownership": "Trust / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "ODI-005",
+      "name": "Bijayananda Patnaik Eye Centre",
+      "branch": "Kendujhar",
+      "address": "Plot No. 583, Pabitradiha, Sirajuddin Chhak, Kendujhar, Odisha 758001",
+      "district": "Kendujhar",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    }
+  ],
+  "Telangana": [
+    {
+      "id": "TEL-001",
+      "name": "Seshanna Chennawar Eye Centre",
+      "branch": "Adilabad",
+      "address": "Hyderabad Road, Mavala Village, Adilabad, Telangana 504001",
+      "district": "Adilabad",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "TEL-002",
+      "name": "Kuchakulla Ramachandra Reddy Eye Centre",
+      "branch": "Thoodukurthy",
+      "address": "Thoodukurthy, Nagarkurnool, Telangana 509235",
+      "district": "Nagarkurnool",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "TEL-003",
+      "name": "Nava Bharat Eye Centre",
+      "branch": "Paloncha",
+      "address": "SIIL Campus Post, Navanagar, Paloncha, Bhadradri Kothagudem, Telangana 507154",
+      "district": "Bhadradri Kothagudem",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "TEL-004",
+      "name": "Natco Eye Centre",
+      "branch": "Kothur",
+      "address": "JP Darga Road, Opp. Natco Pharma Ltd., Kothur Village, Ranga Reddy, Telangana 509228",
+      "district": "Ranga Reddy",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    }
+  ],
+  "Karnataka": [
+    {
+      "id": "KAR-001",
+      "name": "Y Mahabaleswarappa Memorial Eye Centre",
+      "branch": "Ballari",
+      "address": "Talur Road, Ballari, Karnataka 583101",
+      "district": "Ballari",
+      "ownership": "Charitable / supported centre",
+      "facility_type": "Secondary Eye Centre",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "KAR-002",
+      "name": "Narayana Nethralaya - Mandya",
+      "branch": "Mandya",
+      "address": "Mandya, Karnataka",
+      "district": "Mandya",
+      "ownership": "Charitable / eye-care organisation",
+      "facility_type": "Eye Hospital / Centre",
+      "area_type": "Rural / district catchment Karnataka"
+    },
+    {
+      "id": "KAR-003",
+      "name": "Narayana Nethralaya - Mysuru",
+      "branch": "Mysuru",
+      "address": "Mysuru, Karnataka",
+      "district": "Mysuru",
+      "ownership": "Charitable / eye-care organisation",
+      "facility_type": "Eye Hospital / Centre",
+      "area_type": "Regional / district catchment Karnataka"
+    }
+  ],
+  "Assam": [
+    {
+      "id": "ASS-001",
+      "name": "Gauhati Lions Eye Hospital",
+      "branch": "Guwahati",
+      "address": "Near K.C. Das Commerce College, Chatribari, Guwahati 781008, Assam",
+      "district": "Kamrup Metropolitan",
+      "ownership": "Lions charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban referral / underserved catchment"
+    },
+    {
+      "id": "ASS-002",
+      "name": "Sri Sankaradeva Nethralaya",
+      "branch": "Guwahati",
+      "address": "96, Basistha Road, Bhangagarh/Beltola, Guwahati, Assam 781028",
+      "district": "Kamrup Metropolitan",
+      "ownership": "Charitable trust",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Northeast regional / rural outreach"
+    },
+    {
+      "id": "ASS-003",
+      "name": "AIIMS Guwahati - Department of Ophthalmology",
+      "branch": "Guwahati",
+      "address": "Changsari, Kamrup, Assam",
+      "district": "Kamrup",
+      "ownership": "Government",
+      "facility_type": "Tertiary Hospital Department",
+      "area_type": "Northeast regional"
+    },
+    {
+      "id": "ASS-004",
+      "name": "Choudhury Eye Hospital & Research Centre",
+      "branch": "Silchar",
+      "address": "Shyamaprasad Road, Shillongpatty, Silchar, Assam",
+      "district": "Cachar",
+      "ownership": "Private / family eye hospital",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Regional / underserved Northeast"
+    },
+    {
+      "id": "ASS-005",
+      "name": "Drishti Netralaya",
+      "branch": "Dibrugarh",
+      "address": "Amolapatty Railway Gate, Dibrugarh, Assam 786001",
+      "district": "Dibrugarh",
+      "ownership": "Private / eye-care organisation",
+      "facility_type": "Super-specialty Eye Hospital",
+      "area_type": "Rural / tribal / hilly catchment"
+    }
+  ],
+  "Chhattisgarh": [
+    {
+      "id": "CHH-001",
+      "name": "MGM Eye Institute",
+      "branch": "Raipur",
+      "address": "5th Mile, Vidhan Sabha Road, Saddu, Raipur 493111, Chhattisgarh",
+      "district": "Raipur",
+      "ownership": "Trust / charitable",
+      "facility_type": "Tertiary Eye Institute",
+      "area_type": "Regional / underserved catchment"
+    },
+    {
+      "id": "CHH-002",
+      "name": "Sri Shankaracharya Institute of Medical Sciences - Ophthalmology",
+      "branch": "Bhilai",
+      "address": "Junwani, Bhilai, Durg, Chhattisgarh 490020",
+      "district": "Durg",
+      "ownership": "Educational trust / hospital",
+      "facility_type": "Eye Department",
+      "area_type": "Regional / underserved Chhattisgarh"
+    },
+    {
+      "id": "CHH-003",
+      "name": "MGM Eye Institute",
+      "branch": "Raipur",
+      "address": "5th Mile, Vidhan Sabha Road, Raipur, Chhattisgarh 492015",
+      "district": "Raipur",
+      "ownership": "Non-profit / charitable",
+      "facility_type": "Eye Institute",
+      "area_type": "Urban tertiary + rural outreach"
+    },
+    {
+      "id": "CHH-004",
+      "name": "Shri Ganesh Vinayak Eye Hospital – Main Branch",
+      "branch": "Raipur",
+      "address": "21, Muskan Residency, Lalpur, Near Colors Mall, Ganga Diagnostic Road, Raipur 492001",
+      "district": "Raipur",
+      "ownership": "Charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Urban tertiary + rural outreach"
+    }
+  ],
+  "Kerala": [
+    {
+      "id": "KER-001",
+      "name": "MOSCMM Kariambady Eye Hospital",
+      "branch": "Kariambady",
+      "address": "Kenichira Karimbadi Road, Kariampady, Wayanad, Kerala 673591",
+      "district": "Wayanad",
+      "ownership": "Charitable mission",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    },
+    {
+      "id": "KER-002",
+      "name": "Comtrust Charitable Trust Eye Hospital",
+      "branch": "Kodiyathur",
+      "address": "Kodiyathur, Kozhikode, Kerala",
+      "district": "Kozhikode",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / underserved"
+    },
+    {
+      "id": "KER-003",
+      "name": "Comtrust Vision Centre",
+      "branch": "Muttil, Wayanad",
+      "address": "Muttil, Wayanad, Kerala",
+      "district": "Wayanad",
+      "ownership": "Charitable trust",
+      "facility_type": "Vision Centre",
+      "area_type": "Rural / tribal"
+    }
+  ],
+  "West Bengal": [
+    {
+      "id": "WES-001",
+      "name": "Kalna Lions Eye Hospital",
+      "branch": "Kalna",
+      "address": "Bidyabagishpara, P.O. + P.S. Kalna, Purba Bardhaman, West Bengal 713409",
+      "district": "Purba Bardhaman",
+      "ownership": "Lions charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district"
+    },
+    {
+      "id": "WES-002",
+      "name": "Lions Seva Eye Hospital",
+      "branch": "Jamalpur",
+      "address": "Jamalpur, Purba Bardhaman, West Bengal",
+      "district": "Purba Bardhaman",
+      "ownership": "Lions charitable",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district"
+    },
+    {
+      "id": "WES-003",
+      "name": "Drishti Eye Institute",
+      "branch": "Siliguri",
+      "address": "Sevoke Road, Siliguri, Darjeeling, West Bengal",
+      "district": "Darjeeling",
+      "ownership": "Charitable eye-care institute",
+      "facility_type": "Tertiary Eye Hospital",
+      "area_type": "Rural / North Bengal catchment"
+    },
+    {
+      "id": "WES-004",
+      "name": "Disha Eye Hospitals - Barrackpore",
+      "branch": "Barrackpore",
+      "address": "Barrackpore, North 24 Parganas, West Bengal",
+      "district": "North 24 Parganas",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / rural catchment"
+    },
+    {
+      "id": "WES-005",
+      "name": "Disha Eye Hospitals - Burdwan",
+      "branch": "Burdwan",
+      "address": "Burdwan, Purba Bardhaman, West Bengal",
+      "district": "Purba Bardhaman",
+      "ownership": "Private eye hospital network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / rural catchment"
+    },
+    {
+      "id": "WES-006",
+      "name": "Narayana Nethralaya - Kolkata",
+      "branch": "Kolkata",
+      "address": "Kolkata, West Bengal",
+      "district": "",
+      "ownership": "Eye-care organisation",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved catchment"
+    }
+  ],
+  "Gujarat": [
+    {
+      "id": "GUJ-001",
+      "name": "Drashti Netralaya Ophthalmic Mission Trust Hospital",
+      "branch": "Dahod",
+      "address": "Near GIDC, Chakalia Road, Dahod, Gujarat 389151",
+      "district": "Dahod",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    },
+    {
+      "id": "GUJ-002",
+      "name": "P.T. Mirani Eye Hospital",
+      "branch": "Godhra",
+      "address": "Godhra, Panchmahal, Gujarat",
+      "district": "Panchmahal",
+      "ownership": "Charitable / community organisation",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    },
+    {
+      "id": "GUJ-003",
+      "name": "RNC Free Eye Hospital",
+      "branch": "Valsad",
+      "address": "Valsad, Gujarat",
+      "district": "Valsad",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / tribal"
+    }
+  ],
+  "Uttarakhand": [
+    {
+      "id": "UTT-001",
+      "name": "Nirmal Ashram Eye Institute",
+      "branch": "Rishikesh",
+      "address": "Khairi-Kalan, Near Nepali Farm, P.O. Satyanarayan, Rishikesh, Dehradun 249204",
+      "district": "Dehradun",
+      "ownership": "Charitable trust",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly catchment"
+    },
+    {
+      "id": "UTT-002",
+      "name": "Ramrati Eye Hospital",
+      "branch": "Dehradun",
+      "address": "34/2 Special Wing, Prem Nagar, Dehradun, Uttarakhand",
+      "district": "Dehradun",
+      "ownership": "Charitable / trust unit",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / underserved"
+    },
+    {
+      "id": "UTT-003",
+      "name": "Sitapur Eye Hospital – Almora",
+      "branch": "Almora",
+      "address": "Almora, Uttarakhand",
+      "district": "Almora",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / rural referral"
+    },
+    {
+      "id": "UTT-004",
+      "name": "Sitapur Eye Hospital – Ranikhet",
+      "branch": "Ranikhet",
+      "address": "Ranikhet, Almora, Uttarakhand",
+      "district": "Almora",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill"
+    },
+    {
+      "id": "UTT-005",
+      "name": "Sitapur Eye Hospital – Pithoragarh",
+      "branch": "Pithoragarh",
+      "address": "Pithoragarh, Uttarakhand",
+      "district": "Pithoragarh",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill"
+    },
+    {
+      "id": "UTT-006",
+      "name": "Sitapur Eye Hospital – Gopeshwar",
+      "branch": "Gopeshwar",
+      "address": "Gopeshwar, Chamoli, Uttarakhand",
+      "district": "Chamoli",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill"
+    },
+    {
+      "id": "UTT-007",
+      "name": "Sitapur Eye Hospital – Srinagar",
+      "branch": "Srinagar",
+      "address": "Srinagar, Pauri Garhwal, Uttarakhand",
+      "district": "Pauri Garhwal",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill"
+    },
+    {
+      "id": "UTT-008",
+      "name": "Sitapur Eye Hospital – Kotdwar",
+      "branch": "Kotdwar",
+      "address": "Kotdwar, Pauri Garhwal, Uttarakhand",
+      "district": "Pauri Garhwal",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill referral"
+    },
+    {
+      "id": "UTT-009",
+      "name": "Sitapur Eye Hospital – Pauri",
+      "branch": "Pauri",
+      "address": "Pauri, Uttarakhand",
+      "district": "Pauri Garhwal",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hill"
+    },
+    {
+      "id": "UTT-010",
+      "name": "Sitapur Eye Hospital – Nainital",
+      "branch": "Nainital",
+      "address": "Nainital, Uttarakhand",
+      "district": "Nainital",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Hill / district referral"
+    },
+    {
+      "id": "UTT-011",
+      "name": "Sitapur Eye Hospital – Kashipur",
+      "branch": "Kashipur",
+      "address": "Kashipur, Udham Singh Nagar, Uttarakhand",
+      "district": "Udham Singh Nagar",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Semi-rural / regional"
+    },
+    {
+      "id": "UTT-012",
+      "name": "Sitapur Eye Hospital – Haldwani",
+      "branch": "Haldwani",
+      "address": "Haldwani, Nainital, Uttarakhand",
+      "district": "Nainital",
+      "ownership": "Charitable / eye network",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional referral"
+    },
+    {
+      "id": "UTT-013",
+      "name": "Drishti Eye Institute – Haldwani",
+      "branch": "Haldwani",
+      "address": "Durga City Centre, Nainital Road, Haldwani, Uttarakhand",
+      "district": "Nainital",
+      "ownership": "Private",
+      "facility_type": "Eye Institute",
+      "area_type": "Regional referral"
+    },
+    {
+      "id": "UTT-014",
+      "name": "Vedanta Netralaya – Haldwani",
+      "branch": "Haldwani",
+      "address": "Canal Road, Tikonia, Haldwani, Uttarakhand",
+      "district": "Nainital",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional referral"
+    },
+    {
+      "id": "UTT-015",
+      "name": "Prakash Eye Hospital – Rudrapur",
+      "branch": "Rudrapur",
+      "address": "Lane-2, Civil Lines Doctor Colony, Rudrapur, Udham Singh Nagar, Uttarakhand",
+      "district": "Udham Singh Nagar",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional"
+    },
+    {
+      "id": "UTT-016",
+      "name": "Vedanta Jyoti Eye Hospital – Haridwar",
+      "branch": "Haridwar",
+      "address": "Haridwar, Uttarakhand",
+      "district": "Haridwar",
+      "ownership": "Private",
+      "facility_type": "Eye Hospital",
+      "area_type": "District / regional"
+    },
+    {
+      "id": "UTT-017",
+      "name": "The Hans Foundation Eye Care – Haridwar",
+      "branch": "Haridwar",
+      "address": "Haridwar, Uttarakhand",
+      "district": "Haridwar",
+      "ownership": "Non-profit",
+      "facility_type": "Eye Hospital / Eye Care Centre",
+      "area_type": "Rural outreach"
+    }
+  ],
+  "Himachal Pradesh": [
+    {
+      "id": "HIM-001",
+      "name": "Palampur Rotary Eye Foundation - Maranda",
+      "branch": "Maranda, Palampur",
+      "address": "Maranda, Palampur, Kangra, Himachal Pradesh",
+      "district": "Kangra",
+      "ownership": "Charitable foundation",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly"
+    },
+    {
+      "id": "HIM-002",
+      "name": "Palampur Rotary Eye Foundation - Pragpur",
+      "branch": "Pragpur, Dehra",
+      "address": "Pragpur, Dehra, Kangra, Himachal Pradesh",
+      "district": "Kangra",
+      "ownership": "Charitable foundation",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly"
+    },
+    {
+      "id": "HIM-003",
+      "name": "Palampur Rotary Eye Foundation - Dhussara",
+      "branch": "Dhussara, Una",
+      "address": "Dhussara, Una, Himachal Pradesh",
+      "district": "Una",
+      "ownership": "Charitable foundation",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly"
+    },
+    {
+      "id": "HIM-004",
+      "name": "J.V.R Eye Hospital",
+      "branch": "Jassur, Nurpur",
+      "address": "SH 27, Jassur, Railway Crossing, Tehsil Nurpur, Kangra, Himachal Pradesh 176201",
+      "district": "Kangra",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly district catchment"
+    },
+    {
+      "id": "HIM-005",
+      "name": "Garg Eye Hospital",
+      "branch": "Palampur",
+      "address": "2nd Floor, City Mall, Main Market Road, Palampur, Kangra, Himachal Pradesh",
+      "district": "Kangra",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly district catchment"
+    },
+    {
+      "id": "HIM-006",
+      "name": "Avinash Eye Hospital",
+      "branch": "Bhadrash, Nirath, Rampur",
+      "address": "Bhadrash, Nirath, Rampur, Shimla district, Himachal Pradesh 172001",
+      "district": "Shimla",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly catchment"
+    },
+    {
+      "id": "HIM-007",
+      "name": "Swami Pindi Dass Ji Charitable Eye Hospital and Research Centre",
+      "branch": "Kuthera Kherla",
+      "address": "VPO Kuthera Kherla, Una, Himachal Pradesh 177203",
+      "district": "",
+      "ownership": "Charitable eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / hilly"
+    },
+    {
+      "id": "HIM-008",
+      "name": "Sahni Eye Hospital",
+      "branch": "Una",
+      "address": "Rakakar Colony, Una, Himachal Pradesh 177303",
+      "district": "Una",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    },
+    {
+      "id": "HIM-009",
+      "name": "Laxmi Eye Centre",
+      "branch": "Kullu",
+      "address": "Shastri Nagar, Kullu, Himachal Pradesh 175101",
+      "district": "Kullu",
+      "ownership": "Private eye centre",
+      "facility_type": "Eye Centre",
+      "area_type": "Rural / hilly district catchment"
+    },
+    {
+      "id": "HIM-010",
+      "name": "Bhalei Mata Hospital",
+      "branch": "Allennali, Banikhet",
+      "address": "Village Allennali, NH-154-A, near Banikhet, Dalhousie, Chamba, Himachal Pradesh 176306",
+      "district": "Chamba",
+      "ownership": "Private hospital",
+      "facility_type": "Eye Hospital / Unit",
+      "area_type": "Rural / hilly"
+    },
+    {
+      "id": "HIM-011",
+      "name": "Sahni Eye Care",
+      "branch": "Rajgarh Road, Solan",
+      "address": "Sahni Complex, Rajgarh Road, Solan, Himachal Pradesh 173212",
+      "district": "Solan",
+      "ownership": "Private eye centre",
+      "facility_type": "Eye Centre",
+      "area_type": "Rural / hilly district catchment"
+    },
+    {
+      "id": "HIM-012",
+      "name": "Aditya Jyoti Eye Hospital",
+      "branch": "Nerchowk",
+      "address": "1st Floor, near LG showroom, Nerchowk, Mandi, Himachal Pradesh 175008",
+      "district": "Mandi",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Rural / district catchment"
+    }
+  ],
+  "Meghalaya": [
+    {
+      "id": "MEG-001",
+      "name": "Bansara Eye Care Centre",
+      "branch": "Shillong",
+      "address": "Lady Veronica Lane, Laitumkhrah, Shillong 793003, Meghalaya",
+      "district": "East Khasi Hills",
+      "ownership": "Eye-care centre",
+      "facility_type": "Eye Hospital / Centre",
+      "area_type": "Regional / underserved Northeast"
+    },
+    {
+      "id": "MEG-002",
+      "name": "Bawri Nethralaya",
+      "branch": "Shillong",
+      "address": "Cantt. Bungalow No. 40, Behind Shani Mandir, Shillong 793001, Meghalaya",
+      "district": "East Khasi Hills",
+      "ownership": "Eye-care centre",
+      "facility_type": "Eye Hospital / Centre",
+      "area_type": "Regional / underserved Northeast"
+    }
+  ],
+  "Manipur": [
+    {
+      "id": "MAN-001",
+      "name": "Yaima Eye Hospital and Research Centre Pvt. Ltd.",
+      "branch": "Imphal",
+      "address": "Khagempalli Pankha, Huidrom Leikai, Mayai Lambi Road, Imphal West, Manipur 795001",
+      "district": "Imphal West",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / rural outreach"
+    }
+  ],
+  "Mizoram": [
+    {
+      "id": "MIZ-001",
+      "name": "Synod Hospital",
+      "branch": "Durtlang, Aizawl",
+      "address": "Durtlang, Aizawl, Mizoram 796015",
+      "district": "Aizawl",
+      "ownership": "Mission / charitable hospital",
+      "facility_type": "Eye Hospital Unit",
+      "area_type": "Rural outreach / hilly"
+    }
+  ],
+  "Arunachal Pradesh": [
+    {
+      "id": "ARU-001",
+      "name": "Niba Hospital",
+      "branch": "Naharlagun",
+      "address": "Papu Nallah, Naharlagun, Arunachal Pradesh 791110",
+      "district": "Papum Pare",
+      "ownership": "Private hospital",
+      "facility_type": "Multispeciality Hospital with Ophthalmology",
+      "area_type": "Regional / rural Arunachal catchment"
+    }
+  ],
+  "Sikkim": [
+    {
+      "id": "SIK-001",
+      "name": "Sir Thutob Namgyal Memorial Hospital",
+      "branch": "Gangtok",
+      "address": "Sochakgang / NH 31A, Gangtok, Sikkim 737101",
+      "district": "Gangtok",
+      "ownership": "Government of Sikkim",
+      "facility_type": "Apex Referral Hospital",
+      "area_type": "Hilly / regional"
+    },
+    {
+      "id": "SIK-002",
+      "name": "Central Referral Hospital",
+      "branch": "Tadong, Gangtok",
+      "address": "5th Mile, Tadong, Gangtok, East Sikkim 737102",
+      "district": "Gangtok",
+      "ownership": "Private university teaching hospital",
+      "facility_type": "Referral Hospital",
+      "area_type": "Hilly / regional"
+    }
+  ],
+  "Tripura": [
+    {
+      "id": "TRI-001",
+      "name": "Ashvini Netralaya",
+      "branch": "Agartala",
+      "address": "Bijoykumar Chowmuhani, opposite Eastern Scientific Corporation, Agartala, Tripura 799001",
+      "district": "West Tripura",
+      "ownership": "Private eye hospital",
+      "facility_type": "Super-speciality Eye Hospital",
+      "area_type": "Regional / all-district Tripura outreach"
+    },
+    {
+      "id": "TRI-002",
+      "name": "Wills Eye Super Speciality Pvt. Ltd.",
+      "branch": "Agartala",
+      "address": "Colonel Chowmuhani, West Tripura, Agartala, Tripura 799001",
+      "district": "West Tripura",
+      "ownership": "Private eye hospital",
+      "facility_type": "Super-speciality Eye Hospital",
+      "area_type": "Regional / all-district Tripura"
+    },
+    {
+      "id": "TRI-003",
+      "name": "The Hope Eye Hospital",
+      "branch": "Agartala",
+      "address": "Khejurbagan, Airport Road, Agartala, Tripura 799010",
+      "district": "West Tripura",
+      "ownership": "Private eye hospital",
+      "facility_type": "Eye Hospital",
+      "area_type": "Regional / remote Tripura catchment"
+    }
+  ]
+}

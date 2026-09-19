@@ -1,68 +1,50 @@
-import React, { useState, useRef } from 'react';
-import { Camera, Upload, Trash2, ArrowLeft, ArrowRight, CheckCircle2, Video, AlertCircle } from 'lucide-react';
+﻿import React, { useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, Upload, Trash2, ArrowLeft, ArrowRight, Video, AlertCircle, CheckCircle2, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { getSampleFundusImages } from '../utils/sampleImages';
-import Stepper from '../components/Stepper';
 
 export default function ImageUploadPage({ onImageSelected, onBack }) {
   const { t } = useLanguage();
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage,     setSelectedImage]     = useState(null);
   const [selectedSampleMeta, setSelectedSampleMeta] = useState(null);
-  const [isCameraActive, setIsCameraActive] = useState(false);
-  const [cameraError, setCameraError] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isCameraActive,    setIsCameraActive]    = useState(false);
+  const [cameraError,       setCameraError]       = useState(null);
+  const [isDragging,        setIsDragging]        = useState(false);
+  const [uploadError,       setUploadError]       = useState(null);
 
   const fileInputRef = useRef(null);
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
+  const videoRef     = useRef(null);
+  const streamRef    = useRef(null);
 
-  const samples = getSampleFundusImages();
-
-  // Handle local file selection
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
+  // â”€â”€ File handling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const loadFile = useCallback((file) => {
+    setUploadError(null);
     if (!file) return;
-
-    // Validate image format
     if (!file.type.startsWith('image/')) {
-      alert('Please upload a valid image file (JPEG, PNG)');
+      setUploadError('Unsupported file format. Please upload a JPEG or PNG image.');
       return;
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setSelectedImage(event.target.result);
-      setSelectedSampleMeta(null); // custom user uploaded image
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Drag & drop handlers
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target.result);
-        setSelectedSampleMeta(null);
-      };
-      reader.readAsDataURL(file);
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadError('File is too large. Maximum size is 15 MB.');
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = (e) => { setSelectedImage(e.target.result); setSelectedSampleMeta(null); };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleFileChange = (e) => loadFile(e.target.files?.[0]);
+
+  const handleDragOver  = (e) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = ()  => setIsDragging(false);
+  const handleDrop      = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    loadFile(e.dataTransfer.files?.[0]);
   };
 
-  // Camera capture
+  // â”€â”€ Camera â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const startCamera = async () => {
     setCameraError(null);
     setIsCameraActive(true);
@@ -71,229 +53,262 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
         video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (err) {
-      console.error('Camera error:', err);
-      setCameraError(t('cameraNotSupported'));
+      if (videoRef.current) videoRef.current.srcObject = stream;
+    } catch {
+      setCameraError(t('cameraNotSupported', 'Camera not available. Please upload an image instead.'));
       setIsCameraActive(false);
     }
   };
 
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
+  const stopCamera  = () => {
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
     setIsCameraActive(false);
   };
 
   const capturePhoto = () => {
     if (!videoRef.current) return;
     const canvas = document.createElement('canvas');
-    canvas.width = videoRef.current.videoWidth || 640;
+    canvas.width  = videoRef.current.videoWidth  || 640;
     canvas.height = videoRef.current.videoHeight || 640;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-    setSelectedImage(dataUrl);
+    canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
+    setSelectedImage(canvas.toDataURL('image/jpeg', 0.95));
     setSelectedSampleMeta(null);
     stopCamera();
   };
 
-  const selectSample = (sampleKey) => {
-    const sample = samples[sampleKey];
-    if (sample) {
-      setSelectedImage(sample.dataUrl);
-      setSelectedSampleMeta(sample);
-      stopCamera();
-    }
-  };
+  const clearImage = () => { setSelectedImage(null); setSelectedSampleMeta(null); setUploadError(null); };
 
   const handleProceed = () => {
-    if (selectedImage) {
-      onImageSelected(selectedImage, selectedSampleMeta);
-    }
+    if (selectedImage) onImageSelected(selectedImage, selectedSampleMeta);
   };
 
   return (
-    <div className="w-full max-w-[1024px] mx-auto px-4 pb-12">
-      <Stepper currentStep={2} />
-      <div className="clean-card w-full p-6 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          
-          {/* Left Column: Dropzone / Preview / Camera */}
-          <div className="flex flex-col items-center justify-start w-full max-w-[500px] mx-auto">
-            {/* Live Camera View */}
-            {isCameraActive ? (
-              <div className="w-full">
-                <div className="w-full aspect-square relative rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex gap-3 mt-4">
-                  <button type="button" className="btn btn-secondary flex-1" onClick={stopCamera}>
-                    {t('cancelCamera')}
-                  </button>
-                  <button type="button" className="btn btn-primary flex-2" onClick={capturePhoto} style={{ flex: 2 }}>
-                    <Camera size={20} />
-                    <span>{t('takePhoto')}</span>
-                  </button>
-                </div>
-              </div>
-            ) : selectedImage ? (
-              /* Selected Image Preview */
-              <div className="w-full">
-                <div className="w-full aspect-square relative rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-sm">
-                  <img src={selectedImage} alt="Fundus Retinal Preview" className="w-full h-full object-cover" />
-                  {selectedSampleMeta && (
-                    <div className="absolute top-3 left-3 bg-slate-900/85 text-white px-3 py-1 rounded-[var(--radius-sm)] text-[13px] font-semibold backdrop-blur-sm shadow-sm">
-                      {t(selectedSampleMeta.titleKey)}
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-center mt-4">
-                  <button
-                    type="button"
-                    className="btn btn-secondary w-full max-w-[200px]"
-                    onClick={() => {
-                      setSelectedImage(null);
-                      setSelectedSampleMeta(null);
-                    }}
-                  >
-                    <Trash2 size={16} />
-                    <span>{t('removeImage')}</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              /* Upload / Capture options */
-              <div className="w-full">
+    <div style={{
+      flex: 1, padding: '32px 16px 64px',
+      background: 'linear-gradient(145deg, #eef5ff 0%, #e8f4fd 60%, #ddeeff 100%)',
+    }}>
+      <div className="page-container" style={{ maxWidth: 760 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div style={{
+            background: 'rgba(255,255,255,0.92)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255,255,255,0.95)',
+            borderRadius: 24,
+            padding: '36px 32px 32px',
+            boxShadow: '0 20px 48px -12px rgba(28,95,160,0.14)',
+          }}>
+
+            {/* â”€â”€ Page heading (ABOVE dropzone â€” critical order fix) â”€â”€ */}
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.01em', marginBottom: 6 }}>
+                {t('uploadTitle', 'Fundus Image Upload')}
+              </h2>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-tertiary)', lineHeight: 1.6, margin: 0 }}>
+                {t('uploadInstruction', 'Upload a clear retinal fundus photograph. The image will be analyzed by the AI screening model.')}
+              </p>
+            </div>
+
+            {/* â”€â”€ Camera View â”€â”€ */}
+            <AnimatePresence>
+              {isCameraActive && (
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  style={{ marginBottom: 20 }}
+                >
+                  <div style={{ width: '100%', aspectRatio: '16/9', position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: '#0f172a', border: '1.5px solid var(--border)' }}>
+                    <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button
+                      type="button"
+                      onClick={stopCamera}
+                      style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                      aria-label="Close camera"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                    <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={stopCamera}>{t('cancelCamera', 'Cancel')}</button>
+                    <button type="button" className="btn btn-primary" style={{ flex: 2 }} onClick={capturePhoto}>
+                      <Camera size={18} aria-hidden="true" />{t('takePhoto', 'Capture Photo')}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* â”€â”€ Dropzone / Preview (only shown when no camera active) â”€â”€ */}
+            {!isCameraActive && (
+              <>
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   accept="image/jpeg,image/png"
                   style={{ display: 'none' }}
+                  aria-label="Upload fundus image"
                 />
 
-                <div
-                  className={`w-full aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all ${
-                    isDragging ? 'border-sky-500 bg-sky-50' : 'border-[var(--border-default)] bg-[var(--surface-muted)] hover:border-sky-300 hover:bg-slate-50'
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload size={42} className="text-sky-500 mb-4" />
-                  <div className="text-[1.1rem] font-semibold text-[var(--text-main)] mb-2">
-                    {t('uploadImage')}
-                  </div>
-                  <p className="text-[0.9rem] text-[var(--text-muted)] mb-3">
-                    {t('dragDropText')}
-                  </p>
-                  <span className="text-[0.75rem] text-[var(--text-muted)] bg-slate-200/50 px-3 py-1 rounded-full">
-                    {t('supportedFormats')}
-                  </span>
-                </div>
-
-                <div className="mt-4">
-                  <button type="button" className="btn btn-secondary w-full" onClick={startCamera}>
-                    <Video size={18} className="mr-2" />
-                    <span>{t('captureImage')}</span>
-                  </button>
-                </div>
-
-                {cameraError && (
-                  <div className="mt-3 p-3 bg-red-50 text-red-700 text-sm rounded-lg flex items-center justify-center gap-2">
-                    <AlertCircle size={16} />
-                    <span>{cameraError}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Instructions, Samples, Actions */}
-          <div className="flex flex-col justify-between h-full">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">{t('uploadTitle')}</h2>
-              <p className="text-[15px] text-slate-500 mb-8">
-                {t('uploadInstruction')}
-              </p>
-
-              {/* Sample Selector */}
-              <div className="mb-8">
-                <div className="text-[14px] font-semibold text-slate-700 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-[1px] bg-slate-300"></span>
-                  {t('selectSampleImage')}
-                  <span className="flex-1 h-[1px] bg-slate-300"></span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-
-                  {Object.entries(samples).map(([key, sample]) => {
-                    const isSelected = selectedSampleMeta?.titleKey === sample.titleKey;
-                    return (
-                      <div
-                        key={key}
-                        onClick={() => selectSample(key)}
+                <AnimatePresence mode="wait">
+                  {selectedImage ? (
+                    /* â”€â”€ Success state: image preview â”€â”€ */
+                    <motion.div
+                      key="preview"
+                      initial={{ opacity: 0, scale: 0.96 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ position: 'relative', marginBottom: 20 }}
+                    >
+                      <div style={{ width: '100%', aspectRatio: '16/9', position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: '#0f172a', border: '1.5px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
+                        <img
+                          src={selectedImage}
+                          alt="Selected fundus retinal image"
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        />
+                        {selectedSampleMeta && (
+                          <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.7)', color: 'white', padding: '4px 10px', borderRadius: 6, fontSize: '0.8125rem', fontWeight: 600, backdropFilter: 'blur(8px)' }}>
+                            {t(selectedSampleMeta.titleKey)}
+                          </div>
+                        )}
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={clearImage}
+                          style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#dc2626', boxShadow: 'var(--shadow-sm)' }}
+                          aria-label="Remove selected image"
+                        >
+                          <Trash2 size={16} />
+                        </motion.button>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, color: 'var(--success)', fontSize: '0.875rem', fontWeight: 600 }}>
+                        <CheckCircle2 size={16} aria-hidden="true" />
+                        Image selected â€” ready for analysis
+                      </div>
+                    </motion.div>
+                  ) : (
+                    /* â”€â”€ Idle / Drag-over dropzone â”€â”€ */
+                    <motion.div
+                      key="dropzone"
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      style={{ marginBottom: 20 }}
+                    >
+                      <motion.div
+                        animate={{ scale: isDragging ? 1.02 : 1 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => fileInputRef.current?.click()}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
                         role="button"
                         tabIndex={0}
-                        onKeyDown={(e) => e.key === 'Enter' && selectSample(key)}
-                        className={`group cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 bg-[var(--surface-muted)] relative ${
-                          isSelected 
-                            ? 'border-sky-500 shadow-sm opacity-100' 
-                            : 'border-transparent opacity-70 hover:opacity-100 hover:border-slate-300'
-                        }`}
-                        style={{ paddingBottom: '32px' }}
+                        onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                        aria-label="Upload fundus image â€” click or drag and drop"
+                        style={{
+                          width: '100%', aspectRatio: '16/9', maxHeight: 360,
+                          borderRadius: 'var(--radius-lg)',
+                          border: `2px dashed ${isDragging ? 'var(--primary)' : 'var(--border)'}`,
+                          background: isDragging ? 'var(--primary-light)' : 'var(--surface-muted)',
+                          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                          gap: 12, cursor: 'pointer',
+                          transition: 'border-color 0.2s ease, background 0.2s ease',
+                          padding: 24,
+                        }}
                       >
-                        <img 
-                          src={sample.dataUrl} 
-                          alt={sample.titleKey} 
-                          className="w-full aspect-[4/3] object-cover" 
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 p-1.5 text-center bg-white text-[11px] font-semibold text-slate-600 truncate border-t border-slate-100">
-                          {t(sample.titleKey)}
+                        <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: isDragging ? 'rgba(2,132,199,0.15)' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
+                          <Upload size={24} style={{ color: isDragging ? 'var(--primary)' : 'var(--text-tertiary)' }} aria-hidden="true" />
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <p style={{ fontWeight: 700, color: isDragging ? 'var(--primary)' : 'var(--text-main)', fontSize: '0.9375rem', marginBottom: 4 }}>
+                            {isDragging ? 'Drop to upload' : t('uploadImage', 'Click to upload or drag & drop')}
+                          </p>
+                          <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', margin: 0 }}>
+                            JPEG or PNG Â· Max 15 MB
+                          </p>
+                        </div>
+                      </motion.div>
 
-            {/* Footer Navigation */}
-            <div className="flex gap-4 pt-6 border-t border-slate-200 mt-auto">
-              <button
-                type="button"
-                className="btn btn-secondary flex-1"
-                onClick={onBack}
-              >
-                <ArrowLeft size={18} className="mr-2" />
-                <span>{t('back')}</span>
+                      {/* Error state */}
+                      <AnimatePresence>
+                        {uploadError && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                            style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 10, background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 'var(--radius-sm)', padding: '10px 14px', color: '#dc2626', fontSize: '0.875rem', fontWeight: 500 }}
+                            role="alert"
+                          >
+                            <AlertCircle size={16} aria-hidden="true" />
+                            {uploadError}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* â”€â”€ Capture button (visually separated) â”€â”€ */}
+                {!selectedImage && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+                    <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} aria-hidden="true" />
+                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', fontWeight: 600, whiteSpace: 'nowrap' }}>or</span>
+                    <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} aria-hidden="true" />
+                  </div>
+                )}
+                {!selectedImage && (
+                  <button type="button" className="btn btn-secondary" style={{ width: '100%', marginBottom: 28 }} onClick={startCamera}>
+                    <Video size={18} aria-hidden="true" />
+                    <span>{t('captureImage', 'Capture with Camera')}</span>
+                  </button>
+                )}
+
+                {cameraError && (
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 'var(--radius-sm)', padding: '10px 14px', color: '#92400e', fontSize: '0.875rem', fontWeight: 500, marginBottom: 16 }} role="alert">
+                    <AlertCircle size={16} aria-hidden="true" />
+                    {cameraError}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* â”€â”€ Footer Navigation â”€â”€ */}
+            <div style={{ display: 'flex', gap: 12, borderTop: '1px solid var(--border-subtle)', paddingTop: 20 }}>
+              <button type="button" className="btn btn-secondary" onClick={onBack} style={{ flex: '0 0 auto', minWidth: 100 }}>
+                <ArrowLeft size={16} aria-hidden="true" />
+                <span>{t('back', 'Back')}</span>
               </button>
-
-              <button
+              <motion.button
                 type="button"
-                className="btn btn-primary flex-2 shadow-md transition-transform active:translate-y-[1px]"
-                disabled={!selectedImage || isCameraActive}
+                className="btn btn-primary"
                 onClick={handleProceed}
-                style={{ flex: 2 }}
+                whileTap={{ scale: 0.97 }}
+                disabled={!selectedImage || isCameraActive}
+                style={{ flex: 1 }}
+                title={!selectedImage ? 'Upload or select an image to continue.' : undefined}
               >
-                <span>{t('proceedToAnalysis')}</span>
-                <ArrowRight size={18} className="ml-2" />
-              </button>
+                <span>{t('proceedToAnalysis', 'Proceed to AI Analysis')}</span>
+                <ArrowRight size={16} aria-hidden="true" />
+              </motion.button>
             </div>
+
+            {/* Disabled helper */}
+            <AnimatePresence>
+              {!selectedImage && (
+                <motion.p
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  style={{ textAlign: 'center', fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginTop: 10 }}
+                >
+                  â†‘ Upload or select an image to continue
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
-
   );
 }

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @plugin "@tailwindcss/forms";
 @source "./";
 @theme {
@@ -21,79 +21,133 @@
   --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
 }
 
-
 /* ==========================================================================
-   AarogyaNetra Design System
-   Calm, Minimal, High-Contrast Healthcare Theme for Rural & Clinical Users
+   AarogyaNetra Design System v2
+   WCAG AA compliant, accessible, high-contrast healthcare theme
    ========================================================================== */
 
 :root {
-  /* Color Palette: Calm Healthcare Blues, Sage Greens, Warm Neutrals */
-  --primary: #0284c7;             /* Sky 600 - trustworthy clinical primary */
+  /* â”€â”€â”€ Primary Brand â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --primary: #0284c7;             /* Sky 600 */
   --primary-hover: #0369a1;       /* Sky 700 */
   --primary-light: #e0f2fe;       /* Sky 100 */
-  --primary-focus: rgba(2, 132, 199, 0.35);
+  --primary-focus: rgba(2, 132, 199, 0.25);
 
-  --accent-teal: #0d9488;         /* Teal 600 - health & vitality */
-  --accent-teal-light: #ccfbf1;   /* Teal 100 */
+  --accent-teal: #0d9488;
+  --accent-teal-light: #ccfbf1;
 
-  --bg-app: #f8fafc;              /* Slate 50 - clean, calm, glare-free */
-  --surface: #ffffff;             /* Pure white cards */
-  --surface-muted: #f1f5f9;       /* Slate 100 */
-  --surface-subtle: #f1f5f9;      /* Legacy fallback */
+  /* â”€â”€â”€ Surfaces â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --bg-app: #f8fafc;
+  --surface: #ffffff;
+  --surface-default: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-subtle: #f1f5f9;
 
-  --text-main: #0f172a;           /* Slate 900 - high contrast readability */
+  /* â”€â”€â”€ Text (all pass WCAG AA 4.5:1 on white) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --text-main: #0f172a;           /* Slate 900 */
   --text-primary: #0f172a;
-  --text-secondary: #334155;      /* Slate 700 - Darkened for 4.5:1 contrast on gray */
-  --text-tertiary: #64748b;       /* Slate 500 */
-  --text-muted: #334155;          /* Fallback */
+  --text-secondary: #1e293b;      /* Slate 800 */
+  --text-tertiary: #475569;       /* Slate 600 â€” passes 4.5:1 */
+  --text-muted: #475569;
   --text-inverse: #ffffff;
 
-  --border: #cbd5e1;              /* Slate 300 - clear high-contrast borders */
-  --border-subtle: #e2e8f0;       /* Slate 200 */
+  /* â”€â”€â”€ Borders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --border: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --border-default: #cbd5e1;
 
-  /* Healthcare Outcome Colors / Semantics */
-  --danger: #dc2626;              /* Red 600 */
-  --warning: #d97706;             /* Amber 600 */
-  --success: #059669;             /* Emerald 600 */
-  --info: #0284c7;                /* Sky 600 */
+  /* â”€â”€â”€ Semantic Outcome Colors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --danger: #dc2626;
+  --warning: #d97706;
+  --success: #059669;
+  --info: #0284c7;
 
-  --outcome-healthy-bg: #ecfdf5;  /* Emerald 50 */
-  --outcome-healthy-text: #065f46;/* Emerald 800 */
+  --outcome-healthy-bg: #ecfdf5;
+  --outcome-healthy-text: #065f46;
   --outcome-healthy-border: #a7f3d0;
 
-  --outcome-warning-bg: #fffbeb;  /* Amber 50 */
-  --outcome-warning-text: #92400e;/* Amber 800 */
+  --outcome-warning-bg: #fffbeb;
+  --outcome-warning-text: #92400e;
   --outcome-warning-border: #fde68a;
 
-  --outcome-alert-bg: #fef2f2;    /* Rose 50 */
-  --outcome-alert-text: #991b1b;  /* Rose 800 */
+  --outcome-alert-bg: #fef2f2;
+  --outcome-alert-text: #991b1b;
   --outcome-alert-border: #fecaca;
 
-  /* Typography */
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --line-height: 1.4;
+  /* â”€â”€â”€ Clinical Grade Color Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --grade-0: #16a34a;             /* Green â€” No DR */
+  --grade-0-bg: #dcfce7;
+  --grade-0-border: #86efac;
+  --grade-0-text: #14532d;
+
+  --grade-1: #ca8a04;             /* Yellow â€” Mild */
+  --grade-1-bg: #fef9c3;
+  --grade-1-border: #fde047;
+  --grade-1-text: #713f12;
+
+  --grade-2: #ea580c;             /* Amber â€” Moderate */
+  --grade-2-bg: #fff7ed;
+  --grade-2-border: #fed7aa;
+  --grade-2-text: #7c2d12;
+
+  --grade-3: #dc2626;             /* Red â€” Severe */
+  --grade-3-bg: #fef2f2;
+  --grade-3-border: #fca5a5;
+  --grade-3-text: #7f1d1d;
+
+  --grade-4: #991b1b;             /* Dark Red â€” Proliferative */
+  --grade-4-bg: #fff1f2;
+  --grade-4-border: #fecdd3;
+  --grade-4-text: #4c0519;
+
+  --uncertain: #7c3aed;           /* Violet â€” Uncertain/Review */
+  --uncertain-bg: #f5f3ff;
+  --uncertain-border: #c4b5fd;
+  --uncertain-text: #4c1d95;
+
+  /* â”€â”€â”€ Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --nav-height: 64px;
+  --nav-height-mobile: 56px;
+  --page-max-width: 1120px;
+
+  /* â”€â”€â”€ Typography â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --line-height: 1.5;
   --line-height-heading: 1.2;
 
-  /* Touch & Accessibility Standards */
-  --min-touch-target: 44px;       /* 44x44px minimum */
+  /* â”€â”€â”€ Touch & A11y â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --min-touch-target: 44px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* Shadows (soft, subtle, not flashy - one shadow only) */
+  /* â”€â”€â”€ Shadows (3 elevation levels) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+  /* â”€â”€â”€ Animation Durations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  --duration-micro: 120ms;
+  --duration-standard: 250ms;
+  --duration-emphasis: 450ms;
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Universal Reset & Base Rules */
+/* ==========================================================================
+   Universal Reset & Base
+   ========================================================================== */
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -104,6 +158,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  font-size: 16px; /* Minimum body text size for accessibility */
 }
 
 #root {
@@ -112,22 +167,86 @@ body {
   flex-direction: column;
 }
 
+/* Skip-to-content link (shown on focus) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: top 0.1s ease;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
+/* ==========================================================================
+   Reduced Motion â€” MANDATORY for medical products
+   ========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .scan-line {
+    display: none !important;
+  }
 }
 
-/* Accessible Keyboard Focus States */
+/* ==========================================================================
+   Focus Indicators (WCAG AA â€” 2px visible ring)
+   ========================================================================== */
+
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* Offline Notification Banner */
+/* ==========================================================================
+   Layout: Page Container
+   ========================================================================== */
+
+.page-container {
+  max-width: var(--page-max-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: 0 32px;
+  }
+}
+
+/* Legacy compat */
+.main-content {
+  flex: 1;
+  max-width: var(--page-max-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* ==========================================================================
+   Offline Banner
+   ========================================================================== */
+
 .offline-banner {
   background-color: #fef3c7;
   color: #92400e;
@@ -135,198 +254,343 @@ body {
   padding: 12px 16px;
   text-align: center;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-/* Header & Navigation */
-.header {
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border-subtle);
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.nav-header {
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
+  height: var(--nav-height);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+  transition: backdrop-filter var(--duration-standard) ease,
+              border-color var(--duration-standard) ease,
+              box-shadow var(--duration-standard) ease,
+              background var(--duration-standard) ease;
+}
+
+.nav-header.elevated {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--border-subtle);
   box-shadow: var(--shadow-sm);
 }
 
-.header-container {
-  max-width: 1080px;
+@media (max-width: 767px) {
+  .nav-header {
+    height: var(--nav-height-mobile);
+  }
+}
+
+.nav-inner {
+  max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 0 24px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.brand-link {
-  display: flex;
+.nav-item {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--text-main);
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--duration-micro) ease, background var(--duration-micro) ease;
+  user-select: none;
+  touch-action: manipulation;
+  min-height: var(--min-touch-target);
 }
 
-.brand-logo-icon {
-  width: 38px;
-  height: 38px;
-  background-color: var(--primary-light);
+.nav-item:hover {
+  color: var(--text-main);
+  background: var(--surface-muted);
+}
+
+.nav-item.active {
   color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-item svg {
+  flex-shrink: 0;
+  stroke-width: 1.5;
+}
+
+/* Doctor Portal button (distinct role-switch) */
+.nav-clinician-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: transparent;
+  border: 1.5px solid var(--primary);
   border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--duration-micro) ease, color var(--duration-micro) ease;
+  min-height: var(--min-touch-target);
+}
+
+.nav-clinician-btn:hover {
+  background: var(--primary-light);
+}
+
+/* Language picker */
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--duration-micro) ease, background var(--duration-micro) ease;
+  min-height: var(--min-touch-target);
+}
+
+.lang-btn:hover {
+  color: var(--text-main);
+  background: var(--surface-muted);
+}
+
+/* Mobile drawer overlay */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 60;
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  background: white;
+  z-index: 61;
   display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   Responsive Nav Visibility â€” replaces Tailwind md: breakpoint classes
+   ========================================================================== */
+
+/* Desktop nav cluster (hidden on mobile, visible on desktop) */
+.nav-desktop {
+  display: none;
+}
+.nav-desktop-right {
+  display: none;
+}
+
+/* Mobile hamburger (visible on mobile, hidden on desktop) */
+.nav-mobile-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.brand-text-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  padding: 8px;
   color: var(--text-main);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-}
-
-.brand-text-subtitle {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Language Selector Dropdown */
-.lang-selector-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.lang-select {
-  appearance: none;
-  background-color: var(--surface-subtle);
-  color: var(--text-main);
-  border: 1px solid var(--border);
+  background: transparent;
+  border: none;
   border-radius: var(--radius-sm);
-  padding: 8px 32px 8px 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
   cursor: pointer;
-  min-height: 40px;
-  line-height: 1;
+  min-height: var(--min-touch-target);
+  min-width: 44px;
 }
 
-.lang-select-arrow {
-  position: absolute;
-  right: 10px;
-  pointer-events: none;
-  color: var(--text-muted);
+.nav-mobile-btn:hover {
+  background: var(--surface-muted);
 }
 
-/* Main Layout Container */
-.main-content {
-  flex: 1;
-  max-width: 860px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 24px 16px 48px;
-}
-
-/* Card Component */
-.clean-card {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 20px;
-}
-
-@keyframes slideDownFade {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-nav {
-  animation: slideDownFade 0.4s ease-out forwards;
-}
-
-@media (min-width: 640px) {
-  .clean-card {
-    padding: 32px;
+@media (min-width: 768px) {
+  .nav-desktop {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    padding-left: 24px;
+  }
+  .nav-desktop-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .nav-mobile-btn {
+    display: none;
   }
 }
 
-/* Clean Typography */
+/* Decorative retina bg â€” desktop only, below lg hides it */
+.welcome-retina-deco {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .welcome-retina-deco {
+    display: block;
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.18;
+  }
+}
+
+
+.stepper-strip {
+  width: 100%;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 16px 0;
+}
+
+.stepper-inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ==========================================================================
+   Typography Scale
+   ========================================================================== */
+
 h1, .h1 {
-  font-size: 1.85rem;
-  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
   color: var(--text-main);
-  line-height: 1.25;
-  margin-bottom: 8px;
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.02em;
 }
 
 h2, .h2 {
-  font-size: 1.4rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
   font-weight: 700;
   color: var(--text-main);
-  line-height: 1.3;
-  margin-bottom: 8px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 h3, .h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-main);
   line-height: 1.35;
-  margin-bottom: 6px;
+}
+
+h4, .h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+p, .body {
+  font-size: 1rem;        /* 16px minimum */
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.body-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+.caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-tertiary);
 }
 
 p.subtitle {
   color: var(--text-muted);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   margin-bottom: 24px;
 }
 
-/* Buttons with Large Touch Targets */
+/* ==========================================================================
+   Button Primitives
+   ========================================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 0.9375rem;   /* 15px */
   font-weight: 600;
-  padding: 14px 24px;
+  padding: 10px 20px;
   min-height: var(--min-touch-target);
   border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+  transition: background-color var(--duration-micro) ease,
+              border-color var(--duration-micro) ease,
+              box-shadow var(--duration-micro) ease,
+              transform var(--duration-micro) ease;
   user-select: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.btn-block {
-  width: 100%;
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .btn-primary {
   background-color: var(--primary);
-  color: var(--text-inverse);
+  color: white;
   border-color: var(--primary);
 }
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 .btn-secondary {
@@ -336,8 +600,18 @@ p.subtitle {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--surface-subtle);
+  background-color: var(--surface-muted);
   border-color: #94a3b8;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--surface-muted);
 }
 
 .btn-outline {
@@ -350,9 +624,37 @@ p.subtitle {
   background-color: var(--primary-light);
 }
 
+.btn-destructive {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.btn-destructive:hover:not(:disabled) {
+  background-color: #fee2e2;
+  border-color: #f87171;
+}
+
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-sm {
+  font-size: 0.8125rem;
+  padding: 6px 12px;
+  min-height: 36px;
+}
+
+.btn-lg {
+  font-size: 1.0625rem;
+  padding: 14px 28px;
+  min-height: 52px;
+}
+
+.btn-block {
+  width: 100%;
 }
 
 .btn-group {
@@ -368,69 +670,211 @@ p.subtitle {
   }
 }
 
-/* Forms & Inputs */
+/* ==========================================================================
+   Form Inputs
+   ========================================================================== */
+
 .form-group {
   margin-bottom: 20px;
 }
 
 .form-label {
   display: block;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.form-label-optional {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  margin-left: 4px;
 }
 
 .form-input, .form-select {
   width: 100%;
   font-family: inherit;
-  font-size: 1.1rem;
-  padding: 12px 14px;
+  font-size: 1rem;
+  padding: 10px 14px;
   min-height: var(--min-touch-target);
   background-color: var(--surface);
   color: var(--text-main);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
-  transition: border-color 0.15s ease;
+  transition: border-color var(--duration-micro) ease,
+              box-shadow var(--duration-micro) ease;
+  outline: none;
+  appearance: none;
+}
+
+/* Hide native date/time calendar picker icon â€” we use a custom Lucide icon */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-inner-spin-button {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .form-input:focus, .form-select:focus {
-  outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-focus);
 }
 
+.form-input.error, .form-select.error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
 .form-error {
   color: #dc2626;
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  margin-top: 6px;
+  margin-top: 5px;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-/* Image Upload & Camera Box */
+.form-hint {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.clean-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .clean-card {
+    padding: 32px;
+  }
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-success   { background: var(--grade-0-bg); color: var(--grade-0-text); border: 1px solid var(--grade-0-border); }
+.badge-grade-0   { background: var(--grade-0-bg); color: var(--grade-0-text); border: 1px solid var(--grade-0-border); }
+.badge-grade-1   { background: var(--grade-1-bg); color: var(--grade-1-text); border: 1px solid var(--grade-1-border); }
+.badge-grade-2   { background: var(--grade-2-bg); color: var(--grade-2-text); border: 1px solid var(--grade-2-border); }
+.badge-grade-3   { background: var(--grade-3-bg); color: var(--grade-3-text); border: 1px solid var(--grade-3-border); }
+.badge-grade-4   { background: var(--grade-4-bg); color: var(--grade-4-text); border: 1px solid var(--grade-4-border); }
+.badge-uncertain { background: var(--uncertain-bg); color: var(--uncertain-text); border: 1px solid var(--uncertain-border); }
+.badge-pending   { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.badge-neutral   { background: var(--surface-muted); color: var(--text-tertiary); border: 1px solid var(--border-subtle); }
+
+/* ==========================================================================
+   Medical Disclaimer
+   ========================================================================== */
+
+.medical-disclaimer {
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--primary);
+  padding: 12px 16px;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  line-height: 1.5;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* ==========================================================================
+   Result Status Cards
+   ========================================================================== */
+
+.result-status-card {
+  padding: 20px 24px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid transparent;
+}
+
+.result-status-card.healthy {
+  background: var(--grade-0-bg);
+  border-color: var(--grade-0-border);
+  color: var(--grade-0-text);
+}
+
+.result-status-card.dr-positive {
+  background: var(--grade-3-bg);
+  border-color: var(--grade-3-border);
+  color: var(--grade-3-text);
+}
+
+.result-status-card.uncertain {
+  background: var(--uncertain-bg);
+  border-color: var(--uncertain-border);
+  color: var(--uncertain-text);
+}
+
+.result-status-card.ungradable {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #4c0519;
+}
+
+/* ==========================================================================
+   Severity Pill
+   ========================================================================== */
+
+.severity-pill {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   Image Upload / Dropzone
+   ========================================================================== */
+
 .uploader-box {
   border: 2px dashed var(--border);
   border-radius: var(--radius-lg);
   padding: 32px 20px;
   text-align: center;
-  background-color: var(--surface-subtle);
-  transition: border-color 0.2s ease;
+  background: var(--surface-muted);
+  transition: border-color var(--duration-standard) ease,
+              background var(--duration-standard) ease;
   cursor: pointer;
 }
 
 .uploader-box:hover, .uploader-box.drag-over {
   border-color: var(--primary);
-  background-color: var(--primary-light);
+  background: var(--primary-light);
 }
 
 .preview-container {
   position: relative;
   width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
@@ -439,229 +883,49 @@ p.subtitle {
 
 .preview-img {
   width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4/3;
   object-fit: cover;
   display: block;
 }
 
-/* Subtle Retinal Scanning Animation */
-.scan-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  width: 100%;
-  max-width: 360px;
-  margin: 0 auto 24px;
-  background: #09090b;
-}
+/* ==========================================================================
+   Sample Images Grid
+   ========================================================================== */
 
-.scan-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #38bdf8;
-  box-shadow: 0 0 16px 4px rgba(56, 189, 248, 0.8), 0 0 32px 8px rgba(13, 148, 136, 0.4);
-  animation: scanSweep 2.8s ease-in-out infinite alternate;
-}
-
-@keyframes scanSweep {
-  0% {
-    top: 5%;
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    top: 92%;
-    opacity: 0.7;
-  }
-}
-
-/* Analysis Stages Step Checklist */
-.progress-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin: 20px auto;
-  max-width: 360px;
-}
-
-.progress-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.progress-item.completed {
-  color: var(--text-main);
-  font-weight: 600;
-}
-
-.progress-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  border: 2px solid var(--border);
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.progress-item.completed .progress-badge {
-  background-color: var(--accent-teal);
-  border-color: var(--accent-teal);
-  color: #fff;
-}
-
-.progress-item.active .progress-badge {
-  border-color: var(--primary);
-  color: var(--primary);
-  animation: pulseBadge 1.2s infinite ease-in-out;
-}
-
-@keyframes pulseBadge {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-
-/* Result Cards */
-.result-status-card {
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  margin-bottom: 20px;
-  border: 1.5px solid transparent;
-}
-
-.result-status-card.healthy {
-  background-color: var(--outcome-healthy-bg);
-  border-color: var(--outcome-healthy-border);
-  color: var(--outcome-healthy-text);
-}
-
-.result-status-card.dr-positive {
-  background-color: var(--outcome-alert-bg);
-  border-color: var(--outcome-alert-border);
-  color: var(--outcome-alert-text);
-}
-
-.result-status-card.uncertain {
-  background-color: var(--outcome-warning-bg);
-  border-color: var(--outcome-warning-border);
-  color: var(--outcome-warning-text);
-}
-
-/* Severity Tag */
-.severity-pill {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
-  font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: -0.01em;
-  margin-bottom: 6px;
-}
-
-/* Grad-CAM Viewer Controls */
-.view-tabs {
-  display: flex;
-  background-color: var(--surface-subtle);
-  border-radius: var(--radius-md);
-  padding: 4px;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 8px 12px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.tab-btn.active {
-  background: var(--surface);
-  color: var(--text-main);
-  box-shadow: var(--shadow-sm);
-}
-
-.opacity-slider-wrapper {
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.opacity-slider {
-  flex: 1;
-  height: 6px;
-  border-radius: 3px;
-  accent-color: var(--primary);
-  cursor: pointer;
-}
-
-/* Clinical safety disclaimer */
-.medical-disclaimer {
-  background-color: var(--surface-subtle);
-  border-left: 3px solid var(--border);
-  padding: 12px 16px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin-top: 24px;
-  line-height: 1.4;
-}
-
-/* Sample selection grid */
 .sample-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
   margin-top: 12px;
 }
 
 .sample-card {
-  border: 1.5px solid var(--border-subtle);
+  border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--surface);
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.15s ease, transform 0.1s ease;
+  transition: border-color var(--duration-micro) ease,
+              transform var(--duration-micro) ease,
+              box-shadow var(--duration-micro) ease;
+  position: relative;
 }
 
 .sample-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .sample-card.active {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-focus);
 }
 
 .sample-thumb {
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 4/3;
   object-fit: cover;
   display: block;
 }
@@ -676,108 +940,462 @@ p.subtitle {
   text-overflow: ellipsis;
 }
 
-/* Respect Reduced Motion Preference */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .scan-line {
-    display: none;
-  }
+/* ==========================================================================
+   Scanning Animation (Analysis Screen)
+   ========================================================================== */
+
+.scan-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 24px;
+  background: #09090b;
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #38bdf8 30%, #0ea5e9 70%, transparent);
+  box-shadow: 0 0 12px 4px rgba(56, 189, 248, 0.7), 0 0 24px 8px rgba(14, 165, 233, 0.3);
+  animation: scanSweep 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes scanSweep {
+  0%   { top: 4%; opacity: 0.6; }
+  50%  { opacity: 1; }
+  100% { top: 92%; opacity: 0.6; }
 }
 
 /* ==========================================================================
-   Print Styles for Clean A4 Clinical Report
+   Analysis Progress List
    ========================================================================== */
+
+.progress-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px auto;
+  max-width: 400px;
+  width: 100%;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  border: 1px solid transparent;
+  transition: background var(--duration-standard) ease,
+              border-color var(--duration-standard) ease,
+              color var(--duration-standard) ease;
+}
+
+.progress-item.completed {
+  color: var(--grade-0-text);
+  background: var(--grade-0-bg);
+  border-color: var(--grade-0-border);
+  font-weight: 600;
+}
+
+.progress-item.active {
+  color: var(--primary);
+  background: var(--primary-light);
+  border-color: rgba(2, 132, 199, 0.3);
+  font-weight: 600;
+}
+
+.progress-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: 2px solid currentColor;
+  flex-shrink: 0;
+  background: white;
+}
+
+.progress-item.completed .progress-badge {
+  background: var(--grade-0);
+  border-color: var(--grade-0);
+  color: white;
+}
+
+.progress-item.active .progress-badge {
+  border-color: var(--primary);
+  color: var(--primary);
+  animation: pulseBadge 1.4s infinite ease-in-out;
+}
+
+@keyframes pulseBadge {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.4); }
+  50%       { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(2, 132, 199, 0); }
+}
+
+/* ==========================================================================
+   GradCAM Viewer
+   ========================================================================== */
+
+.view-tabs {
+  display: flex;
+  background: var(--surface-muted);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--duration-micro) ease, color var(--duration-micro) ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+}
+
+.tab-btn.active {
+  background: var(--surface);
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.opacity-slider-wrapper {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: var(--surface-muted);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.opacity-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  outline: none;
+  cursor: pointer;
+}
+
+.opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.opacity-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Language Selector
+   ========================================================================== */
+
+.lang-select {
+  appearance: none;
+  background-color: var(--surface-subtle);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 32px 8px 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+/* ==========================================================================
+   Skeleton Loading
+   ========================================================================== */
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--surface-muted) 25%,
+    var(--border-subtle) 50%,
+    var(--surface-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Keyboard Animations (Framer Motion handles JS-side; CSS keyframes for CSS-only)
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-3px); }
+  40%       { transform: translateX(3px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+@keyframes retinaPulse {
+  0%, 100% { opacity: 0.28; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(1.02); }
+}
+
+.animate-fade-in      { animation: fadeIn 0.4s ease-out both; }
+.animate-slide-up     { animation: slideUp 0.45s var(--ease-spring) both; }
+.animate-slide-down   { animation: slideDown 0.3s ease-out both; }
+.animate-scale-in     { animation: scaleIn 0.3s var(--ease-spring) both; }
+.animate-shake        { animation: shake 0.35s ease-in-out; }
+.retina-pulse         { animation: retinaPulse 4s ease-in-out infinite; }
+
+/* ==========================================================================
+   Doctor Dashboard â€” DataTable
+   ========================================================================== */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table th:hover {
+  color: var(--text-main);
+}
+
+.data-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover td {
+  background: var(--surface-muted);
+}
+
+.data-table tbody tr:nth-child(even) td {
+  background: #fafbfc;
+}
+
+.data-table tbody tr:nth-child(even):hover td {
+  background: var(--surface-muted);
+}
+
+/* ==========================================================================
+   Print Styles â€” AarogyaNetra Screening Report PDF
+   ========================================================================== */
+
 @media print {
+  /* â”€â”€ Force exact color rendering â”€â”€ */
   * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* â”€â”€ Page setup â”€â”€ */
+  @page {
+    size: A4 portrait;
+    margin: 16mm 16mm 20mm 16mm;
+  }
+
+  /* â”€â”€ Hide all UI chrome â”€â”€ */
+  .nav-header,
+  .offline-banner,
+  .stepper-strip,
+  .report-action-bar,
+  .no-print,
+  .btn,
+  .view-tabs,
+  .opacity-slider-wrapper,
+  .drawer-backdrop,
+  .drawer-panel,
+  footer {
+    display: none !important;
+  }
+
+  /* â”€â”€ Reset body for print â”€â”€ */
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 10pt;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  /* â”€â”€ Reset layout containers â”€â”€ */
+  body > * {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* â”€â”€ Report container â”€â”€ */
+  #printable-report {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* â”€â”€ Sections: avoid page breaks inside â”€â”€ */
+  .print-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 12pt !important;
+  }
+
+  /* â”€â”€ Force all background colors / borders through â”€â”€ */
+  [style*="background"],
+  [style*="border"] {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-size: 11pt;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Hide all UI chrome */
-  .header,
-  .offline-banner,
-  .no-print,
-  .btn,
-  .view-tabs,
-  .opacity-slider-wrapper {
-    display: none !important;
-  }
-
-  /* The main wrapper – fill the page */
-  main, .main-content {
+  /* â”€â”€ Images â”€â”€ */
+  img {
     max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
-  /* Report page outer wrapper */
-  .main-content > div,
-  main > div {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 8px 0 !important;
+  /* â”€â”€ Typography â”€â”€ */
+  h1, h2, h3, h4, h5 {
+    color: #0f172a !important;
+    page-break-after: avoid;
+    break-after: avoid;
   }
 
-  /* Two-column layout becomes single column in print */
-  .print-flex-container {
-    display: block !important;
+  p, li {
+    color: #1e293b !important;
+    line-height: 1.55 !important;
   }
 
-  /* Right sidebar (doctor validation panel) hidden in print */
-  .print-flex-container > div:last-child {
-    display: none !important;
-  }
-
-  /* Main report card fills full width */
-  .clean-card {
-    flex: none !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    border: 1px solid #ccc !important;
-    box-shadow: none !important;
-    padding: 20px !important;
-    margin-bottom: 12px !important;
-    background: #fff !important;
-    border-radius: 0 !important;
-  }
-
-  .print-page-header {
-    border-bottom: 2px solid #0284c7 !important;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
+  /* â”€â”€ Report header â”€â”€ */
+  .print-report-header {
     display: flex !important;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
+    border-bottom: 2pt solid #0284c7 !important;
+    padding-bottom: 10pt !important;
+    margin-bottom: 14pt !important;
   }
 
+  /* â”€â”€ 2-column grid on print â”€â”€ */
   .print-images-row {
-    display: flex !important;
-    gap: 16px !important;
-    justify-content: center;
-    margin: 16px 0;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12pt !important;
   }
 
-  .print-images-row img {
-    max-width: 220px !important;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+  /* â”€â”€ Probability bars â”€â”€ */
+  .prob-bar-fill {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Ensure text and backgrounds print correctly */
-  h1, h2, h3, h4 {
-    color: #000 !important;
+  /* â”€â”€ Footer â”€â”€ */
+  .print-section:last-of-type {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* â”€â”€ Remove decorative shadows â”€â”€ */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* â”€â”€ Links â”€â”€ */
+  a {
+    color: #0284c7 !important;
+    text-decoration: none;
   }
 }

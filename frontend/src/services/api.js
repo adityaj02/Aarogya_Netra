@@ -20,8 +20,9 @@ export async function runHierarchicalScreening({
   lang = 'en',
   onStepProgress = () => {}
 }) {
-  onStepProgress({ step: 1, label: 'stepScreening' });
-  
+  // Stage 1: Preprocessing
+  onStepProgress({ step: 1, label: 'stagePreprocessing' });
+
   // Create patient first
   let patientId = "1";
   try {
@@ -39,38 +40,52 @@ export async function runHierarchicalScreening({
   } catch (err) {
     console.warn("Could not register patient, fallback to default ID:", err);
   }
-  
-  onStepProgress({ step: 2, label: 'stepSeverity' });
-  onStepProgress({ step: 3, label: 'stepExplanation' });
-  
+
+  // Stage 2: DR Screening (image upload starts)
+  onStepProgress({ step: 2, label: 'stepScreening' });
+
   // Convert imageData (dataURL) to blob
   const res = await fetch(imageData);
   const blob = await res.blob();
-  
+
   const formData = new FormData();
   formData.append("patient_id", patientId);
   formData.append("language", lang);
   formData.append("file", blob, "fundus.jpg");
-  
-  const screenRes = await fetch(`${API_BASE}/screen`, {
+
+  // Stage 3: Severity grading (kick off while request is in-flight)
+  const screenPromise = fetch(`${API_BASE}/screen`, {
     method: "POST",
     body: formData
   });
-  
+
+  // Simulate stage progression with timeouts while request runs
+  const stepTimer = setTimeout(() => onStepProgress({ step: 3, label: 'stepSeverity' }), 1200);
+
+  const screenRes = await screenPromise;
+  clearTimeout(stepTimer);
+
+  // Stage 3 confirmed (if not already triggered)
+  onStepProgress({ step: 3, label: 'stepSeverity' });
+
   const fullReport = await screenRes.json();
-  
+
+  // Stage 4: Explanation generation
+  onStepProgress({ step: 4, label: 'stepExplanation' });
+
   // Prepend API base to image URLs if needed
   if (fullReport.heatmapDataUrl && fullReport.heatmapDataUrl.startsWith("/")) {
     fullReport.heatmapDataUrl = fullReport.heatmapDataUrl;
     fullReport.overlayDataUrl = fullReport.overlayDataUrl;
     fullReport.imageData = fullReport.imageData;
   }
-  
+
   // Add patient back to report for UI
   fullReport.patient = patient;
-  
+
   return fullReport;
 }
+
 
 export async function fetchReports({ search = '', filter = 'ALL' } = {}) {
   const res = await fetch(`${API_BASE}/reports`);

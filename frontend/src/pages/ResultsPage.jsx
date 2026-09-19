@@ -1,428 +1,512 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import {
-  CheckCircle2,
-  AlertTriangle,
-  FileText,
-  Printer,
-  RotateCcw,
-  RefreshCw,
-  Camera,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  Calendar,
-  AlertCircle
+  CheckCircle2, AlertTriangle, FileText, Printer, RotateCcw,
+  Camera, ArrowRight, ShieldCheck, Calendar, AlertCircle,
+  HelpCircle, ChevronDown, Download, Sparkles, Info
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import GradCAMViewer from '../components/GradCAMViewer';
-import DoctorValidationPanel from '../components/DoctorValidationPanel';
 
-export default function ResultsPage({
-  result,
-  onViewReport,
-  onStartNewScreening,
-  onRecapture
-}) {
+/* ─── Grade scale config ─────────────────────────────────────────── */
+const GRADE_CONFIG = {
+  0: { label: 'No DR',         color: 'var(--grade-0)', bg: 'var(--grade-0-bg)', border: 'var(--grade-0-border)', textColor: 'var(--grade-0-text)' },
+  1: { label: 'Mild DR',       color: 'var(--grade-1)', bg: 'var(--grade-1-bg)', border: 'var(--grade-1-border)', textColor: 'var(--grade-1-text)' },
+  2: { label: 'Moderate DR',   color: 'var(--grade-2)', bg: 'var(--grade-2-bg)', border: 'var(--grade-2-border)', textColor: 'var(--grade-2-text)' },
+  3: { label: 'Severe DR',     color: 'var(--grade-3)', bg: 'var(--grade-3-bg)', border: 'var(--grade-3-border)', textColor: 'var(--grade-3-text)' },
+  4: { label: 'Proliferative', color: 'var(--grade-4)', bg: 'var(--grade-4-bg)', border: 'var(--grade-4-border)', textColor: 'var(--grade-4-text)' },
+};
+
+/* ─── Animated counter ───────────────────────────────────────────── */
+function AnimatedNumber({ value, decimals = 1, suffix = '%' }) {
+  const mv  = useMotionValue(0);
+  const ref = useRef(null);
+  useEffect(() => {
+    const c = animate(mv, Number(value) || 0, { duration: 0.9, ease: 'easeOut' });
+    const unsub = mv.on('change', (v) => {
+      if (ref.current) ref.current.textContent = v.toFixed(decimals) + suffix;
+    });
+    return () => { c.stop(); unsub(); };
+  }, [value]);
+  return <span ref={ref}>0{suffix}</span>;
+}
+
+/* ─── Accordion ──────────────────────────────────────────────────── */
+function Accordion({ title, icon: Icon, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        aria-expanded={open}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '14px 18px', background: 'var(--surface-muted)',
+          border: 'none', cursor: 'pointer', gap: 10, textAlign: 'left',
+          fontFamily: 'inherit',
+        }}
+      >
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: '0.9375rem', color: 'var(--text-main)' }}>
+          {Icon && <Icon size={16} strokeWidth={1.5} aria-hidden="true" style={{ color: 'var(--primary)', flexShrink: 0 }} />}
+          {title}
+        </span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', flexShrink: 0 }}>
+          <ChevronDown size={16} strokeWidth={2} aria-hidden="true" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ padding: '16px 18px', background: 'white', borderTop: '1px solid var(--border-subtle)' }}>
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─── Grade Scale Legend ─────────────────────────────────────────── */
+function GradeScaleLegend({ currentGrade }) {
+  return (
+    <div style={{ marginTop: 16 }}>
+      <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
+        DR Severity Scale
+      </p>
+      <div style={{ display: 'flex', gap: 4 }}>
+        {[0, 1, 2, 3, 4].map((g) => {
+          const cfg = GRADE_CONFIG[g];
+          const isCurrent = currentGrade === g;
+          return (
+            <div key={g} style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{
+                height: 8, borderRadius: 4,
+                background: cfg.color,
+                border: isCurrent ? `2px solid ${cfg.textColor}` : '2px solid transparent',
+                boxShadow: isCurrent ? `0 0 0 2px ${cfg.color}` : 'none',
+                transform: isCurrent ? 'scaleY(1.4)' : 'scaleY(1)',
+                transition: 'transform 0.2s',
+                marginBottom: 4,
+              }} />
+              <span style={{ fontSize: '0.65rem', fontWeight: isCurrent ? 800 : 500, color: isCurrent ? cfg.textColor : 'var(--text-tertiary)' }}>
+                G{g}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Component ──────────────────────────────────────────────── */
+export default function ResultsPage({ result, patient, onViewReport, onStartNewScreening, onRecapture }) {
   const { t } = useLanguage();
 
+  if (!result) return null;
+
+  const isHealthy    = result.stage1Outcome === 'NO_DR';
+  const isDRDetected = result.stage1Outcome === 'DR_DETECTED';
+  const isUncertain  = result.stage1Outcome === 'UNCERTAIN';
+  const isUngradable = result.qualityMetrics?.overallScore !== undefined
+    ? result.qualityMetrics.overallScore < 0.6
+    : (result.stage1Outcome === 'UNGRADABLE' || result.Final_Grade === 'UNGRADABLE');
+
+  const drProbPct    = result.probabilities?.Stage1?.Fused_DR_Prob != null
+    ? (result.probabilities.Stage1.Fused_DR_Prob * 100).toFixed(1)
+    : null;
+  const thresholdPct = result.probabilities?.Stage1?.Threshold_Used != null
+    ? (result.probabilities.Stage1.Threshold_Used * 100).toFixed(1)
+    : '45.0';
+
+  const gradeNum = typeof result.Final_Grade === 'number' ? result.Final_Grade
+    : typeof result.grade === 'number' ? result.grade : null;
+
+  const gradeCfg = gradeNum != null ? GRADE_CONFIG[gradeNum] : null;
+
+  // Format explanation into scannable bullets
   const formatExplanation = (text) => {
     if (!text) return null;
     const parts = text.split(/Guidance:/i);
     if (parts.length > 1) {
-      let finding = parts[0].replace(/This is a screening assessment and not a definitive diagnosis.*/i, '').trim();
-      return (
-        <ul style={{ paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <li><strong>Finding:</strong> {finding}</li>
-          <li><strong>Guidance:</strong> {parts[1].trim()}</li>
-          <li><strong>Disclaimer:</strong> AI-screening assessment only; not a definitive diagnosis.</li>
-        </ul>
-      );
+      const finding = parts[0].replace(/This is a screening assessment and not a definitive diagnosis.*/i, '').trim();
+      const guidance = parts[1].trim();
+      return { finding, guidance };
     }
-    return text;
+    return { finding: text, guidance: null };
   };
+  const explanation = formatExplanation(result.explanation);
 
-  if (!result) return null;
+  const screeningDate = new Date().toLocaleString('en-IN', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
 
-  const isHealthy = result.stage1Outcome === 'NO_DR';
-  const isDRDetected = result.stage1Outcome === 'DR_DETECTED';
-  const isUncertain = result.stage1Outcome === 'UNCERTAIN';
-  const isUngradable = result.qualityMetrics?.overallScore !== undefined 
-    ? result.qualityMetrics.overallScore < 0.6 
-    : (result.stage1Outcome === 'UNGRADABLE' || result.Final_Grade === 'UNGRADABLE');
-
-  const severityDescMap = {
-    severityMild: 'severityMildDesc',
-    severityModerate: 'severityModerateDesc',
-    severitySevere: 'severitySevereDesc',
-    severityProliferative: 'severityProliferativeDesc',
-    severityNone: 'severityNoneDesc'
+  const cardAnimation = {
+    initial: { opacity: 0, y: 20, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
   };
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-      {/* 1. Main Stage 1 Screening Result Card */}
-      <div style={{ flex: '1 1 500px' }}>
-        <div className="clean-card" style={{ paddingBottom: '20px', marginBottom: '0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <h2 style={{ margin: 0, fontSize: '1.4rem' }}>{t('resultTitle')}</h2>
-            <span
-              style={{
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                padding: '4px 10px',
-                borderRadius: 'var(--radius-full)',
-                background: isUngradable ? '#fee2e2' : result.confidence === 'HIGH' ? 'var(--accent-teal-light)' : '#fef3c7',
-                color: isUngradable ? '#991b1b' : result.confidence === 'HIGH' ? 'var(--accent-teal)' : '#b45309'
-              }}
-            >
-              {isUngradable ? 'QUALITY WARNING' : result.confidence === 'HIGH' ? t('confidenceHigh') : t('confidenceReview')}
-            </span>
-          </div>
+    <div style={{
+      flex: 1, padding: '24px 16px 64px',
+      background: 'var(--bg-app)',
+    }}>
+      <div className="page-container" style={{ maxWidth: 1000 }}>
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
 
-          {/* Outcome Box */}
-          {isUngradable && (
-            <div className="result-status-card ungradable" style={{ borderLeft: '6px solid #dc2626', backgroundColor: '#fff1f2', padding: '16px', borderRadius: '12px', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <AlertTriangle size={36} style={{ flexShrink: 0, color: '#e11d48', marginTop: '2px' }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#9f1239' }}>
-                    {t('outcomeUngradable')}
+          {/* ── Left Column: Main Results ── */}
+          <motion.div {...cardAnimation} style={{ flex: '1 1 520px', minWidth: 0 }}>
+            <div className="clean-card" style={{ padding: 0, overflow: 'hidden', marginBottom: 16 }}>
+
+              {/* Report Header */}
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-muted)', display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                    Screening Report
                   </div>
-                  <div style={{ fontSize: '0.95rem', color: '#be123c', marginTop: '6px', fontWeight: 600 }}>
-                    {result.explanation || result.reason || (result.iqaDetails && result.iqaDetails.reason) || t('iqaSubtitle')}
-                  </div>
-                  {result.iqaDetails && (
-                    <div style={{ marginTop: '10px', fontSize: '0.85rem', background: '#ffe4e6', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecdd3', color: '#881337', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <div style={{ fontWeight: 700, marginBottom: '2px' }}>IQA Diagnostic Details:</div>
-                      {result.iqaDetails.reason && <div>• <strong>Primary Check:</strong> {result.iqaDetails.reason}</div>}
-                      {/* Support both normalized schema (failed_checks[]) and legacy */}
-                      {result.iqaDetails.failed_checks && result.iqaDetails.failed_checks.length > 0 && (
-                        <div>• <strong>Failed Quality Gates:</strong> {result.iqaDetails.failed_checks.join(', ')}</div>
-                      )}
-                      {/* Blur score: new schema uses metrics.blur_score, legacy uses blurScore */}
-                      {(() => {
-                        const blur = result.iqaDetails.metrics?.blur_score ?? result.iqaDetails.blurScore;
-                        return blur != null ? <div>• <strong>Blur Score:</strong> {typeof blur === 'number' ? blur.toFixed(2) : blur}</div> : null;
-                      })()}
-                      {(() => {
-                        const bright = result.iqaDetails.metrics?.brightness ?? result.iqaDetails.brightness;
-                        return bright != null ? <div>• <strong>Brightness:</strong> {typeof bright === 'number' ? bright.toFixed(1) : bright}</div> : null;
-                      })()}
-                      {(() => {
-                        const fov = result.iqaDetails.metrics?.fov_ratio ?? result.iqaDetails.fovRatio;
-                        return fov != null ? <div>• <strong>Field of View (FOV):</strong> {(fov * 100).toFixed(1)}%</div> : null;
-                      })()}
-                      {result.iqaDetails.engine && (
-                        <div style={{ marginTop: '4px', opacity: 0.7, fontSize: '0.8rem' }}>IQA Engine: {result.iqaDetails.engine}</div>
-                      )}
-                    </div>
+                  {patient?.name && (
+                    <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: 2 }}>
+                      {patient.name}
+                    </h2>
                   )}
-                  {/* Recapture action buttons */}
-                  <div className="btn-group" style={{ marginTop: '16px' }}>
-                    {onRecapture && (
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={onRecapture}
-                        style={{ flex: 2 }}
-                      >
-                        <Camera size={18} />
-                        <span>{t('recRecapture')}</span>
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={onStartNewScreening}
-                      style={{ flex: 1 }}
-                    >
-                      <RotateCcw size={16} />
-                      <span>{t('startNewScreening')}</span>
-                    </button>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, fontSize: '0.8125rem', color: 'var(--text-tertiary)' }}>
+                    {patient?.age && <span>Age: {patient.age} yrs</span>}
+                    {patient?.gender && <span>· {patient.gender}</span>}
+                    {patient?.dob && <span>· DOB: {patient.dob}</span>}
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {isHealthy && !isUngradable && (
-            <div className="result-status-card healthy">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <CheckCircle2 size={32} style={{ flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>
-                    {t('outcomeNoDR')}
+                <div style={{ textAlign: 'right', fontSize: '0.8125rem', color: 'var(--text-tertiary)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <Calendar size={13} aria-hidden="true" />
+                    {screeningDate}
                   </div>
-                  <div style={{ fontSize: '0.9rem', marginTop: '4px' }}>
-                    {t('severityNoneDesc')}
-                  </div>
+                  <div style={{ marginTop: 4, fontSize: '0.75rem' }}>Model v2.1 · AarogyaNetra</div>
                 </div>
               </div>
-            </div>
-          )}
 
-          {isDRDetected && !isUngradable && (
-            <div className="result-status-card dr-positive" style={{ borderLeft: '6px solid #dc2626', backgroundColor: '#fef2f2', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <AlertCircle size={32} style={{ flexShrink: 0, color: '#dc2626' }} />
-                <div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>
-                    {t('outcomeDRDetected')}
-                  </div>
-                  {result.severityKey && (
-                    <div style={{ marginTop: '6px' }}>
-                      <span
-                        style={{
-                          background: '#fee2e2',
-                          color: '#991b1b',
-                          padding: '3px 10px',
-                          borderRadius: 'var(--radius-sm)',
-                          fontWeight: 700,
-                          fontSize: '1rem',
-                          display: 'inline-block',
-                          marginBottom: '4px'
-                        }}
-                      >
-                        {t(result.severityKey)}
-                      </span>
-                      <div style={{ fontSize: '0.85rem', color: '#7f1d1d' }}>
-                        {t(severityDescMap[result.severityKey] || '')}
+              <div style={{ padding: '24px' }}>
+
+                {/* ── Outcome card ── */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1, duration: 0.35, type: 'spring', stiffness: 260, damping: 24 }}
+                  style={{ marginBottom: 20 }}
+                >
+                  {/* Ungradable */}
+                  {isUngradable && (
+                    <div className="result-status-card ungradable" style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <AlertTriangle size={32} style={{ flexShrink: 0, color: '#be123c', marginTop: 2 }} aria-hidden="true" />
+                      <div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: 4 }}>{t('outcomeUngradable', 'Image Quality Insufficient')}</div>
+                        <div style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>{result.explanation || t('iqaSubtitle', 'The image could not be graded due to poor quality. Please recapture.')}</div>
+                        <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                          {onRecapture && <button type="button" className="btn btn-primary btn-sm" onClick={onRecapture}><Camera size={15} aria-hidden="true" />{t('recRecapture', 'Recapture Image')}</button>}
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={onStartNewScreening}><RotateCcw size={14} aria-hidden="true" />{t('startNewScreening', 'New Screening')}</button>
+                        </div>
                       </div>
                     </div>
                   )}
+
+                  {/* Healthy */}
+                  {isHealthy && !isUngradable && (
+                    <div className="result-status-card healthy" style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <CheckCircle2 size={32} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+                      <div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 700 }}>{t('outcomeNoDR', 'No Diabetic Retinopathy Detected')}</div>
+                        <div style={{ fontSize: '0.9rem', marginTop: 4, lineHeight: 1.5 }}>{t('severityNoneDesc', 'No signs of DR were found in this image. Continue annual screening.')}</div>
+                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} />}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* DR Detected */}
+                  {isDRDetected && !isUngradable && (
+                    <div className="result-status-card dr-positive" style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <AlertCircle size={32} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 700 }}>{t('outcomeDRDetected', 'Diabetic Retinopathy Detected')}</div>
+                        {result.severityKey && (
+                          <div style={{ marginTop: 8 }}>
+                            <motion.span
+                              initial={{ scale: 0.8, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
+                              style={{
+                                display: 'inline-block',
+                                background: gradeCfg?.bg || '#fee2e2',
+                                color: gradeCfg?.textColor || '#991b1b',
+                                border: `1px solid ${gradeCfg?.border || '#fca5a5'}`,
+                                padding: '4px 12px', borderRadius: 999,
+                                fontWeight: 700, fontSize: '0.9rem', marginBottom: 6,
+                              }}
+                            >
+                              {t(result.severityKey)}
+                              {gradeNum != null && ` (Grade ${gradeNum})`}
+                            </motion.span>
+                          </div>
+                        )}
+                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} />}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Uncertain */}
+                  {isUncertain && !isUngradable && (
+                    <div style={{ background: 'var(--uncertain-bg)', border: `1.5px solid var(--uncertain-border)`, borderRadius: 'var(--radius-lg)', padding: '20px 24px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <HelpCircle size={32} style={{ flexShrink: 0, color: 'var(--uncertain)', marginTop: 2 }} aria-hidden="true" />
+                      <div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--uncertain-text)' }}>{t('outcomeUncertain', 'Uncertain — Clinical Review Required')}</div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--uncertain-text)', marginTop: 6, lineHeight: 1.5 }}>
+                          The AI model could not reach a confident determination. Schedule a clinical review or retake the image.
+                        </div>
+                        <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(124,58,237,0.08)', borderRadius: 8, fontSize: '0.8125rem', color: 'var(--uncertain-text)', fontWeight: 600 }}>
+                          Recommended action: Refer for clinical examination within 2 weeks.
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* ── AI Probability Metrics (3 labeled chips) ── */}
+                {drProbPct !== null && !isUngradable && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}
+                  >
+                    {[
+                      {
+                        label: 'DR Probability',
+                        value: drProbPct,
+                        hint: 'Likelihood of diabetic retinopathy in this image.',
+                        color: 'var(--primary)',
+                      },
+                      {
+                        label: 'Referral Threshold',
+                        value: thresholdPct,
+                        hint: 'Cases above this value are flagged for review.',
+                        color: 'var(--text-tertiary)',
+                      },
+                      {
+                        label: 'Model Confidence',
+                        value: null,
+                        text: result.confidence === 'HIGH' ? 'High' : result.confidence === 'LOW' ? 'Low' : 'Medium',
+                        hint: 'How confident the AI model is in this result.',
+                        color: result.confidence === 'HIGH' ? 'var(--success)' : result.confidence === 'LOW' ? 'var(--danger)' : 'var(--warning)',
+                      },
+                    ].map(({ label, value, text, hint, color }) => (
+                      <div key={label} style={{ flex: '1 1 140px', background: 'var(--surface-muted)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '12px 14px', minWidth: 130 }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
+                          {label}
+                          <span title={hint} aria-label={hint} style={{ marginLeft: 5, cursor: 'help', display: 'inline-flex', verticalAlign: 'middle' }}>
+                            <Info size={11} strokeWidth={2} style={{ color: 'var(--text-tertiary)' }} />
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 800, color }}>
+                          {value != null ? <AnimatedNumber value={value} /> : text}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {/* ── Clinical Recommendation ── */}
+                {!isUngradable && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.28 }}
+                    style={{ marginBottom: 20, padding: '16px', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--primary)' }}
+                  >
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 }}>
+                      <Calendar size={16} style={{ color: 'var(--primary)' }} aria-hidden="true" />
+                      <h3 style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 700 }}>{t('recommendationTitle', 'Clinical Recommendation')}</h3>
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: 5, lineHeight: 1.6 }}>
+                      {isHealthy ? (
+                        <>
+                          <li>Routine annual comprehensive eye examination.</li>
+                          <li>Maintain controlled blood sugar, blood pressure, and cholesterol.</li>
+                          <li><strong>Referral urgency:</strong> Annual review — no immediate referral required.</li>
+                        </>
+                      ) : isDRDetected ? (
+                        <>
+                          <li>Schedule an ophthalmologist or retina specialist appointment.</li>
+                          <li>Bring this report to your consultation.</li>
+                          <li>Do not delay if you experience sudden vision changes.</li>
+                          <li><strong>Referral urgency:</strong> {gradeNum != null && gradeNum >= 3 ? 'Urgent — within 1 week.' : 'Within 2–4 weeks.'}</li>
+                        </>
+                      ) : (
+                        <>
+                          <li>{t(result.referralKey, 'Schedule clinical review within 2 weeks.')}</li>
+                          <li>{t(result.timelineKey, 'Bring this report to your next consultation.')}</li>
+                        </>
+                      )}
+                    </ul>
+                  </motion.div>
+                )}
+
+                {/* ── Clinical Explanation (accordion) ── */}
+                {explanation && !isUngradable && (
+                  <motion.div
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                    transition={{ delay: 0.35 }}
+                    style={{ marginBottom: 20 }}
+                  >
+                    <Accordion title={t('clinicalExplanationTitle', 'AI Screening Explanation')} icon={Sparkles} defaultOpen>
+                      {/* Scannable bullets first */}
+                      <div style={{ marginBottom: 16 }}>
+                        {[
+                          { heading: 'What we found', content: explanation.finding },
+                          explanation.guidance && { heading: 'What to do next', content: explanation.guidance },
+                          { heading: 'What this is not', content: 'This screening is not a definitive diagnosis. It is an AI-assisted assessment to support — not replace — clinical judgment.' },
+                        ].filter(Boolean).map(({ heading, content }) => (
+                          <div key={heading} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+                            <div style={{ width: 4, borderRadius: 2, background: 'var(--primary)', flexShrink: 0, marginTop: 3 }} />
+                            <div>
+                              <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: 2 }}>{heading}</p>
+                              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>{content}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Accordion>
+                  </motion.div>
+                )}
+
+                {/* ── Single consolidated disclaimer ── */}
+                <div className="medical-disclaimer" style={{ marginBottom: 20 }}>
+                  <ShieldCheck size={14} style={{ flexShrink: 0, marginTop: 1 }} aria-hidden="true" />
+                  <span>{t('safetyDisclaimer', 'AarogyaNetra is an AI-assistive tool. Results must be reviewed by a qualified ophthalmologist or healthcare provider before any clinical decision is made. Model accuracy may vary based on image quality and patient demographics.')}</span>
                 </div>
+
+                {/* ── Action buttons ── */}
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  transition={{ delay: 0.45 }}
+                  style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}
+                >
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={onStartNewScreening}>
+                    <RotateCcw size={14} aria-hidden="true" />
+                    {t('startNewScreening', 'New Screening')}
+                  </button>
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => window.print()}>
+                    <Printer size={14} aria-hidden="true" />
+                    Print / PDF
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={onViewReport} style={{ marginLeft: 'auto' }}>
+                    <FileText size={16} aria-hidden="true" />
+                    {t('viewReport', 'Full Report')}
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </button>
+                </motion.div>
               </div>
             </div>
-          )}
+          </motion.div>
 
-          {isUncertain && !isUngradable && (
-            <div className="result-status-card uncertain">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <AlertTriangle size={32} style={{ flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>
-                    {t('outcomeUncertain')}
-                  </div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 600, marginTop: '4px' }}>
-                    {t('uncertainNoticeTitle')}
-                  </div>
-                  <div style={{ fontSize: '0.85rem', marginTop: '2px' }}>
-                    {t('uncertainNoticeDesc')}
-                  </div>
+          {/* ── Right Column: GradCAM + Technical Details ── */}
+          {(result.probabilities || result.heatmapDataUrl) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              style={{ flex: '1 1 300px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 16 }}
+            >
+              {/* GradCAM */}
+              {result.heatmapDataUrl && (
+                <div className="clean-card" style={{ padding: 0, overflow: 'hidden', marginBottom: 0 }}>
+                  <GradCAMViewer
+                    originalSrc={result.imageData}
+                    heatmapSrc={result.heatmapDataUrl}
+                    overlaySrc={result.overlayDataUrl}
+                  />
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* 2. Clinical Recommendation & Referral */}
-          <div
-            style={{
-              marginTop: '16px',
-              padding: '16px',
-              backgroundColor: 'var(--surface-subtle)',
-              borderRadius: 'var(--radius-md)',
-              borderLeft: '4px solid var(--primary)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Calendar size={18} style={{ color: 'var(--primary)' }} />
-              <h3 style={{ margin: 0, fontSize: '1rem' }}>{t('recommendationTitle')}</h3>
-            </div>
-            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {isHealthy ? (
-                <>
-                  <li>Routine annual comprehensive eye exam.</li>
-                  <li>Maintain healthy blood sugar, blood pressure, and cholesterol levels.</li>
-                </>
-              ) : isDRDetected ? (
-                <>
-                  <li>Schedule an appointment with an ophthalmologist or retina specialist within 2–4 weeks.</li>
-                  <li>Bring this report to your consultation.</li>
-                  <li>Do not delay if you experience sudden vision changes.</li>
-                </>
-              ) : (
-                <>
-                  <li>{t(result.referralKey)}</li>
-                  <li>{t(result.timelineKey)}</li>
-                </>
               )}
-            </ul>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="btn-group" style={{ marginTop: '24px' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onStartNewScreening}
-              style={{ flex: 1 }}
-            >
-              <RotateCcw size={18} />
-              <span>{t('startNewScreening')}</span>
-            </button>
+              {/* Technical AI Details accordion */}
+              {result.probabilities && (
+                <div className="clean-card" style={{ marginBottom: 0 }}>
+                  <Accordion title="Technical AI Details" icon={null} defaultOpen={false}>
+                    {result.probabilities.Stage1 && (
+                      <div style={{ marginBottom: 16 }}>
+                        <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                          Stage 1: DR Detection
+                          <span title="Stage 1 uses two binary models (M0ALL and M01) fused into a final probability." style={{ cursor: 'help', marginLeft: 4, display: 'inline-flex', verticalAlign: 'middle' }}>
+                            <Info size={10} strokeWidth={2} style={{ color: 'var(--text-tertiary)' }} />
+                          </span>
+                        </p>
+                        <div style={{ background: 'var(--surface-muted)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', fontSize: '0.8125rem', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          {result.probabilities.Stage1.P_M0ALL_DR !== undefined && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)' }}>
+                              <span title="Base ensemble model — all grades vs no-DR">M0ALL (Base) <Info size={10} strokeWidth={2} style={{ verticalAlign: 'middle', color: 'var(--text-tertiary)' }} /></span>
+                              <strong>{(result.probabilities.Stage1.P_M0ALL_DR * 100).toFixed(1)}%</strong>
+                            </div>
+                          )}
+                          {result.probabilities.Stage1.P_M01_DR !== undefined && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)' }}>
+                              <span title="Boundary model — distinguishes Grade 1+ from Grade 0">M01 Boundary (Grade 1+ vs 0) <Info size={10} strokeWidth={2} style={{ verticalAlign: 'middle', color: 'var(--text-tertiary)' }} /></span>
+                              <strong>{(result.probabilities.Stage1.P_M01_DR * 100).toFixed(1)}%</strong>
+                            </div>
+                          )}
+                          <div style={{ height: 1, background: 'var(--border-subtle)', margin: '4px 0' }} />
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
+                            <span>Fused DR Probability</span>
+                            <span style={{ color: 'var(--primary)' }}>
+                              {(result.probabilities.Stage1.Fused_DR_Prob * 100).toFixed(1)}%
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>
+                            <span>Decision Threshold</span>
+                            <span>{(result.probabilities.Stage1.Threshold_Used * 100).toFixed(1)}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={onViewReport}
-              style={{ flex: 2 }}
-            >
-              <FileText size={18} />
-              <span>{t('viewReport')}</span>
-              <ArrowRight size={18} />
-            </button>
-          </div>
-
-          {/* 3. Knowledge-Grounded Human-Readable Explanation */}
-          <div style={{ marginTop: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <Sparkles size={18} style={{ color: 'var(--accent-teal)' }} />
-              <h3 style={{ margin: 0, fontSize: '1.05rem' }}>{t('clinicalExplanationTitle')}</h3>
-            </div>
-            <div
-              style={{
-                fontSize: '0.95rem',
-                color: 'var(--text-main)',
-                lineHeight: 1.5,
-                background: '#fff',
-                padding: '16px 14px',
-                borderRadius: 'var(--radius-sm)',
-                border: '1px solid var(--border-subtle)'
-              }}
-            >
-              {formatExplanation(result.explanation)}
-            </div>
-          </div>
-
-          {/* Non-intrusive safety disclaimer */}
-          <div className="medical-disclaimer" style={{ marginTop: '20px' }}>
-            <ShieldCheck size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            {t('safetyDisclaimer')}
-          </div>
-          
-          {/* Doctor Validation Panel */}
-          <DoctorValidationPanel result={result} />
+                    {result.probabilities.Stage2?.Fused_Probs && (
+                      <div>
+                        <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                          Stage 2: Grade Probabilities
+                          <span title="Final fused severity grade probabilities across all 5 DR levels." style={{ cursor: 'help', marginLeft: 4, display: 'inline-flex', verticalAlign: 'middle' }}>
+                            <Info size={10} strokeWidth={2} style={{ color: 'var(--text-tertiary)' }} />
+                          </span>
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {Object.entries(result.probabilities.Stage2.Fused_Probs).map(([grade, prob]) => (
+                            <div key={grade}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 500, marginBottom: 3 }}>
+                                <span style={{ color: 'var(--text-secondary)' }}>{grade}</span>
+                                <strong style={{ color: 'var(--primary)' }}>{(prob * 100).toFixed(1)}%</strong>
+                              </div>
+                              <div style={{ height: 6, background: 'var(--border-subtle)', borderRadius: 3, overflow: 'hidden' }}>
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${prob * 100}%` }}
+                                  transition={{ duration: 0.7, ease: 'easeOut' }}
+                                  style={{ height: '100%', background: 'var(--primary)', borderRadius: 3 }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </Accordion>
+                </div>
+              )}
+            </motion.div>
+          )}
         </div>
       </div>
-
-      {/* Side Column for Probabilities and Visualizations */}
-      {(result.probabilities || result.heatmapDataUrl) && (
-        <div style={{ flex: '1 1 320px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          
-          {/* 4. Grad-CAM Explainable Attention Visualizer */}
-          <div className="clean-card" style={{ padding: '0', overflow: 'hidden', marginBottom: 0 }}>
-            <GradCAMViewer
-              originalSrc={result.imageData}
-              heatmapSrc={result.heatmapDataUrl}
-              overlaySrc={result.overlayDataUrl}
-            />
-          </div>
-
-          {result.probabilities && (
-          <div className="clean-card" style={{ padding: '24px' }}>
-            <details>
-              <summary style={{ fontSize: '1.15rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-main)' }}>
-                <svg className="w-5 h-5" style={{ color: 'var(--primary)', flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>
-                View Technical AI Details
-              </summary>
-              <div style={{ marginTop: '20px' }}>
-            
-            {result.probabilities.Stage1 && (
-              <div style={{ marginBottom: '24px' }}>
-                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Stage 1: Detection Models</h4>
-                <div style={{ background: 'var(--surface-subtle)', padding: '12px', borderRadius: 'var(--radius-md)', fontSize: '0.9rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', color: 'var(--text-muted)' }}>
-                    <span>Model M0ALL (Base):</span>
-                    <span>{result.probabilities.Stage1.P_M0ALL_DR !== undefined ? (result.probabilities.Stage1.P_M0ALL_DR * 100).toFixed(1) + '%' : 'N/A'}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', color: 'var(--text-muted)' }}>
-                    <span>Boundary M01 (1+ vs 0):</span>
-                    <span>{result.probabilities.Stage1.P_M01_DR !== undefined ? (result.probabilities.Stage1.P_M01_DR * 100).toFixed(1) + '%' : 'N/A'}</span>
-                  </div>
-                  <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '8px 0' }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <span style={{ fontWeight: 500 }}>Fused DR Prob:</span>
-                    <strong style={{ color: 'var(--primary)' }}>{(result.probabilities.Stage1.Fused_DR_Prob * 100).toFixed(1)}%</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: 500 }}>Cutoff Threshold:</span>
-                    <span style={{ color: 'var(--text-muted)' }}>{(result.probabilities.Stage1.Threshold_Used * 100).toFixed(1)}%</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {result.probabilities.Stage2 && (
-              <div>
-                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Stage 2: Severity Models</h4>
-                <div style={{ background: 'var(--surface-subtle)', padding: '16px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.9rem' }}>
-                  
-                  {/* Base M1234 Probs */}
-                  {result.probabilities.Stage2.M1234_Probs && (
-                    <div style={{ marginBottom: '12px' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '4px' }}>Model M1234 (Base):</div>
-                      {Object.entries(result.probabilities.Stage2.M1234_Probs).map(([grade, prob]) => (
-                        <div key={grade} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          <span>{grade}</span>
-                          <span>{(prob * 100).toFixed(1)}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Active Boundary Models */}
-                  {(result.probabilities.Stage2.P_M12 !== undefined || result.probabilities.Stage2.P_M23 !== undefined || result.probabilities.Stage2.P_M34 !== undefined) && (
-                    <div style={{ marginBottom: '12px' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '4px' }}>Active Boundary Models:</div>
-                      {result.probabilities.Stage2.P_M12 !== undefined && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          <span>M12 (Grade 2+ vs 1)</span>
-                          <span>{(result.probabilities.Stage2.P_M12 * 100).toFixed(1)}%</span>
-                        </div>
-                      )}
-                      {result.probabilities.Stage2.P_M23 !== undefined && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          <span>M23 (Grade 3+ vs 2)</span>
-                          <span>{(result.probabilities.Stage2.P_M23 * 100).toFixed(1)}%</span>
-                        </div>
-                      )}
-                      {result.probabilities.Stage2.P_M34 !== undefined && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          <span>M34 (Grade 4 vs 3)</span>
-                          <span>{(result.probabilities.Stage2.P_M34 * 100).toFixed(1)}%</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {result.probabilities.Stage2.Fused_Probs && (
-                    <>
-                      <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '12px 0' }} />
-                      <div style={{ fontWeight: 600, marginBottom: '8px' }}>Fused Final Probabilities:</div>
-                      {Object.entries(result.probabilities.Stage2.Fused_Probs).map(([grade, prob]) => (
-                        <div key={grade} style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontWeight: 500 }}>{grade}</span>
-                            <strong style={{ color: 'var(--primary)' }}>{(prob * 100).toFixed(1)}%</strong>
-                          </div>
-                          <div style={{ height: '6px', background: '#cbd5e1', borderRadius: '3px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${prob * 100}%`, background: 'var(--primary)' }} />
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-              </div>
-            </details>
-          </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -23,6 +23,8 @@ class ClinicalFeedbackCreate(BaseModel):
     actual_grade: Optional[int] = None
     doctor_comments: Optional[str] = None
     reviewer_id: str  # Mandatory to know who reviewed it
+    referral_hospital: Optional[str] = None  # Hospital referral from directory
+    referral_state: Optional[str] = None     # State of referral hospital
     
     # System Versions & Snapshot
     model_version: Optional[str] = "v1.0.0"
