@@ -1,0 +1,755 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@source "./";
+@theme {
+  --color-brand-50: #f0f7ff;
+  --color-brand-100: #e0effe;
+  --color-brand-200: #bae0fd;
+  --color-brand-300: #7cc5fb;
+  --color-brand-400: #36a5f6;
+  --color-brand-500: #0c87eb;
+  --color-brand-600: #016bc9;
+  --color-brand-700: #0255a3;
+  --color-brand-800: #064886;
+  --color-brand-900: #0b3d6f;
+  --color-brand-navy: #132847;
+
+  --shadow-glass: 0 30px 80px -15px rgba(52, 111, 170, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  --shadow-glass-btn: 0 12px 28px -6px rgba(11, 137, 235, 0.45), 0 4px 12px rgba(11, 137, 235, 0.25);
+  --shadow-pill: 0 4px 14px rgba(70, 115, 170, 0.08);
+
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+}
+
+
+/* ==========================================================================
+   AarogyaNetra Design System
+   Calm, Minimal, High-Contrast Healthcare Theme for Rural & Clinical Users
+   ========================================================================== */
+
+:root {
+  /* Color Palette: Calm Healthcare Blues, Sage Greens, Warm Neutrals */
+  --primary: #0284c7;             /* Sky 600 - trustworthy clinical primary */
+  --primary-hover: #0369a1;       /* Sky 700 */
+  --primary-light: #e0f2fe;       /* Sky 100 */
+  --primary-focus: rgba(2, 132, 199, 0.35);
+
+  --accent-teal: #0d9488;         /* Teal 600 - health & vitality */
+  --accent-teal-light: #ccfbf1;   /* Teal 100 */
+
+  --bg-app: #f8fafc;              /* Slate 50 - clean, calm, glare-free */
+  --surface: #ffffff;             /* Pure white cards */
+  --surface-subtle: #f1f5f9;      /* Slate 100 */
+
+  --text-main: #0f172a;           /* Slate 900 - high contrast readability */
+  --text-muted: #475569;          /* Slate 600 - legible secondary text */
+  --text-inverse: #ffffff;
+
+  --border: #cbd5e1;              /* Slate 300 - clear high-contrast borders */
+  --border-subtle: #e2e8f0;       /* Slate 200 */
+
+  /* Healthcare Outcome Colors */
+  --outcome-healthy-bg: #ecfdf5;  /* Emerald 50 */
+  --outcome-healthy-text: #065f46;/* Emerald 800 */
+  --outcome-healthy-border: #a7f3d0;
+
+  --outcome-warning-bg: #fffbeb;  /* Amber 50 */
+  --outcome-warning-text: #92400e;/* Amber 800 */
+  --outcome-warning-border: #fde68a;
+
+  --outcome-alert-bg: #fef2f2;    /* Rose 50 */
+  --outcome-alert-text: #991b1b;  /* Rose 800 */
+  --outcome-alert-border: #fecaca;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --line-height: 1.5;
+
+  /* Touch & Accessibility Standards */
+  --min-touch-target: 48px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows (soft, subtle, not flashy) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* Universal Reset & Base Rules */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: var(--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Accessible Keyboard Focus States */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Offline Notification Banner */
+.offline-banner {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-bottom: 2px solid #f59e0b;
+  padding: 12px 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Header & Navigation */
+.header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.brand-logo-icon {
+  width: 38px;
+  height: 38px;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-text-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.brand-text-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Language Selector Dropdown */
+.lang-selector-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lang-select {
+  appearance: none;
+  background-color: var(--surface-subtle);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 32px 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+  line-height: 1;
+}
+
+.lang-select-arrow {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+/* Main Layout Container */
+.main-content {
+  flex: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* Card Component */
+.clean-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .clean-card {
+    padding: 32px;
+  }
+}
+
+/* Clean Typography */
+h1, .h1 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+h2, .h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+h3, .h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+
+p.subtitle {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Buttons with Large Touch Targets */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 14px 24px;
+  min-height: var(--min-touch-target);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--surface-subtle);
+  border-color: #94a3b8;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--primary-light);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (min-width: 640px) {
+  .btn-group {
+    flex-direction: row;
+  }
+}
+
+/* Forms & Inputs */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1.1rem;
+  padding: 12px 14px;
+  min-height: var(--min-touch-target);
+  background-color: var(--surface);
+  color: var(--text-main);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-focus);
+}
+
+.form-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Image Upload & Camera Box */
+.uploader-box {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 20px;
+  text-align: center;
+  background-color: var(--surface-subtle);
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.uploader-box:hover, .uploader-box.drag-over {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: #000;
+}
+
+.preview-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* Subtle Retinal Scanning Animation */
+.scan-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto 24px;
+  background: #09090b;
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #38bdf8;
+  box-shadow: 0 0 16px 4px rgba(56, 189, 248, 0.8), 0 0 32px 8px rgba(13, 148, 136, 0.4);
+  animation: scanSweep 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes scanSweep {
+  0% {
+    top: 5%;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 92%;
+    opacity: 0.7;
+  }
+}
+
+/* Analysis Stages Step Checklist */
+.progress-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 20px auto;
+  max-width: 360px;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.progress-item.completed {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.progress-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.progress-item.completed .progress-badge {
+  background-color: var(--accent-teal);
+  border-color: var(--accent-teal);
+  color: #fff;
+}
+
+.progress-item.active .progress-badge {
+  border-color: var(--primary);
+  color: var(--primary);
+  animation: pulseBadge 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseBadge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* Result Cards */
+.result-status-card {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  border: 1.5px solid transparent;
+}
+
+.result-status-card.healthy {
+  background-color: var(--outcome-healthy-bg);
+  border-color: var(--outcome-healthy-border);
+  color: var(--outcome-healthy-text);
+}
+
+.result-status-card.dr-positive {
+  background-color: var(--outcome-alert-bg);
+  border-color: var(--outcome-alert-border);
+  color: var(--outcome-alert-text);
+}
+
+.result-status-card.uncertain {
+  background-color: var(--outcome-warning-bg);
+  border-color: var(--outcome-warning-border);
+  color: var(--outcome-warning-text);
+}
+
+/* Severity Tag */
+.severity-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+/* Grad-CAM Viewer Controls */
+.view-tabs {
+  display: flex;
+  background-color: var(--surface-subtle);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tab-btn.active {
+  background: var(--surface);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+.opacity-slider-wrapper {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.opacity-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* Clinical safety disclaimer */
+.medical-disclaimer {
+  background-color: var(--surface-subtle);
+  border-left: 3px solid var(--border);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 24px;
+  line-height: 1.4;
+}
+
+/* Sample selection grid */
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.sample-card {
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.sample-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.sample-card.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.sample-thumb {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  display: block;
+}
+
+.sample-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 4px;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Respect Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .scan-line {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Print Styles for Clean A4 Clinical Report
+   ========================================================================== */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide all UI chrome */
+  .header,
+  .offline-banner,
+  .no-print,
+  .btn,
+  .view-tabs,
+  .opacity-slider-wrapper {
+    display: none !important;
+  }
+
+  /* The main wrapper – fill the page */
+  main, .main-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* Report page outer wrapper */
+  .main-content > div,
+  main > div {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+  }
+
+  /* Two-column layout becomes single column in print */
+  .print-flex-container {
+    display: block !important;
+  }
+
+  /* Right sidebar (doctor validation panel) hidden in print */
+  .print-flex-container > div:last-child {
+    display: none !important;
+  }
+
+  /* Main report card fills full width */
+  .clean-card {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    padding: 20px !important;
+    margin-bottom: 12px !important;
+    background: #fff !important;
+    border-radius: 0 !important;
+  }
+
+  .print-page-header {
+    border-bottom: 2px solid #0284c7 !important;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .print-images-row {
+    display: flex !important;
+    gap: 16px !important;
+    justify-content: center;
+    margin: 16px 0;
+  }
+
+  .print-images-row img {
+    max-width: 220px !important;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+
+  /* Ensure text and backgrounds print correctly */
+  h1, h2, h3, h4 {
+    color: #000 !important;
+  }
+}

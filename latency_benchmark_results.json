@@ -1,0 +1,17 @@
+{
+  "iqa_python_ms": 167.9471000002195,
+  "iqa_matlab_est_ms": 120.0,
+  "preprocessing_ms": 403.97589999975025,
+  "stage1_m0all_ms": 10.205113333358895,
+  "stage1_m01_ms": 10.3693266666293,
+  "stage1_total_ms": 20.574439999988194,
+  "stage2_m1234_ms": 19.69749333332705,
+  "boundary_evaluator_m12_ms": 7.537686666607139,
+  "boundary_evaluator_m23_ms": 7.895786666631466,
+  "boundary_evaluator_m34_ms": 8.672166666686584,
+  "stage2_active_total_ms": 35.130966666565655,
+  "gradcam_xai_ms": 51.922839999982294,
+  "rag_llm_explainer_ms": 1296.8157000000247,
+  "total_e2e_no_dr_ms": 1941.235979999965,
+  "total_e2e_dr_ms": 1976.3669466665306
+}

@@ -1,0 +1,47 @@
+# Python / PyTorch
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+
+# Models & Checkpoints & Datasets (large files)
+*.pt
+*.pth
+*.onnx
+*.bin
+archive (1).zip
+archive (1)/
+*.db
+*.sqlite3
+aarogyanetra.db
+
+# Frontend / Node
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+frontend/public/uploads/
+uploads/
+
+# Generated Test Artifacts & Logs
+*.npy
+*.png
+*.jpg
+*.jpeg
+!frontend/src/assets/*
+*.log
+srs_temp.txt
+out.txt
+scratch/
+xai_audit/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

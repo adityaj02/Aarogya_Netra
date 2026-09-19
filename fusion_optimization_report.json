@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-15T16:51:27.138910",
+  "validation_sample_count": 1298,
+  "constraint": "Sensitivity >= 0.90",
+  "stage1_selected": {
+    "stage": "stage1",
+    "method": "weighted",
+    "weight_boundary": 0.25,
+    "threshold": 0.45000000000000007,
+    "sensitivity": 0.9005905511811023,
+    "specificity": 0.9113475177304965,
+    "mcc": 0.7491846532264609
+  },
+  "stage2_selected": {
+    "stage": "stage2_end2end",
+    "method": "logodds",
+    "w12": 0.4,
+    "w23": 0.8,
+    "w34": 1.0,
+    "qwk": 0.865563868618946,
+    "macro_f1": 0.8174682221097654
+  }
+}

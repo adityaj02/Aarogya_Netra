@@ -1,0 +1,46 @@
+{
+  "knowledge_base_version": "1.0",
+  "metadata": {
+    "source": "International Clinical Diabetic Retinopathy Disease Severity Scale (ICDRDS)",
+    "version": "1.0",
+    "retrieved_on": "2026-09-16",
+    "citation": "Wilkinson CP, Ferris FL 3rd, Klein RE, et al. Proposed international clinical diabetic retinopathy and diabetic macular edema disease severity scales. Ophthalmology. 2003;110(9):1677-1682."
+  },
+  "grades": {
+    "0": {
+      "name": "No apparent retinopathy",
+      "definition": "No abnormalities characteristic of diabetic retinopathy.",
+      "typical_findings": "None.",
+      "screening_guidance": "Routine annual screening is typically recommended.",
+      "urgency": "ROUTINE"
+    },
+    "1": {
+      "name": "Mild Non-Proliferative Diabetic Retinopathy (NPDR)",
+      "definition": "Microaneurysms only.",
+      "typical_findings": "Presence of microaneurysms.",
+      "screening_guidance": "Regular monitoring. Follow-up typically recommended in 6 to 12 months.",
+      "urgency": "LOW"
+    },
+    "2": {
+      "name": "Moderate Non-Proliferative Diabetic Retinopathy (NPDR)",
+      "definition": "More than just microaneurysms but less than severe NPDR.",
+      "typical_findings": "Microaneurysms, dot and blot hemorrhages, hard exudates, cotton wool spots.",
+      "screening_guidance": "Closer observation required. Referral to an ophthalmologist may be considered depending on the presence of macular edema or symptom progression.",
+      "urgency": "MEDIUM"
+    },
+    "3": {
+      "name": "Severe Non-Proliferative Diabetic Retinopathy (NPDR)",
+      "definition": "Any of the following: >20 intraretinal hemorrhages in each of 4 quadrants, definite venous beading in 2+ quadrants, prominent IRMA in 1+ quadrant (the 4-2-1 rule), and no signs of proliferative retinopathy.",
+      "typical_findings": "Severe hemorrhages, venous beading, intraretinal microvascular abnormalities (IRMA).",
+      "screening_guidance": "High risk for progression to proliferative diabetic retinopathy. Prompt referral to an ophthalmologist is strongly recommended.",
+      "urgency": "HIGH"
+    },
+    "4": {
+      "name": "Proliferative Diabetic Retinopathy (PDR)",
+      "definition": "One or more of the following: neovascularization, vitreous/preretinal hemorrhage.",
+      "typical_findings": "Neovascularization of the disc (NVD), neovascularization elsewhere (NVE), preretinal or vitreous hemorrhage.",
+      "screening_guidance": "Very high risk of severe vision loss. Immediate and urgent referral to an ophthalmologist or retina specialist is required.",
+      "urgency": "URGENT"
+    }
+  }
+}

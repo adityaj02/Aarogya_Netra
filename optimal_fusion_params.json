@@ -1,0 +1,21 @@
+{
+  "stage1": {
+    "method": "weighted",
+    "boundary_weight": 0.25,
+    "threshold": 0.45000000000000007
+  },
+  "stage2": {
+    "M12": {
+      "method": "logodds",
+      "boundary_weight": 0.4
+    },
+    "M23": {
+      "method": "logodds",
+      "boundary_weight": 0.8
+    },
+    "M34": {
+      "method": "logodds",
+      "boundary_weight": 1.0
+    }
+  }
+}

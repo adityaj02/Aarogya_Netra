@@ -1,0 +1,2477 @@
+AarogyaNetra
+
+Explainable, Hierarchical AI-Based Diabetic Retinopathy Screening,
+
+Severity Assessment, and Referral System for Rural Healthcare
+
+SOFTWARE REQUIREMENTS SPECIFICATION
+
+Document Type
+
+Software Requirements Specification (SRS)
+
+Version
+
+2.0 (Complete Consolidated Edition)
+
+Date
+
+September 5, 2026
+
+Project Type
+
+Smart India Hackathon — Healthcare / MedTech (Problem Statement 38)
+
+Core Technology
+
+Python, PyTorch, Computer Vision, Explainable AI (Grad-CAM), RAG, Relational Database, Referral Workflow; optional MATLAB/MathWorks tooling (Appendix B)
+
+Repository
+
+github.com/adityaj02/DR_FINAL_PIPELINE (public, branch: main)
+
+Prepared By
+
+Aditya
+
+Faculty Mentor / Guide
+
+[to be filled in]
+
+Team Name / PS ID
+
+[to be filled in] (PS 38)
+
+AI-assisted screening and decision support — not a substitute for an ophthalmologist's diagnosis.
+
+Revision History
+
+Version
+
+Date
+
+Description
+
+Author
+
+0.1
+
+—
+
+Initial SRS: system overview, objectives, high-level functional requirements (24 sections).
+
+Aditya
+
+1.0
+
+Sept 2, 2026
+
+Consolidated and expanded to a complete SRS aligned to the DR_FINAL_PIPELINE repository baseline, with full data, security, evaluation, testing, risk and roadmap sections.
+
+Aditya
+
+2.0
+
+Sept 5, 2026
+
+Merged in the hierarchical boundary-validator / decision-fusion architecture (Stage 1: M0ALL + M01; Stage 2: M1234 + M12/M23/M34), image-representation optimization, confidence calibration, external/statistical validation, and uncertainty handling. Added a fully detailed, evidence-based MATLAB/MathWorks technology-option appendix.
+
+Aditya
+
+Note on this document: This SRS consolidates three inputs: (1) the original AarogyaNetra v1.0 specification with its repository-mapped operational detail — patient database, referral engine, security/privacy, testing strategy; (2) an architectural walkthrough defining the boundary-validator / decision-fusion hierarchy (the M0ALL / M01 / M1234 / M12 / M23 / M34 model inventory); and (3) a research-oriented specification adding image-representation optimization, confidence calibration, and external/statistical validation. Where the sources differed in naming or emphasis, this document reconciles them into a single, internally consistent specification. Open design decisions carried over from the source material — the exact decision-fusion combination rule and the calibration acceptance threshold — are explicitly flagged rather than silently resolved (Sections 3.6, 3.7).
+
+Table of Contents
+
+(This table updates automatically in Microsoft Word: right-click anywhere below and choose “Update Field”, or select this page and press F9.)
+
+TOC \h \o "1-3"
+
+1. Introduction
+
+1.1 Purpose
+
+AarogyaNetra is an AI-assisted diabetic retinopathy (DR) screening, severity-assessment, and referral platform designed to support early identification of diabetic retinopathy in resource-constrained and rural healthcare environments, where specialist ophthalmology coverage is often limited.
+
+The system is deliberately built around a hierarchical classification architecture — global classification followed by local, neighbouring-class boundary validation — rather than relying exclusively on a single multiclass classifier's argmax output (Section 3). The software is intended strictly as an AI-assisted screening and decision-support system. It is not intended to autonomously replace an ophthalmologist, nor to provide an unqualified final clinical diagnosis. Every AI output in this system is designed to support — and eventually be reviewed by — a qualified healthcare professional.
+
+1.2 Intended Audience
+
+The development team building and maintaining the AarogyaNetra platform.
+
+Health workers and facility staff who will operate the screening application.
+
+Doctors and ophthalmologists who receive referrals and validate severity grading and referral rules.
+
+System administrators responsible for users, facilities, and audit oversight.
+
+Smart India Hackathon (SIH) evaluators and mentors reviewing the proposal (Problem Statement 38).
+
+Any clinical or regulatory advisor asked to review the system prior to real-world deployment.
+
+1.3 Document Conventions
+
+Requirements are grouped and numbered by category so that they can be tracked and tested independently:
+
+OBJ-xx — Project Objective
+
+FR-0xx — Functional Requirement
+
+DS-0xx — Dataset Requirement
+
+REP-0xx — Image Representation Requirement
+
+DF-0xx — Decision Fusion Requirement
+
+CAL-0xx — Confidence Calibration Requirement
+
+VAL-0xx — External / Statistical Validation Requirement
+
+UNC-0xx — Uncertainty and Failure-Handling Requirement
+
+PR-0xx — Performance Requirement
+
+REL-0xx — Reliability Requirement
+
+SEC-0xx — Security Requirement
+
+NFR-0xx — Non-Functional Requirement (scalability, maintainability, reproducibility, availability)
+
+Within requirement text, “shall” denotes a mandatory requirement, “should” denotes a strong recommendation, and “may” denotes an optional or conditionally validated capability.
+
+1.4 Project Scope Summary
+
+AarogyaNetra ingests a retinal fundus image, validates its quality, and applies an empirically selected image representation (Section 3.2) before passing it through a hierarchical machine-learning workflow. Stage 1 performs high-sensitivity binary screening (DR vs. No DR) using a global model plus a dedicated Class 0/1 boundary validator; only DR-positive images proceed to Stage 2, where a parent severity model (Grade 1–4) is checked against dedicated neighbouring-class boundary validators. A decision-fusion engine combines global and boundary probabilities into a calibrated final decision, which may include an explicit “Uncertain — review/retest” outcome rather than a forced guess. Grad-CAM supplies visual model attribution, a Retrieval-Augmented Generation (RAG) and LLM layer converts the structured result into a knowledge-grounded explanation, and the result, referral, and follow-up status are stored in a patient database. Full scope detail is given in Section 2.4.
+
+1.5 Definitions, Acronyms and Abbreviations
+
+Term
+
+Meaning
+
+DR / No DR
+
+Diabetic Retinopathy / absence of diabetic retinopathy
+
+NPDR / PDR
+
+Non-Proliferative DR / Proliferative DR — standard clinical DR categories (Section 4.5)
+
+M0ALL
+
+Stage 1 global screening model: Class 0 vs. Classes 1+2+3+4 (Section 3.5)
+
+M01, M12, M23, M34
+
+Pairwise neighbouring-class boundary validators (Section 3.5)
+
+M1234
+
+Stage 2 parent severity model: Class 1 vs. 2 vs. 3 vs. 4 (Section 3.5)
+
+XAI
+
+Explainable Artificial Intelligence
+
+Grad-CAM
+
+Gradient-weighted Class Activation Mapping — a visual attribution technique
+
+RAG
+
+Retrieval-Augmented Generation
+
+LLM
+
+Large Language Model
+
+ECE
+
+Expected Calibration Error (Section 3.7)
+
+CNN
+
+Convolutional Neural Network
+
+CBAM
+
+Convolutional Block Attention Module
+
+CLAHE
+
+Contrast Limited Adaptive Histogram Equalization
+
+AMP
+
+Automatic Mixed Precision (training/inference)
+
+SWA
+
+Stochastic Weight Averaging
+
+QWK
+
+Quadratic Weighted Kappa
+
+MCC
+
+Matthews Correlation Coefficient
+
+ROC-AUC / PR-AUC
+
+Area under the Receiver Operating Characteristic / Precision-Recall curve
+
+RBAC
+
+Role-Based Access Control
+
+TTA
+
+Test-Time Augmentation
+
+ONNX
+
+Open Neural Network Exchange (model interchange format)
+
+SIH
+
+Smart India Hackathon
+
+1.6 References
+
+This SRS is derived from the AarogyaNetra v1.0 specification, an architectural walkthrough defining the boundary-validator hierarchy, and a research-oriented draft specification (see the note preceding the Table of Contents). The following should be added as formal references once finalized with the project's clinical advisor:
+
+The clinical DR severity grading standard adopted for Grade 1–4 terminology (e.g., the International Clinical Diabetic Retinopathy Disease Severity Scale).
+
+The source dataset(s) used for training, representation benchmarking, and external validation (Section 5.1), and their licensing terms — candidate public sources include APTOS 2019, EyePACS, Messidor / Messidor-2, IDRiD, and DDR.
+
+Any institutional or regulatory guideline applicable to AI-assisted clinical screening tools in India.
+
+2. Overall Description
+
+2.1 Problem Statement
+
+Diabetic retinopathy can progress silently, without obvious early symptoms, while access to ophthalmologists, specialized equipment, and frequent specialist evaluation remains limited in rural and underserved regions. This creates a real risk that DR is detected only after irreversible vision damage has occurred.
+
+A further, more subtle risk sits inside the AI system itself: a conventional five-class classifier can report a reasonable overall accuracy while still making clinically important mistakes at the boundaries between adjacent grades — Class 0↔Class 1 (No DR vs. Mild NPDR) most critically, and similarly at Class 1↔Class 2, Class 2↔Class 3, and Class 3↔Class 4. AarogyaNetra addresses this by using global classification followed by local, neighbouring-class boundary validation, rather than trusting a single multiclass model's argmax decision at every boundary (Section 3).
+
+AarogyaNetra addresses both risks through a computationally efficient, AI-assisted screening system that analyzes retinal fundus images; detects whether DR is likely present; grades confirmed/suspected DR by severity; resolves ambiguity at neighbouring disease-grade boundaries; provides visual model explanations; converts model results into understandable, knowledge-grounded explanations; maintains patient records; facilitates referral to appropriate healthcare facilities; and supports operation under constrained computational resources and unreliable connectivity.
+
+2.2 Product Perspective — Existing Repository Baseline
+
+AarogyaNetra is not a blank-slate project. It builds on the existing adityaj02/DR_FINAL_PIPELINE research repository, which already implements a substantial ML experimentation and training pipeline, including:
+
+Dataset preparation and multiple baseline experiments (HOG + Random Forest, ResNet/XGBoost).
+
+EfficientNet-B0 and EfficientNet-B3 classification models, including a 5-class grading variant and a binary DR/No-DR variant.
+
+A fusion model combining RGB and auxiliary retinal feature maps.
+
+Training, inference, and evaluation scripts, plus configuration and utility modules.
+
+The repository's central configuration already supports both 5-class grading and a binary task through a BINARY_TASK flag, and separate binary-training notebooks/scripts confirm that binary screening is part of the development direction rather than a new concept introduced by this SRS. Section 11.1 maps every SRS component to its corresponding file in the repository. This existing codebase is treated as reference, reusable evaluation code, and experiment history — not as an architecture to be inherited uncritically (Appendix E, item 1).
+
+2.3 Product Objectives
+
+Primary objectives:
+
+OBJ-01:  Detect DR versus No DR using a binary classification model.
+
+OBJ-02:  Prioritize high sensitivity/recall for the DR class and explicitly monitor and report false negatives.
+
+OBJ-03:  Perform exact DR severity classification (Grade 1–4) for DR-positive images.
+
+OBJ-04:  Provide visual explainability using Grad-CAM or an equivalent, validated visual-attribution method.
+
+OBJ-05:  Generate a knowledge-grounded, human-readable final explanation using RAG and an LLM, applied only at the final explanation stage — never as the diagnostic engine.
+
+OBJ-06:  Maintain patient screening, referral, and follow-up records in a secure database.
+
+OBJ-07:  Reduce average computational cost by conditionally skipping the more expensive Stage 2 grading model for images classified as No DR, and by invoking boundary validators only for the neighbouring classes relevant to a given prediction (Section 3.5).
+
+OBJ-08:  Support low-resource, rural deployment using compact model profiles, mixed precision, small batches, and optional model export/compression.
+
+Secondary objectives, added to close the gaps identified during architectural review:
+
+OBJ-09:  Resolve ambiguity at neighbouring severity-grade boundaries through dedicated boundary-validator models (M01, M12, M23, M34) rather than relying solely on a single multiclass classifier's argmax output.
+
+OBJ-10:  Select the retinal image representation (original RGB, Green-channel + CLAHE, Grayscale + CLAHE, LAB colour space, or a combined MaxGreenGsc-CLAHE representation) empirically, rather than assuming standard RGB is optimal (Section 3.2).
+
+OBJ-11:  Calibrate model confidence so that reported probabilities are reliable, and support an explicit “Uncertain — review/retest” outcome rather than forcing a confident decision on ambiguous cases (Sections 3.7, 4.15).
+
+OBJ-12:  Validate performance across external/held-out datasets and multiple random seeds, rather than relying on a single internal train/test split (Section 5.2).
+
+2.4 Scope
+
+2.4.1 In Scope
+
+Fundus-image ingestion and image-quality validation, including a structured recapture workflow.
+
+Empirical selection of the retinal image representation used across the whole model hierarchy.
+
+Preprocessing (border removal, resize, CLAHE, illumination correction) for the selected representation.
+
+Auxiliary retinal feature/lesion maps.
+
+Binary DR detection (Stage 1, with Class 0/1 boundary validation) and four-class severity grading (Stage 2, with neighbouring-class boundary validation).
+
+A decision-fusion engine combining global and boundary-validator probabilities into a calibrated final decision.
+
+Confidence calibration and an explicit Uncertain / review-retest outcome.
+
+Grad-CAM visual explanation, generated on the final validated decision.
+
+RAG-based, knowledge-grounded medical explanation.
+
+Patient record storage, referral management, and follow-up tracking.
+
+Model evaluation (including external/cross-dataset validation), audit logging, and resource monitoring.
+
+Rural/edge-oriented, resource-aware deployment architecture.
+
+2.4.2 Out of Scope
+
+Independently prescribing medication or treatment.
+
+Replacing an ophthalmologist.
+
+Autonomously establishing a final clinical diagnosis.
+
+Claiming clinical validation without prospective clinical testing.
+
+Using an LLM as the primary diagnostic model.
+
+Fabricating patient information.
+
+Treating an automatically generated explanation as a clinical diagnosis.
+
+Treating the “Uncertain — review/retest” output as equivalent to a negative (No DR) result, or otherwise silently collapsing it into a definitive outcome.
+
+The AI output is intended as screening and decision support until appropriate clinical validation and regulatory processes are completed.
+
+2.5 User Classes and Characteristics
+
+User Class
+
+Description
+
+Health Worker
+
+Primary operator. Captures/uploads fundus images, registers patients, views screening results and referral status. Not assumed to have ophthalmology expertise.
+
+Doctor / Ophthalmologist
+
+Receives referrals, validates severity grading and clinical appropriateness, and confirms final diagnosis and treatment. Reviews cases routed as Uncertain.
+
+Administrator
+
+Manages user accounts, roles, healthcare facility records, and audit oversight.
+
+System Service
+
+Non-human role used for background jobs such as offline synchronization, scheduled model-version checks, and automated logging.
+
+2.6 Operating Environment
+
+The primary deployment context is rural and semi-urban primary health facilities with constrained computing hardware, intermittent or low-bandwidth network connectivity, and a web, mobile, or tablet client used by the health worker. The backend is a Python/PyTorch inference service behind a REST API, backed by a relational database (Section 6.3). The reference development/training environment used an RTX 3050 6 GB GPU; production edge deployment targets should be confirmed separately through benchmarking (Sections 7.1 and 11.3).
+
+2.7 Design and Implementation Constraints
+
+The production system builds on the existing DR_FINAL_PIPELINE repository rather than a clean-slate rewrite (Section 2.2), while not inheriting its dataset-handling assumptions uncritically (Appendix E).
+
+The current dual-head research model must be refactored into the explicit per-model production architecture — M0ALL, M01, M1234, M12, M23, M34, plus a decision-fusion component — before this SRS becomes the build specification (Section 3.9).
+
+The retinal image representation used across the entire hierarchy shall be the single, empirically selected winner from Section 3.2 — not decided independently per model.
+
+The decision-fusion method (Section 3.6) shall be chosen through validation experiments; it must not be fixed arbitrarily in advance.
+
+The RAG/LLM layer is restricted to the final explanation stage only; it must never function as the diagnostic engine (Section 4.11).
+
+Referral logic must be rule-based and clinically governed, never LLM-controlled (Section 4.13).
+
+No component of the system may claim clinical validation prior to appropriate regulatory and institutional review (Section 2.4.2).
+
+2.8 Assumptions and Dependencies
+
+A clinical/medical advisor will be available to validate severity-grading terminology, the Stage-1 decision threshold, the calibration/uncertainty threshold, and referral rules.
+
+Labeled retinal fundus datasets are available with patient-level identifiers sufficient to prevent patient-level data leakage across splits.
+
+Representative fundus images from multiple public sources — APTOS, EyePACS, Messidor, IDRiD, DDR, or equivalent — are available for representation benchmarking and external validation (Section 5.1, 5.2).
+
+A curated, trusted medical knowledge base can be assembled and reviewed for use by the RAG layer.
+
+Target rural deployment hardware will be confirmed so that latency, RAM, and GPU-memory targets in Section 7.1 can be benchmarked concretely.
+
+3. System Architecture
+
+3.1 Current Research Pipeline (As-Is)
+
+The pipeline currently implemented in the repository can be summarized as follows. Preprocessing and auxiliary-map functions live in utils.py; the 6-channel/attention architecture and Grad-CAM support live in model.py.
+
+FUNDUS IMAGE
+
+    |
+
+    v   Crop black border
+
+    |
+
+    v   Resize
+
+    |
+
+    v   CLAHE
+
+    |
+
+    v   Illumination correction
+
+    |
+
+    v   Vessel / dark-lesion / bright-lesion maps
+
+    |
+
+    v   6-channel model input (3 RGB + 3 auxiliary maps)
+
+    |
+
+    v   EfficientNet backbone
+
+    |
+
+    v   CBAM attention
+
+    |
+
+    v   Feature pooling
+
+    |
+
+    v   Classification heads (5-class + binary)
+
+    |
+
+    v
+
+PREDICTION
+
+3.2 Image Representation Optimization
+
+This is a deliberate research component of AarogyaNetra: the system shall not automatically assume that standard RGB is the optimal retinal representation. Candidate representations are benchmarked empirically before the full hierarchical architecture (Section 3.3) is built on top of the winner.
+
+Representation
+
+Description
+
+Original RGB
+
+Standard three-channel colour fundus image; no transform beyond the shared preprocessing sequence (Section 4.2).
+
+Green-Channel + CLAHE
+
+Green channel isolated, then contrast-enhanced. The green channel typically shows the strongest vascular and lesion contrast in fundus photography.
+
+Grayscale + CLAHE
+
+RGB converted to grayscale, then contrast-enhanced.
+
+LAB Colour Space
+
+RGB converted to the LAB colour space, separating luminance (L) from the chromatic channels (a, b) before enhancement.
+
+MaxGreenGsc-CLAHE
+
+A combined representation blending max/intensity information, the green channel, and grayscale contrast enhancement.
+
+Representations shall not all be trained through the full six-model hierarchy at once, since that would multiply computational cost by the number of candidates. Instead, a fast-proxy benchmarking strategy is used:
+
+REPRESENTATION CANDIDATES
+
+  (RGB / Green-CLAHE / Grayscale-CLAHE / LAB / MaxGreenGsc-CLAHE)
+
+        |
+
+        v
+
+FAST PROXY BENCHMARK   (EfficientNet-B0)
+
+        |
+
+        v
+
+REPEATED TRAINING RUNS   (multiple random seeds)
+
+        |
+
+        v
+
+STATISTICAL COMPARISON
+
+  (ROC-AUC, PR-AUC, sensitivity, specificity,
+
+   balanced accuracy, F1, MCC; bootstrap confidence
+
+   intervals -- Section 5.2)
+
+        |
+
+        v
+
+SELECT WINNING REPRESENTATION
+
+        |
+
+        v
+
+FULL HIERARCHICAL ARCHITECTURE (Section 3.3)
+
+  -- applied uniformly to M0ALL, M01, M1234,
+
+     M12, M23, M34
+
+The winning representation propagates to every model in the inventory (Section 3.5); it is not re-decided per model. Because a proxy backbone (EfficientNet-B0) is used for the initial comparison, the winning representation should be re-validated on the final production backbone before being locked in (Section 10, risk: representation selection overfits to the proxy).
+
+3.3 Proposed Production Architecture (To-Be)
+
+For the SIH production build, the logical inference flow is restructured around explicit, independently trainable models rather than the current dual-head research model. Full detail on Stage 1 is given in Section 3.4, on Stage 2 in Section 3.5, on the decision-fusion engine in Section 3.6, and on confidence calibration in Section 3.7.
+
+FUNDUS IMAGE
+
+    |  v
+
+IMAGE QUALITY ASSESSMENT
+
+    |  +-- Poor quality --> RETAKE IMAGE
+
+    v
+
+REPRESENTATION PIPELINE   (selected representation, 3.2)
+
+    |  v
+
+STAGE 1 -- DR SCREENING + 0/1 BOUNDARY VALIDATION  (3.4)
+
+    |
+
+    +-------------------------+
+
+    |                         |
+
+  NO DR                  DR / UNCERTAIN
+
+    |                         |
+
+    v                         v
+
+STORE SCREENING           STAGE 2 -- SEVERITY GRADING +
+
+   RESULT                 NEIGHBOURING BOUNDARY
+
+    |                     VALIDATION  (3.5)
+
+    |                         |
+
+    |                         v
+
+    |                   FINAL GRADE / UNCERTAIN
+
+    |                         |
+
+    +------------+------------+
+
+                 |
+
+                 v
+
+           GRAD-CAM  (XAI, on the final validated
+
+                      decision only -- 4.10)
+
+                 |
+
+                 v
+
+           RAG + LLM EXPLANATION
+
+                 |
+
+                 v
+
+           PATIENT DATABASE
+
+                 |
+
+                 v
+
+     REFERRAL / FOLLOW-UP  -->  HEALTHCARE PROVIDER
+
+         (Uncertain --> review/retest queue, 4.13)
+
+The architecture deliberately keeps the AI layers limited in role: the ML models make the predictions, the decision-fusion engine combines and calibrates them, XAI provides visual attribution over the final decision, and RAG/LLM provides only a final human-readable explanation — it never re-diagnoses from the raw image.
+
+3.4 Stage 1 — DR Screening and Class 0/1 Boundary Validation
+
+Stage 1 shall determine whether diabetic retinopathy is present. Accuracy alone is not the primary metric: the clinically critical error is a false negative — actual DR predicted as No DR — so Stage 1 optimization prioritizes high sensitivity while maintaining clinically acceptable specificity (Section 4.4).
+
+The global screening model (M0ALL) performs Class 0 vs. Classes 1+2+3+4 and outputs P(No DR) and P(DR). Because mild NPDR (Class 1) can visually resemble a normal retina, a dedicated Class 0 vs. Class 1 boundary validator (M01) is run specifically to catch subtle early DR that the global model's “No DR” lean might otherwise miss — this is one of the most important components of AarogyaNetra's design.
+
+FUNDUS IMAGE  (selected representation)
+
+        |
+
+        v
+
+GLOBAL DR SCREENING -- M0ALL
+
+   Class 0  vs  Classes 1 + 2 + 3 + 4
+
+        |
+
+        +----------------------+
+
+        |                      |
+
+    DR likely             No DR likely
+
+        |                      |
+
+        |                      v
+
+        |             BOUNDARY VALIDATOR -- M01
+
+        |                Class 0  vs  Class 1
+
+        |                      |
+
+        +-----------+----------+
+
+                    v
+
+           STAGE 1 DECISION FUSION
+
+         (Section 3.6; uses calibrated
+
+          confidence, Section 3.7)
+
+                    |
+
+        +-----------+-----------+
+
+        |           |           |
+
+     NO DR     DR DETECTED   UNCERTAIN
+
+        |           |      (review / retest)
+
+        v           v
+
+   FINAL RESULT   STAGE 2
+
+The final Stage 1 decision therefore considers the global DR probability, the M01 boundary probability, and validated thresholds together — not argmax(probabilities) on the global model alone. The objective is not to mathematically guarantee zero false negatives; no realistic medical ML system can promise that. The objective is to minimize false negatives and add a dedicated safety validation specifically around the Class 0/Class 1 boundary, which is the most dangerous boundary for a screening system to get wrong.
+
+3.5 Stage 2 — Severity Grading and Neighbouring-Class Boundary Validation
+
+Only images determined to be DR-positive (or Uncertain, pending review) proceed to Stage 2. The Stage 2 parent model (M1234) performs Class 1 vs. Class 2 vs. Class 3 vs. Class 4 and produces an inter-class probability distribution P(Class 1), P(Class 2), P(Class 3), P(Class 4).
+
+The parent classifier's argmax is not automatically treated as the final decision. Instead, only the boundary validator(s) adjacent to the predicted class are invoked — the system does not run every possible pairwise classifier for every case, which keeps the added computational cost bounded (Section 11.3):
+
+Parent Prediction
+
+Validation Model(s) Invoked
+
+No DR / Class 0
+
+M01 (Class 0 vs. Class 1) — shared with Stage 1, Section 3.4
+
+Class 1
+
+M01 (Class 0 vs. Class 1) + M12 (Class 1 vs. Class 2)
+
+Class 2
+
+M12 (Class 1 vs. Class 2) + M23 (Class 2 vs. Class 3)
+
+Class 3
+
+M23 (Class 2 vs. Class 3) + M34 (Class 3 vs. Class 4)
+
+Class 4
+
+M34 (Class 3 vs. Class 4) only — Class 4 has no upper neighbour
+
+Class 1 is the special case: it sits between two clinically relevant boundaries (Class 0↔Class 1↔Class 2), so evidence from both the lower boundary (M01, already computed in Stage 1) and the upper boundary (M12) is combined — Class 1 is never treated as an isolated category:
+
+STAGE 2 PARENT PREDICTS CLASS 1
+
+                |
+
+      +---------+---------+
+
+      v                   v
+
+    M01                  M12
+
+Class 0 vs 1         Class 1 vs 2
+
+      |                   |
+
+      +---------+---------+
+
+                v
+
+        DECISION FUSION (3.6)
+
+                |
+
+      +---------+---------+
+
+      v                   v
+
+    NO DR          DR: CLASS 1 (or 2)
+
+Applied at every level of the predicted grade, the full Stage 2 flow is:
+
+STAGE 2 PARENT MODEL -- M1234
+
+   Class 1  vs  Class 2  vs  Class 3  vs  Class 4
+
+                    |
+
+                    v
+
+            PREDICTED GRADE
+
+                    |
+
+   +---------+------------+------------+---------+
+
+   |         |            |            |
+
+ Class 1  Class 2      Class 3      Class 4
+
+   |         |            |            |
+
+M01+M12   M12+M23      M23+M34         M34
+
+   |         |            |            |
+
+   +---------+------------+------------+
+
+                    |
+
+                    v
+
+           STAGE 2 DECISION FUSION
+
+         (Section 3.6; calibrated
+
+          confidence, Section 3.7)
+
+                    |
+
+         +----------+----------+
+
+         |                     |
+
+    FINAL GRADE            UNCERTAIN
+
+                       (review / retest)
+
+The strongest technical idea in this architecture is global classification plus local, neighbouring-class boundary validation: it specifically targets the problem of neighbouring-grade confusion, instead of assuming that one multiclass model can perfectly separate every DR severity boundary. The full model inventory is:
+
+Model
+
+Definition
+
+Role
+
+M0ALL
+
+Class 0 vs. Classes 1+2+3+4
+
+Stage 1 global screening model
+
+M01
+
+Class 0 vs. Class 1
+
+Boundary validator — Stage 1 safety net; reused for the Stage 2 Class-1 case
+
+M1234
+
+Class 1 vs. 2 vs. 3 vs. 4
+
+Stage 2 parent severity model
+
+M12
+
+Class 1 vs. Class 2
+
+Boundary validator
+
+M23
+
+Class 2 vs. Class 3
+
+Boundary validator
+
+M34
+
+Class 3 vs. Class 4
+
+Boundary validator
+
+3.6 Decision Fusion Engine
+
+Both Stage 1 (Section 3.4) and Stage 2 (Section 3.5) require a structured decision layer that combines the global/parent model's probability, the relevant boundary-validator probability (or probabilities), and calibrated confidence (Section 3.7) into one final decision. This layer shall not simply average probabilities blindly.
+
+Open design decision: The exact mathematical form of the decision-fusion engine is not fixed by this SRS and must be defined and validated experimentally before implementation — this is the central mechanism that makes the architecture work, rather than being several independently connected models. Candidate strategies to evaluate:
+
+Candidate Strategy
+
+Description
+
+Weighted Probability Fusion
+
+Combine the constituent probabilities using fixed or learned weights.
+
+Log-Odds Fusion
+
+Combine evidence in log-odds (logit) space before converting back to a probability.
+
+Calibrated Meta-Decision Layer
+
+A small, separately trained model that consumes the constituent calibrated probabilities as features and outputs the final decision.
+
+Rule-Based Clinical Thresholding
+
+Explicit, clinically defined threshold rules over the constituent probabilities, agreed with the project's clinical advisor.
+
+The selected method shall be chosen based on validation performance, applied uniformly wherever a fusion decision is required (Stage 1: global + M01; Stage 2: parent + adjacent boundary validators), and documented so that Section 8.5's acceptance criteria can reference it. The fusion output shall retain the constituent probabilities alongside the fused decision, for auditability (Section 5.4).
+
+3.7 Confidence Calibration
+
+Raw neural-network confidence (softmax or sigmoid output) is not automatically reliable, and the decision-fusion engine (Section 3.6) and the Uncertain/review-retest logic (Section 4.15) both depend on confidence that has been checked for reliability, not just magnitude. AarogyaNetra therefore supports calibration techniques applied post-hoc to each model in the inventory:
+
+Technique
+
+Description
+
+Temperature Scaling
+
+Learns a single scalar temperature to rescale logits post-hoc.
+
+Platt Scaling
+
+Fits a logistic regression on top of the model's raw scores.
+
+Isotonic Regression
+
+Fits a non-parametric, monotonic calibration mapping.
+
+Calibration quality is evaluated using Expected Calibration Error (ECE), Brier Score, and reliability diagrams (Section 8.4). The acceptance threshold for ECE is to be agreed with the project's clinical advisor (Section 8.5) rather than assumed.
+
+3.8 Layered Software Architecture
+
+Layer
+
+Responsibilities
+
+Presentation Layer
+
+Web / mobile / tablet health-worker UI; result display; referral status views; Uncertain/review-retest prompts.
+
+Application Layer
+
+Orchestrates Quality Assessment, Representation, Screening, Grading, Decision Fusion, Calibration, XAI, RAG, and Referral workflows.
+
+ML Layer
+
+M0ALL, M01, M1234, M12, M23, M34, and the trained calibration mappings for each.
+
+Decision Fusion & Calibration Layer
+
+Combines global/parent and boundary-validator probabilities into a calibrated final decision, including the Uncertain outcome (Sections 3.6, 3.7).
+
+Image Processing / Representation Layer
+
+Border crop, CLAHE, illumination correction, colour-space conversion for the selected representation, auxiliary retinal maps.
+
+Data Layer
+
+Patient database; image store; per-model decision records; results; referrals; audit log.
+
+3.9 Required Refactor Before Build
+
+Build note: The repository's DRStreamDataset and cached dataset already expose a binary flag, but the current central training code is still architected around a 5-class head plus an auxiliary binary head — not as a clean production implementation of the hierarchy defined in Sections 3.4–3.7. The next coding milestones are to refactor the repository into the explicit production modules: models/stage1_global_m0all.py, models/stage1_boundary_m01.py, models/stage2_parent_m1234.py, models/stage2_boundary_m12.py, models/stage2_boundary_m23.py, models/stage2_boundary_m34.py, decision_fusion.py, calibration.py, and representation.py — while retaining the current dual-head experiments as baselines for comparison (Section 11.2). This keeps the codebase, SRS, presentation deck, and demo telling the same story.
+
+4. Functional Requirements
+
+4.1 Patient Registration
+
+FR-001:  The system shall allow an authorized health worker to create or retrieve a patient record with, at minimum: Patient ID, name or a permitted identifier, age, sex (where required), contact information (where permitted), geographic/location information, screening date, and screening centre/health facility. Patient identifiers shall be minimized and access controlled (Section 7.4).
+
+4.2 Image Acquisition and Processing
+
+4.2.1 Fundus Image Input
+
+FR-002:  The system shall accept retinal fundus images in common formats, including JPEG/JPG, PNG, and BMP. The inference pipeline already supports common image-file processing and folder-based batch inference.
+
+4.2.2 Image Preprocessing
+
+FR-003:  The system shall perform preprocessing including black-border removal, resizing, colour/representation conversion for the selected representation (Section 3.2), CLAHE contrast enhancement, and illumination correction, in that sequence, before inference.
+
+Input image
+
+   |
+
+   v  Black border removal
+
+   |
+
+   v  Resize
+
+   |
+
+   v  Representation conversion (Section 3.2)
+
+   |
+
+   v  CLAHE
+
+   |
+
+   v  Illumination correction
+
+   |
+
+   v
+
+Normalized retinal image
+
+4.2.3 Auxiliary Retinal Feature Maps
+
+FR-004:  The system may generate auxiliary retinal maps (vessel map, dark/red lesion map, bright lesion map) to assist the vision model. These are currently produced by classical image-processing methods, not by medically annotated segmentation ground truth, and shall therefore be described as auxiliary retinal/lesion maps — never as clinically validated segmentation masks.
+
+4.2.4 Image Quality and Data Validation
+
+The image quality module shall assess: focus and blur; illumination; contrast; field of view; retinal visibility; overexposure; underexposure; artefacts; and image completeness.
+
+FR-005:  The system shall validate image readability and quality before prediction. Invalid or poor-quality images shall be flagged for recapture and shall never default to a No DR result. Images that fail minimum quality requirements shall not receive a definitive diagnostic prediction.
+
+Production change required: The current dataset code handles unreadable files by silently returning a zero/dummy tensor. In production, such cases must instead be routed to an explicit image-quality failure/recapture state (Section 7.2, REL-001) rather than being treated as a valid, negative image.
+
+4.3 Image Representation Optimization Requirements
+
+REP-001:  Candidate retinal image representations (Original RGB, Green-Channel + CLAHE, Grayscale + CLAHE, LAB Colour Space, MaxGreenGsc-CLAHE) shall be benchmarked; the system shall not assume that RGB is optimal without evidence (Section 3.2).
+
+REP-002:  Representation benchmarking shall use a fast, low-cost proxy backbone (EfficientNet-B0) before the winning representation is carried forward to the full hierarchical architecture and the final production backbone (Section 3.2, Appendix E).
+
+REP-003:  Representation comparison shall use ROC-AUC, PR-AUC, sensitivity, specificity, balanced accuracy, F1, and MCC, computed across multiple random seeds, with bootstrap confidence intervals reported rather than a single point estimate (Section 5.2).
+
+REP-004:  The selected representation shall propagate uniformly to every model in the inventory — M0ALL, M01, M1234, M12, M23, M34 — rather than being chosen independently per model.
+
+4.4 Stage 1 — Binary DR Screening and Class 0/1 Boundary Validation
+
+FR-010:  The global screening model (M0ALL) shall classify a retinal image as 0 = No DR or 1 = DR. The existing pipeline already derives this binary target deterministically from the five original DR grades when BINARY_TASK=True (class 0 → No DR; grades 1–4 → DR).
+
+FR-011:  Stage 1 evaluation shall prioritize DR sensitivity/recall as the primary metric, with specificity, ROC-AUC, PR-AUC, balanced accuracy, F1, and MCC as secondary metrics. False-negative count shall be explicitly reported.
+
+FR-012:  The production classification threshold shall be selected through a validation protocol that prioritizes the required sensitivity/specificity trade-off, and shall not be assumed to be 0.50.
+
+FR-013:  M0ALL output shall include: prediction, probability, confidence, threshold used, and screening status.
+
+FR-014:  Whenever the global model (M0ALL) leans toward “No DR,” the system shall additionally run the Class 0 vs. Class 1 boundary validator (M01) before finalizing the Stage 1 decision, to catch subtle early/mild DR that the global model alone might miss (Section 3.4).
+
+FR-015:  M01 output shall include P(Class 0) and P(Class 1), retained alongside the global model's output for the decision-fusion engine (Section 3.6).
+
+FR-016:  The Stage 1 decision-fusion output shall be one of exactly three states: No DR, DR Detected, or Uncertain — Review/Retest (Sections 3.4, 4.15). Stage-1 output shall include: prediction/state, probability, confidence, threshold used, and screening status — for example:
+
+DR screening: POSITIVE
+
+Probability: 0.94
+
+Confidence:  High
+
+4.5 Stage 2 — Exact Severity Grading and Neighbouring-Class Boundary Validation
+
+FR-020:  Stage 2 shall execute only for images classified as DR-positive or Uncertain by Stage 1 (all patients → Stage 1; DR-positive/Uncertain → Stage 2; No DR → Stage 2 skipped), reducing average computational cost.
+
+FR-021:  The Stage 2 parent model (M1234) shall classify DR-positive images into Grade 1, Grade 2, Grade 3, or Grade 4. The exact clinical terminology associated with each grade shall be maintained consistently throughout the software and confirmed with a clinical advisor.
+
+For reference, the commonly used International Clinical Diabetic Retinopathy (ICDR) severity scale maps to these grades as follows; this mapping is a suggested default and should be confirmed by the project's clinical advisor before being fixed in the UI and database:
+
+Grade
+
+Common ICDR Terminology
+
+Grade 1
+
+Mild Non-Proliferative DR (Mild NPDR)
+
+Grade 2
+
+Moderate Non-Proliferative DR (Moderate NPDR)
+
+Grade 3
+
+Severe Non-Proliferative DR (Severe NPDR)
+
+Grade 4
+
+Proliferative DR (PDR)
+
+FR-022:  The system shall optimize for exact grade prediction; the system does not deliberately accept adjacent-grade errors as tolerable. Neighbouring-grade reliability, not accuracy alone, is the Stage 2 priority metric (Section 8.2).
+
+FR-023:  Because DR grades are ordinal, Stage-2 evaluation shall additionally include Quadratic Weighted Kappa (QWK), macro F1, balanced accuracy, per-class sensitivity, per-class specificity, and the confusion matrix. The repository already contains a QWK implementation and incorporates an ordinal penalty in its combined loss (Section 4.9).
+
+FR-024:  M1234 shall produce an inter-class probability distribution — P(Class 1), P(Class 2), P(Class 3), P(Class 4) — not only a single argmax label.
+
+FR-025:  For each parent-predicted class, the system shall invoke only the adjacent boundary validator(s) listed in Section 3.5's validation table; it shall not run every pairwise validator for every case.
+
+FR-026:  When M1234 predicts Class 1, both M01 (Class 0 vs. 1) and M12 (Class 1 vs. 2) shall be invoked and combined by the decision-fusion engine, since Class 1 sits between two clinically relevant boundaries (Section 3.5).
+
+FR-027:  When M1234 predicts Class 4, only M34 (Class 3 vs. 4) shall be invoked, since Class 4 has no upper neighbouring boundary.
+
+FR-028:  The Stage 2 decision-fusion output shall be either a final grade (1–4) or Uncertain — Review/Retest (Sections 3.5, 4.15).
+
+4.6 Decision Fusion Requirements
+
+DF-001:  A decision-fusion engine shall combine the global/parent model probability, the relevant boundary-validator probability (or probabilities), and calibrated confidence into the final Stage 1 or Stage 2 decision. It shall not simply average probabilities blindly (Section 3.6).
+
+DF-002:  The fusion method shall be selected from validated candidates — weighted probability fusion, log-odds fusion, a calibrated meta-decision layer, or rule-based clinical thresholding — based on validation performance, not fixed arbitrarily in advance.
+
+DF-003:  The same fusion approach (or a documented, deliberate variant of it) shall apply uniformly wherever a fusion decision is required: Stage 1 (global + M01) and every Stage 2 case (parent + adjacent boundary validator(s)).
+
+DF-004:  The fusion output shall retain the constituent probabilities (global/parent and boundary-validator) alongside the final fused decision, for auditability (Section 5.4).
+
+4.7 Confidence Calibration Requirements
+
+CAL-001:  The system shall support post-hoc confidence calibration for every model in the inventory, using temperature scaling, Platt scaling, or isotonic regression (Section 3.7).
+
+CAL-002:  Calibration quality shall be evaluated using Expected Calibration Error (ECE), Brier Score, and reliability diagrams (Section 8.4).
+
+CAL-003:  Calibrated — not raw — confidence shall feed the decision-fusion engine (Section 4.6) and the Uncertain-state threshold (Section 4.15).
+
+4.8 Model Architecture Requirements
+
+FR-030:  The production models shall use a pretrained, lightweight-to-medium vision backbone selected through validation. The repository currently supports EfficientNet-B0, B2, and B3 with configurable presets (Section 7.1); EfficientNet-B0 is used as the low-cost proxy for representation and early architecture benchmarking (Section 3.2), with promising candidates re-validated on B3.
+
+FR-031:  The existing primary architecture accepts a 6-channel fusion input (3 RGB channels + 3 auxiliary retinal maps) through an EfficientNet backbone with CBAM attention, global pooling, and separate classification heads, and also produces a spatial feature map usable for Grad-CAM. This remains a valid candidate architecture for each model in the inventory, evaluated on its own merits (FR-046).
+
+FR-032:  CBAM channel- and spatial-attention modules shall be retained only where empirical validation demonstrates improved performance or interpretability.
+
+FR-033:  Each model in the inventory (M0ALL, M01, M1234, M12, M23, M34) shall be an explicit, independently trainable and independently benchmarked model — not a single shared dual-head network. The current research model's 5-class + binary dual-head design is retained only as a baseline for comparison (Section 11.2), not assumed to already be the optimal production design.
+
+4.9 Training Requirements
+
+FR-040:  Training may use controlled fundus-image augmentation: horizontal flip, small rotation, small translation, limited scaling, brightness/contrast/saturation adjustment, and optional Gaussian noise, restricted to transformations that preserve clinically meaningful retinal structures and do not create anatomically implausible retinal structures. Validation and test images shall not receive random training augmentation.
+
+FR-041:  The training pipeline shall address class imbalance — particularly for Class 4 (PDR), the likely weakest data region — through weighted sampling (WeightedRandomSampler), class weights, focal loss, controlled augmentation, or external Class-4 data inclusion. The final strategy shall be selected by validation performance and clinically relevant metrics, not by training accuracy alone (Section 5.3).
+
+FR-042:  The repository provides Focal Loss, Label-Smoothing Cross-Entropy, a QWK-based loss, a CORAL-style ordinal loss, and a combined loss incorporating classification, ordinal, and binary components.
+
+FR-043:  AdamW shall be supported as the primary optimizer.
+
+FR-044:  Training shall support learning-rate warmup, cosine decay, and optional Stochastic Weight Averaging (SWA).
+
+FR-045:  Automatic Mixed Precision (AMP) shall be supported for constrained GPU environments; the reference training configuration is designed around an RTX 3050 6 GB GPU. Training shall also support gradient accumulation, gradient clipping, and early stopping.
+
+FR-046:  Candidate models shall be compared using an untouched test set, and patient-level data leakage shall be prevented where multiple images belong to the same patient (Section 5.1, DS-004).
+
+4.10 Explainable AI (XAI) Requirements
+
+FR-050:  The system shall generate a Grad-CAM (or equivalent validated) visual attribution map only on the final, decision-fusion-validated prediction — not on the raw global or parent model output alone — using the existing Grad-CAM hooks over feature activations and gradients (Sections 3.4, 3.5).
+
+FR-051:  XAI output shall include the original image, the preprocessed image, the heatmap/overlay, the prediction, and the confidence — matching the clinical-style visual output already produced by the inference module.
+
+FR-052:  The application shall clearly distinguish “region that influenced the model” from “clinically confirmed lesion.” Grad-CAM output shall be described as model attribution, not as proof that a specific lesion is medically present, unless separately validated for that purpose.
+
+4.11 RAG + LLM Explanation Layer
+
+FR-060:  The RAG/LLM layer shall operate only after ML prediction, decision fusion, and XAI generation, and shall not determine the underlying diagnosis:
+
+ML + DECISION FUSION  ->  validated prediction
+
+XAI                    ->  visual evidence
+
+RAG                    ->  knowledge retrieval
+
+LLM                    ->  explanation
+
+FR-061:  The RAG layer shall consume structured input: the fused/final decision, global or parent model probabilities, the relevant boundary-validator probabilities, calibrated confidence, Grad-CAM region/coordinates, model version, and XAI availability (Section 5.5). The RAG layer never receives the raw image as its source of truth for diagnosis.
+
+FR-062:  The RAG knowledge base shall use curated medical sources approved by the project's clinical advisor, covering DR overview, screening guidance, disease-severity context, risk factors, referral guidance, and patient education. For a given final grade, retrieval shall cover: what the grade means, typical retinal findings, relevant clinical interpretation, and recommended next steps.
+
+FR-063:  The LLM shall generate an explanation only from retrieved knowledge plus structured model outputs, and shall explicitly communicate that the AI result is screening/decision support — for example: “The automated analysis indicates retinal changes consistent with moderate diabetic retinopathy. The model's attention was concentrated in specific retinal regions. Clinical confirmation by an appropriate healthcare professional is recommended.” The system must avoid claiming that the generative model independently diagnosed the disease.
+
+FR-064:  The LLM shall not claim that a specific lesion (for example, describing the retina as “sore” or identifying a named lesion) is definitively present merely because it falls within a Grad-CAM region, unless that finding is supported by a dedicated detection/segmentation model or other validated evidence, and shall not invent clinical findings.
+
+4.12 Patient Database Requirements
+
+FR-070:  The database shall store a unique patient screening record across the entities: Patient, Screening, Image, Model_Decision, XAI_Result, Explanation, Referral, Follow-up, Healthcare Facility, and Audit Log (full schema in Section 5.4).
+
+FR-071:  Each screening record shall store: patient ID, screening ID, timestamp, facility, image reference, representation used, model version, Stage-1 fused prediction and calibrated probability, Stage-2 fused grade and calibrated confidence (if applicable), final status (No DR / DR Detected / Uncertain), XAI reference, and explanation reference.
+
+FR-072:  Each referral record shall store: referral ID, patient ID, screening ID, referral reason, severity, target healthcare facility, assigned provider (where applicable), referral status, and referral timestamp.
+
+FR-073:  The system shall track follow-up status as one of: Pending, Referred, Appointment Scheduled, Completed, Follow-up Required, Uncertain — Retest Requested, or Closed.
+
+FR-074:  Changes to important clinical workflow records shall be logged in an audit trail.
+
+4.13 Referral and Follow-up Engine
+
+The referral engine shall be rule-based and clinically governed, never LLM-controlled:
+
+No DR
+
+  |
+
+  v
+
+Routine screening / follow-up
+
+DR DETECTED
+
+  |
+
+  v
+
+Severity classification (Stage 2, incl. Uncertain)
+
+  |
+
+  v
+
+Referral rule evaluation
+
+  |
+
+  v
+
+Appropriate facility / provider
+
+UNCERTAIN -- REVIEW / RETEST
+
+  |
+
+  v
+
+Recapture / manual-review queue
+
+  (never auto-routed as No DR or as a referral)
+
+Referral rules must ultimately be defined by the project's medical/clinical guidance rather than invented by the development team. Facility records may hold geographic location, specialty, service availability, contact information, and referral capacity.
+
+4.14 Rural and Resource-Aware Deployment
+
+FR-080:  The application shall minimize RAM consumption, GPU-memory requirements, inference latency, and network dependency where feasible, using the repository's existing resource-aware approaches (streaming datasets, memory-mapped cached datasets, Windows-safe data loading).
+
+FR-081:  The system shall support multiple compute profiles — B0 Fast, B2 Balanced, B3 Accurate — with corresponding image sizes, batch sizes, and optimization settings.
+
+FR-082:  The system shall support export of an optimized inference model (TorchScript, with an FP16 option, and/or ONNX) where appropriate for edge deployment; ONNX export additionally enables the optional MATLAB-side workflows described in Appendix B.
+
+FR-083:  The production architecture should support local inference and asynchronous synchronization with a central server where connectivity is unreliable.
+
+4.15 Failure and Uncertainty Handling
+
+UNC-001:  The system shall support two confidence regimes: high-confidence cases proceed to an automated result; low-confidence (calibrated) cases are routed to review, retest, or referral rather than a forced automated result.
+
+UNC-002:  The system should treat an explicit “Uncertain — Review/Retest” outcome as preferable to confidently presenting an unreliable definitive result; uncertain predictions shall never be presented as definitive (Sections 3.4, 3.5, 4.4, 4.5).
+
+UNC-003:  Image-processing failures (unreadable or unusable images, FR-005/REL-001) shall be routed through the recapture path, which is distinct from model-uncertainty-driven “Review/Retest” routing (UNC-001) — the two failure modes shall not be conflated in the UI, database, or audit log.
+
+5. Data Requirements
+
+5.1 Dataset Specification
+
+DS-001:  The retinal dataset shall retain the original five categories (0, 1, 2, 3, 4), matching the current pipeline.
+
+DS-002:  The Stage-1 (binary) dataset shall be generated deterministically: 0 → No DR, 1–4 → DR, matching the existing repository mapping.
+
+DS-003:  The Stage-2 dataset shall exclude Grade 0 and contain only Grade 1, Grade 2, Grade 3, and Grade 4.
+
+DS-004:  Train/validation/test sets shall be separated without patient-level leakage; where multiple images originate from the same patient, patient-level splitting is mandatory. No duplicate images shall exist across splits, and preprocessing that could leak split information (e.g., dataset-wide normalization statistics) shall be computed after the split is defined.
+
+DS-005:  Data augmentation shall be restricted to transformations that preserve clinically meaningful retinal structures (Section 4.9).
+
+DS-006:  Candidate public dataset sources for training, representation benchmarking, and external validation include APTOS 2019, EyePACS, Messidor / Messidor-2, IDRiD, and DDR, or equivalent sources, harmonized to the common 0–4 grading scale; each source's licensing terms shall be confirmed before use (Section 1.6).
+
+5.2 External and Statistical Validation
+
+VAL-001:  Model and representation performance shall be evaluated on an external/held-out dataset source in addition to the internal test set — for example, training on APTOS + EyePACS and externally testing on Messidor / DDR — to assess robustness to camera variation, illumination variation, population differences, and dataset shift.
+
+VAL-002:  Key benchmarking experiments (representation selection, Section 3.2; model/backbone selection, Section 11.2) shall be repeated across multiple random seeds rather than relying on a single run.
+
+VAL-003:  Headline metrics shall be reported with bootstrap confidence intervals, not as a single point estimate, so that the winning representation or model is not selected on the strength of one favourable run.
+
+VAL-004:  The representation selected in Section 3.2 and the final model selection in Section 11.2 shall be supported by this statistical and external-validation evidence before being locked into the production architecture.
+
+5.3 Class Imbalance Management
+
+Class imbalance is expected across the five-grade dataset, and Class 4 (PDR) is the likely weakest and most imbalanced data region. Candidate strategies, evaluated experimentally rather than assumed:
+
+Class-weighted loss functions.
+
+Weighted sampling (WeightedRandomSampler).
+
+Focal loss.
+
+Controlled, clinically plausible augmentation (Section 4.9).
+
+Inclusion of external Class-4 (PDR) data where available.
+
+The final imbalance-handling strategy shall not be selected merely because it improves training accuracy; it must improve validation performance and clinically relevant metrics (sensitivity, QWK, per-class recall — Section 8).
+
+5.4 Database Schema
+
+Proposed relational structure. PK = primary key, FK = foreign key.
+
+PATIENT
+
+Field
+
+Key / Notes
+
+patient_id
+
+PK
+
+name
+
+age
+
+sex
+
+contact
+
+location
+
+SCREENING
+
+Field
+
+Key / Notes
+
+screening_id
+
+PK
+
+patient_id
+
+FK → PATIENT
+
+screening_time
+
+facility_id
+
+FK → FACILITY
+
+image_id
+
+FK → IMAGE
+
+representation_used
+
+Selected representation from Section 3.2 (RGB / Green-CLAHE / Grayscale-CLAHE / LAB / MaxGreenGsc-CLAHE)
+
+stage1_status
+
+No DR / DR Detected / Uncertain (Section 4.4, 4.15)
+
+stage1_probability
+
+Fused, calibrated Stage-1 probability (Section 3.6, 3.7)
+
+stage2_grade
+
+Fused final grade 1–4, or null if Stage 2 not run / Uncertain
+
+stage2_confidence
+
+Fused, calibrated Stage-2 confidence
+
+fusion_method_version
+
+Identifies which decision-fusion method/version produced the result (Section 3.6)
+
+model_version
+
+status
+
+MODEL_DECISION
+
+Normalized record of every individual model in the inventory (Section 3.5) that ran for a given screening, capturing the full audit trail behind the fused SCREENING result.
+
+Field
+
+Key / Notes
+
+decision_id
+
+PK
+
+screening_id
+
+FK → SCREENING
+
+model_identifier
+
+M0ALL / M01 / M1234 / M12 / M23 / M34
+
+role
+
+global / boundary
+
+raw_probability
+
+Pre-calibration model output
+
+calibrated_probability
+
+Post-calibration output (Section 3.7)
+
+created_at
+
+IMAGE
+
+Field
+
+Key / Notes
+
+image_id
+
+PK
+
+storage_uri
+
+capture_time
+
+quality_status
+
+checksum
+
+XAI_RESULT
+
+Field
+
+Key / Notes
+
+xai_id
+
+PK
+
+screening_id
+
+FK → SCREENING
+
+method
+
+heatmap_uri
+
+region_coordinates
+
+Grad-CAM region/bounding-box coordinates (Section 5.5)
+
+created_at
+
+EXPLANATION
+
+Field
+
+Key / Notes
+
+explanation_id
+
+PK
+
+screening_id
+
+FK → SCREENING
+
+knowledge_version
+
+explanation_text
+
+created_at
+
+REFERRAL
+
+Field
+
+Key / Notes
+
+referral_id
+
+PK
+
+screening_id
+
+FK → SCREENING
+
+facility_id
+
+FK → FACILITY
+
+reason
+
+priority
+
+status
+
+referred_at
+
+FOLLOW_UP
+
+Field
+
+Key / Notes
+
+followup_id
+
+PK
+
+referral_id
+
+FK → REFERRAL
+
+scheduled_date
+
+completion_date
+
+status
+
+notes
+
+FACILITY
+
+Field
+
+Key / Notes
+
+facility_id
+
+PK
+
+name
+
+location
+
+speciality
+
+contact
+
+availability
+
+AUDIT_LOG
+
+Field
+
+Key / Notes
+
+audit_id
+
+PK
+
+user_id
+
+action
+
+entity
+
+entity_id
+
+timestamp
+
+5.5 XAI + RAG Data Contract
+
+The final explanation layer shall receive a structured payload similar to the following. The LLM never receives the raw image as the source of truth for diagnosis — the trained classifiers and the decision-fusion engine remain the sole authoritative prediction components.
+
+{
+
+  "patient_id": "P10234",
+
+  "screening_id": "S88321",
+
+  "representation_used": "LAB",
+
+  "stage_1": {
+
+    "global_probability": 0.94,
+
+    "m01_probability": 0.81,
+
+    "fusion_method": "calibrated_meta_decision_v1",
+
+    "calibrated_confidence": 0.90,
+
+    "status": "DR Detected"
+
+  },
+
+  "stage_2": {
+
+    "parent_probabilities": {
+
+      "class_1": 0.15, "class_2": 0.52,
+
+      "class_3": 0.25, "class_4": 0.08
+
+    },
+
+    "boundary_validation": { "m12": 0.63, "m23": 0.31 },
+
+    "fusion_method": "calibrated_meta_decision_v1",
+
+    "calibrated_confidence": 0.87,
+
+    "final_grade": "Grade 2"
+
+  },
+
+  "xai": {
+
+    "method": "Grad-CAM",
+
+    "heatmap_available": true,
+
+    "heatmap_reference": "...",
+
+    "region_coordinates": "..."
+
+  },
+
+  "knowledge_retrieved": [
+
+    "what_grade_means", "typical_retinal_findings",
+
+    "clinical_interpretation", "recommended_next_steps"
+
+  ],
+
+  "model": { "version": "drfusion-v2" }
+
+}
+
+6. External Interface Requirements
+
+6.1 User Interfaces
+
+The primary interface shall be designed for a healthcare worker who may not be an ophthalmologist. Technical model internals shall be hidden by default and surfaced only when needed. An Uncertain — Review/Retest result shall be visually and textually distinct from a definitive No DR or DR Detected result, never blended with either. A worked example of the result screen is given in Appendix C.
+
+6.2 Hardware Interfaces
+
+A fundus camera or an existing image-capture workflow supplying JPEG/PNG/BMP images (FR-002).
+
+A rural point-of-care client device (tablet, laptop, or desktop) meeting minimum specifications to be confirmed via benchmarking (Section 7.1).
+
+An optional GPU for on-device inference (reference dev environment: RTX 3050, 6 GB VRAM) with a CPU-only fallback path for lighter edge profiles (Section 4.14).
+
+6.3 Software Interfaces
+
+Interface
+
+Detail
+
+Backend API
+
+FastAPI, or an equivalent REST API framework
+
+Database
+
+PostgreSQL, or SAP HANA where institutionally appropriate
+
+Model deployment format
+
+TorchScript / ONNX, subject to benchmarking (FR-082)
+
+Complementary tooling
+
+Optional, fully detailed MathWorks/MATLAB integration (Appendix B) — complements, never replaces, the PyTorch core
+
+6.4 Communication Interfaces
+
+The production architecture should support local inference with asynchronous synchronization to a central server where connectivity is unreliable (FR-083), with all network communication encrypted in transit (SEC-003).
+
+7. Non-Functional Requirements
+
+7.1 Performance Requirements
+
+PR-001:  Stage 1 should target low-latency inference appropriate for point-of-care, health-worker-facing screening. Actual numeric latency targets shall be established after benchmarking on the confirmed target hardware, not assumed in advance.
+
+PR-002:  Stage 2 shall run only for DR-positive or Uncertain cases in the final pipeline (see FR-020).
+
+PR-003:  The system shall record inference latency, model memory usage, GPU memory (when available), and CPU/RAM usage, using the repository's existing RAM/GPU monitoring utilities.
+
+7.2 Reliability and Safety Requirements
+
+REL-001:  If an image cannot be processed, the system shall return Prediction = Not Available, Reason = image quality/processing failure, Action = recapture. It shall never default to No DR.
+
+REL-002:  Model inference failures shall be logged and shall never produce a fabricated clinical output.
+
+REL-003:  A screening result shall not be silently discarded because the remote database is temporarily unavailable; the rural architecture should permit local temporary storage with later synchronization.
+
+7.3 Security Requirements
+
+SEC-001:  Only authorized users shall access patient records (authentication).
+
+SEC-002:  Access levels shall include, at minimum: Health Worker, Doctor/Ophthalmologist, Administrator, and System Service (role-based authorization).
+
+SEC-003:  Patient information shall be encrypted in transit and at rest.
+
+SEC-004:  Only data required for screening and referral shall be stored (data minimization).
+
+SEC-005:  Patient-record access and important changes shall be logged (auditability), including which individual models in the inventory (Section 3.5) contributed to a given fused decision (Section 5.4, MODEL_DECISION).
+
+7.4 Privacy Requirements
+
+The system shall use unique patient identifiers, avoid unnecessary personally identifiable information, restrict image access, log access where required, and support deletion/retention policies, separating clinical identity from model artifacts where feasible. Actual regulatory and legal requirements — including, for a system deployed in India, applicable provisions of the Digital Personal Data Protection (DPDP) Act, 2023, and relevant health-data regulations — shall be reviewed before any clinical deployment.
+
+7.5 Usability Requirements
+
+The interface shall present results in plain, action-oriented language for a non-specialist health worker (Appendix C), while allowing a doctor/ophthalmologist to drill into technical detail (confidence scores, model version, boundary-validator outcomes, XAI overlays) when needed.
+
+7.6 Scalability, Maintainability and Reproducibility
+
+NFR-001:  The backend shall support an increasing number of screenings without modifying the ML core (scalability).
+
+NFR-002:  Models, the decision-fusion method, calibration parameters, and RAG knowledge sources shall be independently versioned (maintainability).
+
+NFR-003:  Model training shall record random seed, dataset version, representation used, model version, hyperparameters, training configuration, and evaluation results; the repository already uses deterministic seeds/configuration facilities (reproducibility).
+
+NFR-004:  The local screening function should remain usable during temporary network outages (availability).
+
+NFR-005:  Patient and medical information shall not be exposed through logs or uncontrolled model artifacts (security).
+
+7.7 Logging, Monitoring and Model Versioning
+
+The application shall log inference events, errors, model version, latency, resource consumption, database failures, referral actions, and user actions. The training pipeline already supports TensorBoard logging and optional Weights & Biases (W&B) integration.
+
+Every inference shall record: Model Name, Model Version, Training Dataset Version, Representation Version, Preprocessing Version, Threshold Version, Decision-Fusion Method Version, Calibration Version, XAI Method Version, and RAG Knowledge Base Version — making retrospective auditing possible.
+
+8. Evaluation Metrics and Acceptance Criteria
+
+8.1 Stage 1 Evaluation Metrics
+
+Metric
+
+Purpose
+
+Sensitivity
+
+Minimize missed DR
+
+Specificity
+
+Control false positives
+
+ROC-AUC
+
+Overall discrimination
+
+PR-AUC
+
+Positive-class performance
+
+Balanced Accuracy
+
+Class-imbalance robustness
+
+F1
+
+Precision/recall balance
+
+MCC
+
+Robust binary correlation
+
+Boundary validator (M01): reported separately using the same metric set, evaluated specifically at the Class 0/Class 1 boundary, since this is the boundary the validator exists to strengthen (Section 3.4).
+
+8.2 Stage 2 Evaluation Metrics
+
+Metric
+
+Purpose
+
+Exact Accuracy
+
+Exact grade prediction
+
+Macro F1
+
+Equal importance across grades
+
+Balanced Accuracy
+
+Grade imbalance
+
+Quadratic Weighted Kappa (QWK)
+
+Ordinal agreement
+
+Cohen's Kappa
+
+Agreement beyond chance
+
+Per-Grade Sensitivity
+
+Grade-level detection
+
+Confusion Matrix
+
+Error distribution, especially between adjacent grades
+
+Boundary validators (M12, M23, M34): reported separately at each respective boundary, using sensitivity/specificity/ROC-AUC at that specific class pair, since neighbouring-grade reliability — not overall accuracy — is the Stage 2 priority (FR-022). The existing evaluation infrastructure already computes a broad set of these metrics, including accuracy, balanced accuracy, F1, MCC, Kappa, QWK, ROC-AUC, PR-AUC, and per-class sensitivity/specificity. Final models shall be selected using clinically appropriate trade-offs rather than accuracy alone.
+
+8.3 Representation Benchmark Metrics
+
+Candidate representations (Section 3.2) are compared using ROC-AUC, PR-AUC, sensitivity, specificity, balanced accuracy, F1, and MCC, computed across multiple random seeds with bootstrap confidence intervals (VAL-002, VAL-003) — not a single run.
+
+8.4 Calibration Metrics
+
+Calibration quality (Section 3.7) is evaluated using Expected Calibration Error (ECE), Brier Score, and visual review of reliability diagrams. The acceptance threshold for ECE is to be agreed with the project's clinical advisor rather than assumed in advance.
+
+8.5 Acceptance Criteria
+
+Stage 1
+
+Strong DR sensitivity
+
+Acceptable specificity
+
+Validated ROC-AUC / PR-AUC
+
+Stable performance on an untouched test set and on an external dataset (Section 5.2)
+
+Explicit false-negative analysis
+
+M01 boundary-validator metrics reported at the Class 0/1 boundary
+
+Stage 2
+
+Strong exact-grade accuracy
+
+Acceptable macro F1
+
+Good QWK
+
+Per-grade performance reporting
+
+Acceptable confusion between adjacent grades
+
+Stable performance on an untouched test set and on an external dataset
+
+M12/M23/M34 boundary-validator metrics reported at their respective boundaries
+
+Decision Fusion and Calibration
+
+Fusion method (Section 3.6) selected via a documented, validated comparison — not assumed
+
+ECE at or below the threshold agreed with the clinical advisor (Section 8.4)
+
+Uncertain-state cases correctly routed to review/retest rather than defaulting to a definitive result (UNC-001–UNC-003)
+
+XAI
+
+Grad-CAM generated successfully for representative cases
+
+Heatmaps correspond spatially to the input image
+
+Overlays are visible and interpretable
+
+XAI is never represented as confirmed clinical lesion segmentation
+
+System (End-to-End)
+
+Process an image
+
+Execute Stage 1 (global + boundary validation + fusion)
+
+Conditionally execute Stage 2 (parent + boundary validation + fusion)
+
+Generate XAI on the final validated decision
+
+Produce a final explanation
+
+Create a patient record
+
+Generate a referral record, or route to review/retest, where required
+
+9. Testing Strategy
+
+9.1 Unit Testing
+
+Preprocessing and representation conversion
+
+Auxiliary map generation
+
+Dataset labeling
+
+Binary mapping
+
+Model input dimensions
+
+Prediction formatting
+
+Decision-fusion combination logic (Section 3.6)
+
+Calibration computation (ECE, Brier Score)
+
+Database CRUD operations
+
+Referral rules, including Uncertain-state routing
+
+9.2 Integration Testing
+
+Validate the complete path: Image → quality check → representation pipeline → Stage 1 (global + M01 + fusion) → conditional Stage 2 (parent + adjacent boundary validators + fusion) → XAI → RAG → database storage → referral creation or review/retest routing.
+
+9.3 Model Testing
+
+Unseen test set performance
+
+External/held-out dataset performance (Section 5.2)
+
+Class-wise metrics
+
+Boundary-validator metrics at each specific class boundary
+
+Robustness checks across multiple random seeds
+
+Sensitivity at the selected threshold
+
+Probability calibration (pre- and post-calibration comparison)
+
+False-negative review
+
+9.4 Performance Testing
+
+CPU inference latency
+
+GPU inference latency
+
+RAM usage
+
+VRAM usage
+
+Stage-1-only runtime (no boundary validator triggered)
+
+Stage-1 + M01 runtime
+
+Stage-1 + Stage-2 (parent + adjacent validators) runtime
+
+Computational savings from neighbour-only boundary validation vs. an exhaustive pairwise approach
+
+9.5 Security Testing
+
+Authentication
+
+Authorization / RBAC
+
+Encrypted transport
+
+Unauthorized patient-record access attempts
+
+Audit-trail completeness, including per-model decision records
+
+10. Risk Analysis and Mitigation
+
+Risk
+
+Impact
+
+Mitigation
+
+False-negative DR prediction
+
+Very high
+
+Sensitivity-focused threshold selection; M01 boundary validation; explicit false-negative analysis (FR-011, FR-012, FR-014)
+
+Poor exact-grade accuracy
+
+High
+
+Better data, ordinal learning (QWK/CORAL loss), augmentation, neighbouring-class boundary validation, model selection (Section 11.2)
+
+Dataset bias
+
+High
+
+Multi-source datasets and external validation (Section 5.2)
+
+Image-quality problems
+
+High
+
+Dedicated quality check and recapture workflow (FR-005)
+
+Decision-fusion method chosen without adequate validation
+
+High
+
+Empirically compare all candidate fusion strategies before fixing one (Section 3.6, DF-002)
+
+Representation selection overfits to the EfficientNet-B0 proxy and does not transfer to the final backbone
+
+Medium
+
+Re-validate the winning representation on the final production backbone before locking it in (Section 3.2)
+
+Miscalibrated confidence drives inappropriate Uncertain/definitive routing
+
+Medium / high
+
+ECE/Brier monitoring, reliability diagrams reviewed with the clinical advisor (Section 3.7, 8.4)
+
+Boundary-validator ensemble increases inference cost/latency beyond rural hardware targets
+
+Medium
+
+Neighbour-only invocation, not exhaustive pairwise validation (Section 3.5); benchmark on target hardware (7.1)
+
+External-dataset validation reveals dataset shift (camera/population differences)
+
+High
+
+Report external-validation metrics explicitly; do not claim generalization from the internal test set alone (Section 5.2)
+
+Grad-CAM misinterpretation
+
+Medium / high
+
+Clearly label heatmaps as model attribution, not confirmed pathology (FR-052)
+
+LLM hallucination
+
+High
+
+RAG grounding and structured model inputs; no diagnosis from raw image; no unsupported lesion claims (FR-060, FR-064)
+
+Network failure
+
+Medium
+
+Local inference and asynchronous synchronization (FR-083, REL-003)
+
+Patient-data leakage
+
+Very high
+
+Encryption, RBAC, and audit logging (Section 7.3, 7.4)
+
+Excessive compute requirements
+
+Medium
+
+Hierarchical staged inference, neighbour-only boundary validation, and lightweight model presets (Section 4.14)
+
+Synthetic/prototype-data overclaim
+
+High
+
+Clearly label synthetic or prototype datasets and their limitations
+
+11. Repository Mapping and Model Selection Strategy
+
+11.1 Mapping to Existing Repository
+
+SRS Component
+
+Current Repository File
+
+Dataset preparation
+
+00_prepare_dataset.ipynb
+
+HOG / Random Forest baseline
+
+01_hog_rf*.ipynb
+
+ResNet / XGBoost
+
+02_resnet_xgb.ipynb
+
+EfficientNet-B0
+
+03_effnetb0_base.ipynb
+
+EfficientNet-B3 (5-class)
+
+04_effnetb3_5class.ipynb
+
+EfficientNet-B3 (binary)
+
+05_effnetb3_binary*.ipynb / .py
+
+Fusion model
+
+06_fusion_model*.ipynb / .py
+
+Central configuration
+
+config.py
+
+Dataset loading
+
+dataset.py
+
+Model
+
+model.py
+
+Advanced research model
+
+advanced_model.py
+
+Loss functions
+
+losses.py
+
+Training
+
+train.py
+
+Inference
+
+inference.py
+
+Evaluation
+
+evaluate.py
+
+Preprocessing / metrics
+
+utils.py
+
+Dependencies
+
+requirements.txt
+
+Proposed production models (new)
+
+models/stage1_global_m0all.py, models/stage1_boundary_m01.py, models/stage2_parent_m1234.py, models/stage2_boundary_m12.py, models/stage2_boundary_m23.py, models/stage2_boundary_m34.py (Section 3.9)
+
+Proposed decision/calibration modules (new)
+
+decision_fusion.py, calibration.py, representation.py (Section 3.9)
+
+11.2 Model Selection Strategy
+
+Final models shall be selected experimentally, not assumed in advance. The repository already contains multiple model variants specifically for this comparison, and every candidate below is evaluated using the representation selected in Section 3.2.
+
+Representation Candidates
+
+Original RGB; Green-Channel + CLAHE; Grayscale + CLAHE; LAB Colour Space; MaxGreenGsc-CLAHE (Section 3.2). Selection criterion: highest, statistically supported discrimination performance (Section 8.3) on a fast proxy backbone, re-validated on the final backbone.
+
+Stage 1 Candidates (M0ALL)
+
+EfficientNet-B0 (RGB only)
+
+EfficientNet-B0 + auxiliary maps
+
+EfficientNet-B2
+
+EfficientNet-B3
+
+Selection criterion: highest clinically appropriate sensitivity with acceptable specificity and computational cost.
+
+Stage 2 Candidates (M1234)
+
+EfficientNet-B2 / B3
+
+Fusion model
+
+Ordinal architecture
+
+Selection criterion: highest exact-grade performance and QWK while remaining deployable on the target hardware.
+
+Boundary Validator Candidates (M01, M12, M23, M34)
+
+Each boundary validator is trained and benchmarked using the same candidate-backbone process as the Stage 1/Stage 2 models above, on the same selected representation, since each is itself a binary classifier over a specific class pair. Selection criterion: highest sensitivity/specificity at that specific boundary (Section 8.1, 8.2), not overall multi-class accuracy.
+
+11.3 Computational Optimization Techniques
+
+Technique
+
+Detail
+
+Memory-aware datasets
+
+Streaming from folders; memory-mapped cached datasets
+
+Small-resource model presets
+
+B0 / B2 / B3 compute profiles (Section 4.14)
+
+Mixed precision
+
+AMP enabled in the training/inference configuration
+
+Gradient checkpointing
+
+Available for the B3 configuration to reduce VRAM requirements
+
+Neighbour-only boundary validation
+
+Only the boundary validator(s) adjacent to the predicted class are invoked, rather than every pairwise model for every case (Section 3.5)
+
+TorchScript / ONNX export
+
+Supported by the inference module, including an FP16 option; ONNX export also enables the optional MATLAB-side workflows in Appendix B
+
+Test-Time Augmentation (TTA)
+
+Supported in inference/evaluation; should be benchmarked rather than automatically enabled in production, since multiple passes increase inference cost
+
+12. Development Roadmap
+
+Phase
+
+Focus
+
+Phase 1 — Dataset
+
+Download and audit the dataset(s); check class distributions and duplicates; define a patient/source-aware train/validation/test split (Section 5.1).
+
+Phase 2 — Representation Research
+
+Build candidate representations; benchmark with the EfficientNet-B0 proxy across repeated seeds; select the winning representation (Section 3.2).
+
+Phase 3 — Stage 1
+
+Build M0ALL (0 vs. all) and M01 (0 vs. 1); calibrate probabilities; optimize the screening threshold; analyze false negatives (Sections 3.4, 3.7).
+
+Phase 4 — Stage 2 and Decision Fusion
+
+Build M1234 (global 1/2/3/4), M12, M23, and M34; implement and experimentally validate the decision-fusion engine for both stages (Sections 3.5, 3.6).
+
+Phase 5 — Validation and XAI
+
+Final untouched-test evaluation; external-dataset validation; Grad-CAM; calibration and uncertainty analysis (Sections 3.7, 4.15, 5.2).
+
+Phase 6 — Explanation Layer
+
+Assemble the curated knowledge base; build the RAG explanation layer; generate human-readable clinical output (Section 4.11).
+
+Phase 7 — Patient Database and Referral Engine
+
+Implement Patient, Screening, Model_Decision, XAI, Explanation, Referral, and Follow-up entities; implement rule-based referral routing, including the Uncertain — review/retest path (Sections 4.12, 4.13, 5.4).
+
+Phase 8 — Health-Worker Application Interface
+
+Build the health-worker-facing application, including the distinct Uncertain result state (Section 6.1, Appendix C).
+
+Phase 9 — Rural/Edge Deployment Benchmarking
+
+Benchmark low-resource and rural deployment, including offline synchronization and, optionally, the MATLAB-based edge-deployment path in Appendix B.
+
+13. Final System Definition
+
+AarogyaNetra is a hierarchical, resource-aware, explainable AI-assisted diabetic retinopathy screening, severity-assessment, and referral platform for rural healthcare. It selects a retinal image representation empirically, then performs high-sensitivity binary screening for diabetic retinopathy using a global model reinforced by a dedicated Class 0/1 boundary validator; only DR-positive or Uncertain cases proceed to a second-stage severity classifier, itself reinforced by dedicated neighbouring-class boundary validators. A decision-fusion engine combines global and boundary evidence into a calibrated final decision — which may explicitly be Uncertain, prompting review or retest rather than a forced guess. Grad-CAM provides visual model attribution on the final validated decision, while a final retrieval-augmented language layer converts structured model results into knowledge-grounded explanations without replacing the diagnostic model. A patient database manages longitudinal screening records, the full per-model decision audit trail, referrals, and follow-up — transforming the system from a standalone image classifier into an end-to-end rural healthcare screening and referral support platform.
+
+This positioning is consistent with SIH's general evaluation emphasis on novelty, technical complexity, clarity, feasibility, practicability, sustainability, impact, user experience, and future progression.
+
+Appendix A — Recommended Technology Stack
+
+Layer
+
+Recommended Technology
+
+AI / Deep Learning
+
+Python, PyTorch, torchvision, EfficientNet
+
+Data / ML Utilities
+
+NumPy, Scikit-learn
+
+Image Processing
+
+OpenCV; optional MATLAB Image Processing Toolbox for experimentation (Appendix B)
+
+Medical Imaging Support
+
+Optional MathWorks Medical Imaging Toolbox (Appendix B)
+
+Explainable AI
+
+Grad-CAM; optionally cross-validated with MATLAB's gradCAM, imageLIME, and occlusionSensitivity (Appendix B)
+
+Visualization
+
+Matplotlib
+
+Knowledge Layer
+
+RAG + curated medical knowledge base + LLM
+
+Backend
+
+FastAPI or equivalent REST API
+
+Database
+
+PostgreSQL / SAP HANA where appropriate
+
+Model Deployment
+
+TorchScript / ONNX, subject to benchmarking
+
+Frontend
+
+Web or mobile interface for health workers
+
+Monitoring
+
+Application logs, model versioning, performance metrics
+
+Appendix B — MathWorks Technology Integration (Optional / Complementary)
+
+MathWorks technologies (mathworks.com; regional entry point: https://in.mathworks.com/) may complement the Python/PyTorch core rather than replace it. The production AI pipeline remains centred on the validated PyTorch implementation, to avoid unnecessary architectural complexity (Section 2.7). This appendix expands the high-level integration idea into concrete tools mapped to specific sections of this SRS, so the option can be evaluated on its merits rather than treated as a generic add-on.
+
+B.1 Deep Learning Toolbox — Training, Prototyping and Benchmarking
+
+Deep Learning Toolbox supports transfer learning and training of CNN backbones directly comparable to the EfficientNet family used throughout this SRS (FR-030). Its Deep Network Designer app provides an interactive way to assemble and modify network architectures, and its Experiment Manager app is built specifically for the kind of systematic, multi-candidate comparison this SRS already calls for — the Stage 1/Stage 2 backbone comparison (Section 11.2), the representation benchmark (Section 3.2), and boundary-validator comparisons (Section 11.2) can all be run as tracked Experiment Manager sweeps across seeds and hyperparameters, complementing (not replacing) the equivalent PyTorch experiment-tracking already used (Section 7.7).
+
+B.2 Interoperability with the Existing PyTorch/ONNX Pipeline
+
+This is the most directly useful integration point, because it requires no retraining. Deep Learning Toolbox can import a model trained in PyTorch either directly or via the ONNX export already required by FR-082, using the importNetworkFromPyTorch and importNetworkFromONNX functions (and importNetworkFromTensorFlow, if ever relevant), or interactively through the Deep Network Designer app's import option. In practice, this means every model already exported to ONNX from the production inventory — M0ALL, M01, M1234, M12, M23, M34 — can be loaded into MATLAB as-is and used for MATLAB-side benchmarking, explainability, or calibration experiments without duplicating any training work.
+
+B.3 Explainability Cross-Validation
+
+Deep Learning Toolbox ships built-in explainability functions — gradCAM, imageLIME, and occlusionSensitivity — that operate on an imported network. These can serve as an optional, independent cross-check of the Python Grad-CAM implementation (FR-050–FR-052): running a second, MATLAB-native Grad-CAM implementation on the same imported model, plus two additional and methodologically different attribution techniques (LIME-style perturbation and occlusion sensitivity), gives a simple form of triangulation — reducing the risk that a single method's heatmap pattern is an artifact of that one technique rather than a genuine signal (Section 10, Grad-CAM misinterpretation risk).
+
+B.4 Medical Imaging Toolbox
+
+Medical Imaging Toolbox provides DICOM/NIfTI ingestion, 2D/3D visualization, and a Medical Image Labeler app. Its documented modality focus is primarily radiology (CT, MRI, X-ray, ultrasound, PET/SPECT) rather than fundus photography, so it is not assumed to be a drop-in fit for this project's 2D colour fundus images. That said, MathWorks publishes a directly relevant worked example under this toolbox's documentation — “Multilabel Diabetic Retinopathy Fundus Image Classification Using Deep Learning,” which fine-tunes a ResNet-101 on the DDR dataset into five severity classes. This is a close structural analogue of AarogyaNetra's own Stage 2 five-way grading problem (Section 3.5), and is a credible, low-risk reference implementation to consult when prototyping M1234 in MATLAB, even though the toolbox's primary strength lies elsewhere.
+
+B.5 Image Processing Toolbox / Computer Vision Toolbox
+
+These toolboxes support the same category of preprocessing experimentation already required by FR-003 and Section 3.2 — CLAHE, colour-space conversion (for the LAB and Green-Channel representations), illumination correction, and border cropping — useful for quickly prototyping and visually comparing candidate representations before committing to the OpenCV implementation used in production.
+
+B.6 Edge / Resource-Aware Deployment
+
+MATLAB Coder and GPU Coder generate standalone C/C++/CUDA code from a trained network, deployable to low-cost edge boards such as Raspberry Pi and NVIDIA Jetson Nano/TX2 — directly relevant to the rural/edge deployment scenario in Sections 2.6 and 4.14. This is a second, non-Python deployment path worth benchmarking against the existing TorchScript/ONNX (with FP16) export already required by FR-082, particularly if CPU-only inference speed on very low-cost hardware becomes a constraint. Deep Learning Toolbox's Model Compression Library (including the Deep Network Quantizer app) additionally supports quantization and pruning, which can be compared against the FP16 export path for resource-aware deployment.
+
+B.7 Enterprise-Scale Deployment (Optional, Longer-Term)
+
+MATLAB Production Server can deploy a trained model behind a RESTful, JSON-based API, playing a role similar to the FastAPI backend in Section 6.3. It is a commercially licensed, quoted enterprise product, however, and is realistically out of scope for a hackathon build; FastAPI remains the default per Section 6.3 unless the project scales to an institutional deployment where the host university or hospital already holds a MathWorks enterprise licence.
+
+B.8 Access and Licensing Note
+
+MATLAB Home and Student licences, and university Campus-Wide Licences, commonly give students and faculty access to MATLAB plus add-on toolboxes at no additional per-seat cost. This is worth confirming directly with the institution's IT or library services before assuming a paid licence is required for any of the above.
+
+B.9 Suggested MATLAB-Side Experimentation Workflow
+
+Export a trained checkpoint from the existing PyTorch pipeline to ONNX (FR-082).
+
+Import it into MATLAB via Deep Network Designer, importNetworkFromONNX, or importNetworkFromPyTorch (Appendix B.2).
+
+Benchmark it alongside the existing candidates using the Experiment Manager app (Appendix B.1, Section 11.2).
+
+Run gradCAM, imageLIME, and occlusionSensitivity for cross-validation against the Python Grad-CAM output (Appendix B.3).
+
+If edge-native (non-Python) deployment is ever required, prototype quantization via the Deep Network Quantizer app, or code generation via GPU Coder / MATLAB Coder, and compare against the TorchScript/ONNX FP16 path (Appendix B.6).
+
+B.10 Reference Links
+
+MathWorks (India regional site): https://in.mathworks.com/
+
+Medical Imaging Toolbox: mathworks.com/products/medical-imaging.html
+
+Diabetic retinopathy fundus classification example: mathworks.com/help/medical-imaging/.../multilabel-diabetic-retinopathy-fundus-image-classification-using-deep-learning.html
+
+gradCAM function reference: mathworks.com/help/deeplearning/ref/gradcam.html
+
+Importing networks from PyTorch/ONNX/TensorFlow: mathworks.com/help/deeplearning/networks-from-external-platforms.html
+
+GPU Coder: mathworks.com/products/gpu-coder.html
+
+Links point to MathWorks' primary documentation; the India regional mirror (in.mathworks.com) carries the same product and help content under the India domain.
+
+Appendix C — Sample Health-Worker Result Screens
+
+Illustrative layout only — exact copy and clinical terminology to be finalized with the clinical advisor (Section 4.5).
+
+Definitive result
+
+DR SCREENING
+
+Result:      DR DETECTED
+
+Confidence:  94%
+
+Severity:    Grade 2
+
+Why?
+
+  [Grad-CAM visual explanation]
+
+What does this mean?
+
+  [Knowledge-grounded explanation]
+
+Referral:
+
+  [Recommended next step]
+
+Patient ID:  PXXXXX
+
+Uncertain result
+
+DR SCREENING
+
+Result:      UNCERTAIN -- REVIEW / RETEST
+
+Confidence:  Low (below calibrated threshold)
+
+What does this mean?
+
+  The automated analysis could not confidently
+
+  confirm or rule out diabetic retinopathy for
+
+  this image. This is not a negative result.
+
+Recommended action:
+
+  [Recapture image / manual clinical review]
+
+Patient ID:  PXXXXX
+
+Appendix D — Glossary of Acronyms
+
+Acronym
+
+Full Form
+
+AMP
+
+Automatic Mixed Precision
+
+APTOS
+
+Asia Pacific Tele-Ophthalmology Society (2019 Blindness Detection dataset)
+
+CBAM
+
+Convolutional Block Attention Module
+
+CLAHE
+
+Contrast Limited Adaptive Histogram Equalization
+
+CNN
+
+Convolutional Neural Network
+
+DDR
+
+Dataset for Diabetic Retinopathy
+
+DR
+
+Diabetic Retinopathy
+
+DPDP Act
+
+Digital Personal Data Protection Act, 2023 (India)
+
+ECE
+
+Expected Calibration Error
+
+FOV
+
+Field of View
+
+FR
+
+Functional Requirement
+
+ICDR
+
+International Clinical Diabetic Retinopathy (severity scale)
+
+IDRiD
+
+Indian Diabetic Retinopathy Image Dataset
+
+LLM
+
+Large Language Model
+
+MCC
+
+Matthews Correlation Coefficient
+
+NPDR / PDR
+
+Non-Proliferative DR / Proliferative DR
+
+OBJ
+
+Objective
+
+ONNX
+
+Open Neural Network Exchange
+
+PR-AUC
+
+Precision-Recall Area Under Curve
+
+QWK
+
+Quadratic Weighted Kappa
+
+RAG
+
+Retrieval-Augmented Generation
+
+RBAC
+
+Role-Based Access Control
+
+ROC-AUC
+
+Receiver Operating Characteristic Area Under Curve
+
+SIH
+
+Smart India Hackathon
+
+SWA
+
+Stochastic Weight Averaging
+
+TTA
+
+Test-Time Augmentation
+
+XAI
+
+Explainable Artificial Intelligence
+
+Appendix E — Critical Implementation Decisions and Build Principles
+
+Concise engineering guardrails to keep in place before and during implementation, so the codebase, this SRS, and the SIH presentation stay consistent:
+
+Do not inherit the existing repository's architecture or dataset handling blindly — treat it as reference, reusable evaluation code, and experiment history (Section 2.2).
+
+Representation benchmarking precedes the expensive full hierarchy build (Section 3.2).
+
+Use EfficientNet-B0 as an initial low-cost proxy; move the winning representation to EfficientNet-B3 afterward (Section 3.2, REP-002).
+
+Stage 1 is optimized for sensitivity — a high-accuracy model with dangerous false negatives is not acceptable as the primary screening gate (Section 3.4).
+
+Boundary validators run only for the relevant neighbouring classes — never exhaustively for every case (Section 3.5, FR-025).
+
+The decision-fusion method must be experimentally validated, not invented arbitrarily (Section 3.6, DF-002).
+
+Class 4 (PDR) is the likely weakest data region and needs dedicated imbalance handling and external validation (Sections 5.2, 5.3).
+
+Grad-CAM is explainability, not lesion segmentation — this distinction must be scientifically precise throughout the SIH presentation and this SRS (FR-052).
+
+The RAG/LLM layer explains the validated result after diagnostic determination — it never replaces the medical classifier (Section 4.11).
