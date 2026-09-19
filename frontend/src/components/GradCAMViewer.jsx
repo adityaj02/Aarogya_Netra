@@ -20,36 +20,96 @@ export default function GradCAMViewer({ originalSrc, heatmapSrc, overlaySrc }) {
         {t('gradcamSubtitle')}
       </p>
 
-      {/* Tabs */}
-      <div className="view-tabs" role="tablist" aria-label="Visualizations">
+      {/* Tabs - Segmented Control */}
+      <div 
+        role="tablist" 
+        aria-label="Visualizations"
+        style={{
+          display: 'flex',
+          background: 'var(--surface-muted)',
+          padding: '4px',
+          borderRadius: 'var(--radius-sm)',
+          gap: '4px',
+          marginBottom: '16px',
+          border: '1px solid var(--border-subtle)'
+        }}
+      >
         <button
           type="button"
           role="tab"
           aria-selected={activeTab === 'original'}
-          className={`tab-btn ${activeTab === 'original' ? 'active' : ''}`}
           onClick={() => setActiveTab('original')}
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: 'var(--radius-sm)',
+            border: 'none',
+            background: activeTab === 'original' ? 'var(--surface-default)' : 'transparent',
+            boxShadow: activeTab === 'original' ? 'var(--shadow-sm)' : 'none',
+            color: activeTab === 'original' ? 'var(--text-main)' : 'var(--text-muted)',
+            fontWeight: activeTab === 'original' ? 600 : 500,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
         >
-          <Eye size={15} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+          <Eye size={15} />
           {t('viewOriginal')}
         </button>
         <button
           type="button"
           role="tab"
           aria-selected={activeTab === 'heatmap'}
-          className={`tab-btn ${activeTab === 'heatmap' ? 'active' : ''}`}
           onClick={() => setActiveTab('heatmap')}
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: 'var(--radius-sm)',
+            border: 'none',
+            background: activeTab === 'heatmap' ? 'var(--surface-default)' : 'transparent',
+            boxShadow: activeTab === 'heatmap' ? 'var(--shadow-sm)' : 'none',
+            color: activeTab === 'heatmap' ? 'var(--text-main)' : 'var(--text-muted)',
+            fontWeight: activeTab === 'heatmap' ? 600 : 500,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
         >
-          <Flame size={15} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+          <Flame size={15} />
           {t('viewHeatmap')}
         </button>
         <button
           type="button"
           role="tab"
           aria-selected={activeTab === 'overlay'}
-          className={`tab-btn ${activeTab === 'overlay' ? 'active' : ''}`}
           onClick={() => setActiveTab('overlay')}
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: 'var(--radius-sm)',
+            border: 'none',
+            background: activeTab === 'overlay' ? 'var(--surface-default)' : 'transparent',
+            boxShadow: activeTab === 'overlay' ? 'var(--shadow-sm)' : 'none',
+            color: activeTab === 'overlay' ? 'var(--text-main)' : 'var(--text-muted)',
+            fontWeight: activeTab === 'overlay' ? 600 : 500,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
         >
-          <Layers size={15} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+          <Layers size={15} />
           {t('viewOverlay')}
         </button>
       </div>

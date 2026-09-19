@@ -215,15 +215,28 @@ export default function ReportViewPage({ report, onStartNewScreening }) {
                 background: 'var(--primary-light)'
               }}
             >
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-hover)' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-hover)', marginBottom: '8px' }}>
                 {t('recommendationTitle')}
               </div>
-              <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-hover)', marginTop: '2px' }}>
-                {t(report.referralKey)}
-              </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginTop: '4px' }}>
-                {t(report.timelineKey)}
-              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {isHealthy ? (
+                  <>
+                    <li>Routine annual comprehensive eye exam.</li>
+                    <li>Maintain healthy blood sugar, blood pressure, and cholesterol levels.</li>
+                  </>
+                ) : isDR ? (
+                  <>
+                    <li>Schedule an appointment with an ophthalmologist or retina specialist within 2–4 weeks.</li>
+                    <li>Bring this report to your consultation.</li>
+                    <li>Do not delay if you experience sudden vision changes.</li>
+                  </>
+                ) : (
+                  <>
+                    <li>{t(report.referralKey)}</li>
+                    <li>{t(report.timelineKey)}</li>
+                  </>
+                )}
+              </ul>
             </div>
           </div>
 

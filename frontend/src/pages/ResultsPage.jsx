@@ -46,7 +46,9 @@ export default function ResultsPage({
   const isHealthy = result.stage1Outcome === 'NO_DR';
   const isDRDetected = result.stage1Outcome === 'DR_DETECTED';
   const isUncertain = result.stage1Outcome === 'UNCERTAIN';
-  const isUngradable = result.stage1Outcome === 'UNGRADABLE' || result.Final_Grade === 'UNGRADABLE';
+  const isUngradable = result.qualityMetrics?.overallScore !== undefined 
+    ? result.qualityMetrics.overallScore < 0.6 
+    : (result.stage1Outcome === 'UNGRADABLE' || result.Final_Grade === 'UNGRADABLE');
 
   const severityDescMap = {
     severityMild: 'severityMildDesc',
@@ -222,16 +224,29 @@ export default function ResultsPage({
               borderLeft: '4px solid var(--primary)'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <Calendar size={18} style={{ color: 'var(--primary)' }} />
               <h3 style={{ margin: 0, fontSize: '1rem' }}>{t('recommendationTitle')}</h3>
             </div>
-            <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--primary)', marginTop: '4px' }}>
-              {t(result.referralKey)}
-            </div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '4px', marginBottom: 0 }}>
-              {t(result.timelineKey)}
-            </p>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {isHealthy ? (
+                <>
+                  <li>Routine annual comprehensive eye exam.</li>
+                  <li>Maintain healthy blood sugar, blood pressure, and cholesterol levels.</li>
+                </>
+              ) : isDRDetected ? (
+                <>
+                  <li>Schedule an appointment with an ophthalmologist or retina specialist within 2–4 weeks.</li>
+                  <li>Bring this report to your consultation.</li>
+                  <li>Do not delay if you experience sudden vision changes.</li>
+                </>
+              ) : (
+                <>
+                  <li>{t(result.referralKey)}</li>
+                  <li>{t(result.timelineKey)}</li>
+                </>
+              )}
+            </ul>
           </div>
 
           {/* Action Buttons */}
