@@ -47,9 +47,10 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
 
   const age = calculateAge(form.dob);
 
+  const isFormValid = form.name && form.dob && form.gender && form.diabetesDuration;
+
   const handleContinue = () => {
-    if (!form.name || !form.dob || !form.gender || !form.diabetesDuration) {
-      alert("Please complete all required fields.");
+    if (!isFormValid) {
       return;
     }
     onContinue({
@@ -101,26 +102,26 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
               <Stepper currentStep={1} />
 
               {/* ── Form Fields ── */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 {/* Full Name */}
-                <FieldWrapper label={t("fullName", "Full Name")} required>
-                  <InputField
-                    icon={<User size={16} color="#0ea5e9" />}
-                    placeholder={t("fullNamePlaceholder", "Enter patient's full name")}
-                    value={form.name}
-                    onChange={(e) => updateField("name", e.target.value)}
-                  />
-                </FieldWrapper>
+                <div className="md:col-span-2">
+                  <FieldWrapper label={t("fullName", "Full Name")} required>
+                    <InputField
+                      icon={<User size={16} color="var(--text-tertiary)" />}
+                      placeholder={t("fullNamePlaceholder", "Enter patient's full name")}
+                      value={form.name}
+                      onChange={(e) => updateField("name", e.target.value)}
+                    />
+                  </FieldWrapper>
+                </div>
 
-                {/* DOB + Gender row */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-
-                  {/* Date of Birth */}
+                {/* Date of Birth */}
+                <div>
                   <FieldWrapper label={t("dob", "Date of Birth")} required>
                     <div style={{ position: "relative" }}>
                       <div style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", zIndex: 1 }}>
-                        <Calendar size={16} color="#0ea5e9" />
+                        <Calendar size={16} color="var(--text-tertiary)" />
                       </div>
                       <input
                         type="date"
@@ -132,8 +133,8 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                           paddingLeft: "38px",
                           paddingRight: "12px",
                           borderRadius: "12px",
-                          border: "1px solid #cbd5e1",
-                          background: "rgba(255,255,255,0.7)",
+                          border: "1px solid var(--border-default)",
+                          background: "var(--surface-default)",
                           fontSize: "0.75rem",
                           fontWeight: 600,
                           color: "#1e293b",
@@ -142,30 +143,32 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                           fontFamily: "'Inter', sans-serif",
                           transition: "border 0.15s, box-shadow 0.15s",
                         }}
-                        onFocus={(e) => { e.target.style.border = "1px solid #0ea5e9"; e.target.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.15)"; }}
-                        onBlur={(e) => { e.target.style.border = "1px solid #cbd5e1"; e.target.style.boxShadow = "none"; }}
+                        onFocus={(e) => { e.target.style.border = "1px solid var(--primary)"; e.target.style.boxShadow = "0 0 0 3px var(--primary-light)"; }}
+                        onBlur={(e) => { e.target.style.border = "1px solid var(--border-default)"; e.target.style.boxShadow = "none"; }}
                       />
                     </div>
                     <p style={{
                       fontSize: "0.65rem",
                       marginTop: "4px",
                       fontWeight: age !== null ? 600 : 400,
-                      color: age !== null ? "#0284c7" : "#94a3b8",
+                      color: age !== null ? "var(--primary)" : "var(--text-tertiary)",
                     }}>
                       {age !== null ? `Calculated Age: ${age} years old` : "Age will be calculated automatically"}
                     </p>
                   </FieldWrapper>
+                </div>
 
-                  {/* Gender Segmented Selector */}
+                {/* Gender Segmented Selector */}
+                <div>
                   <FieldWrapper label={t("gender", "Gender")} required>
                     <div style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr 1fr",
                       gap: "6px",
                       padding: "4px",
-                      background: "rgba(241,245,249,0.9)",
+                      background: "var(--surface-muted)",
                       borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
+                      border: "1px solid var(--border-subtle)",
                       height: "40px",
                       alignItems: "center",
                     }}>
@@ -179,10 +182,10 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                             borderRadius: "8px",
                             fontSize: "0.7rem",
                             fontWeight: 600,
-                            border: form.gender === val ? "1px solid rgba(14,165,233,0.35)" : "none",
-                            background: form.gender === val ? "#ffffff" : "transparent",
-                            color: form.gender === val ? "#0284c7" : "#64748b",
-                            boxShadow: form.gender === val ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                            border: form.gender === val ? "1px solid var(--primary-light)" : "none",
+                            background: form.gender === val ? "var(--surface-default)" : "transparent",
+                            color: form.gender === val ? "var(--primary)" : "var(--text-secondary)",
+                            boxShadow: form.gender === val ? "var(--shadow-sm)" : "none",
                             cursor: "pointer",
                             transition: "all 0.15s",
                             display: "flex",
@@ -191,98 +194,103 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                             gap: "4px",
                           }}
                         >
-                          <User size={12} color={form.gender === val ? "#0284c7" : "#94a3b8"} />
+                          <User size={12} color={form.gender === val ? "var(--primary)" : "var(--text-tertiary)"} />
                           {lbl}
                         </button>
                       ))}
                     </div>
                   </FieldWrapper>
-
                 </div>
 
                 {/* Diabetes Duration */}
-                <FieldWrapper label={t("diabetesDuration", "Diabetes Duration")} required>
-                  <div style={{ position: "relative" }}>
-                    <div style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", zIndex: 1 }}>
-                      <Activity size={16} color="#0ea5e9" />
+                <div>
+                  <FieldWrapper label={t("diabetesDuration", "Diabetes Duration")} required>
+                    <div style={{ position: "relative" }}>
+                      <div style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", zIndex: 1 }}>
+                        <Activity size={16} color="var(--text-tertiary)" />
+                      </div>
+                      <select
+                        value={form.diabetesDuration}
+                        onChange={(e) => updateField("diabetesDuration", e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "40px",
+                          paddingLeft: "38px",
+                          paddingRight: "36px",
+                          borderRadius: "12px",
+                          border: "1px solid var(--border-default)",
+                          background: "var(--surface-default)",
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                          color: form.diabetesDuration ? "var(--text-primary)" : "var(--text-tertiary)",
+                          outline: "none",
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          cursor: "pointer",
+                          boxSizing: "border-box",
+                          fontFamily: "'Inter', sans-serif",
+                          transition: "border 0.15s, box-shadow 0.15s",
+                        }}
+                        onFocus={(e) => { e.target.style.border = "1px solid var(--primary)"; e.target.style.boxShadow = "0 0 0 3px var(--primary-light)"; }}
+                        onBlur={(e) => { e.target.style.border = "1px solid var(--border-default)"; e.target.style.boxShadow = "none"; }}
+                      >
+                        <option value="" disabled>{t("diabetesDurationSelect", "Select duration")}</option>
+                        <option value="&lt;1">{t("durationUnder1", "Less than 1 year")}</option>
+                        <option value="1-5">1–5 years</option>
+                        <option value="5-10">5–10 years</option>
+                        <option value="10-15">10–15 years</option>
+                        <option value="15+">{t("durationOver10", "More than 15 years")}</option>
+                      </select>
+                      <ChevronDown size={15} color="var(--text-tertiary)" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                     </div>
-                    <select
-                      value={form.diabetesDuration}
-                      onChange={(e) => updateField("diabetesDuration", e.target.value)}
-                      style={{
-                        width: "100%",
-                        height: "40px",
-                        paddingLeft: "38px",
-                        paddingRight: "36px",
-                        borderRadius: "12px",
-                        border: "1px solid #cbd5e1",
-                        background: "rgba(255,255,255,0.7)",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        color: form.diabetesDuration ? "#1e293b" : "#94a3b8",
-                        outline: "none",
-                        appearance: "none",
-                        WebkitAppearance: "none",
-                        cursor: "pointer",
-                        boxSizing: "border-box",
-                        fontFamily: "'Inter', sans-serif",
-                        transition: "border 0.15s, box-shadow 0.15s",
-                      }}
-                      onFocus={(e) => { e.target.style.border = "1px solid #0ea5e9"; e.target.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.15)"; }}
-                      onBlur={(e) => { e.target.style.border = "1px solid #cbd5e1"; e.target.style.boxShadow = "none"; }}
-                    >
-                      <option value="" disabled>{t("diabetesDurationSelect", "Select duration")}</option>
-                      <option value="&lt;1">{t("durationUnder1", "Less than 1 year")}</option>
-                      <option value="1-5">1–5 years</option>
-                      <option value="5-10">5–10 years</option>
-                      <option value="10-15">10–15 years</option>
-                      <option value="15+">{t("durationOver10", "More than 15 years")}</option>
-                    </select>
-                    <ChevronDown size={15} color="#94a3b8" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                  </div>
-                </FieldWrapper>
+                  </FieldWrapper>
+                </div>
 
                 {/* Mobile Number */}
-                <FieldWrapper label={t("mobileNumber", "Mobile Number")} optional>
-                  <div style={{ display: "flex", height: "40px", borderRadius: "12px", border: "1px solid #cbd5e1", overflow: "hidden", background: "rgba(255,255,255,0.7)" }}>
-                    {/* Country code */}
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "0 12px",
-                      borderRight: "1px solid #cbd5e1",
-                      background: "rgba(241,245,249,0.9)",
-                      flexShrink: 0,
-                      userSelect: "none",
-                    }}>
-                      <span style={{ fontSize: "1rem", lineHeight: 1 }}>🇮🇳</span>
-                      <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a" }}>+91</span>
-                      <ChevronDown size={12} color="#94a3b8" />
+                <div>
+                  <FieldWrapper label={t("mobileNumber", "Mobile Number")} optional>
+                    <div style={{ display: "flex", height: "40px", borderRadius: "12px", border: "1px solid var(--border-default)", overflow: "hidden", background: "var(--surface-default)" }}>
+                      {/* Country code */}
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "0 12px",
+                        borderRight: "1px solid var(--border-default)",
+                        background: "var(--surface-muted)",
+                        flexShrink: 0,
+                        userSelect: "none",
+                      }}>
+                        <span style={{ fontSize: "1rem", lineHeight: 1 }}>🇮🇳</span>
+                        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-primary)" }}>+91</span>
+                        <ChevronDown size={12} color="var(--text-tertiary)" />
+                      </div>
+                      {/* Phone input */}
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        inputMode="numeric"
+                        placeholder={t("mobilePlaceholder", "Enter 10-digit mobile number")}
+                        value={form.mobile}
+                        onChange={(e) => updateField("mobile", e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                          padding: "0 14px",
+                          background: "transparent",
+                          border: "none",
+                          outline: "none",
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                          color: "var(--text-primary)",
+                          fontFamily: "'Inter', sans-serif",
+                        }}
+                        onFocus={(e) => { e.target.parentElement.style.border = "1px solid var(--primary)"; e.target.parentElement.style.boxShadow = "0 0 0 3px var(--primary-light)"; }}
+                        onBlur={(e) => { e.target.parentElement.style.border = "1px solid var(--border-default)"; e.target.parentElement.style.boxShadow = "none"; }}
+                      />
                     </div>
-                    {/* Phone input */}
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      inputMode="numeric"
-                      placeholder={t("mobilePlaceholder", "Enter 10-digit mobile number")}
-                      value={form.mobile}
-                      onChange={(e) => updateField("mobile", e.target.value.replace(/\D/g, "").slice(0, 10))}
-                      style={{
-                        flex: 1,
-                        minWidth: 0,
-                        padding: "0 14px",
-                        background: "transparent",
-                        border: "none",
-                        outline: "none",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        color: "#1e293b",
-                        fontFamily: "'Inter', sans-serif",
-                      }}
-                    />
-                  </div>
-                </FieldWrapper>
+                  </FieldWrapper>
+                </div>
 
               </div>
 
@@ -319,6 +327,7 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                 <button
                   type="button"
                   onClick={handleContinue}
+                  disabled={!isFormValid}
                   style={{
                     flex: 1,
                     height: "44px",
@@ -332,13 +341,14 @@ const PatientInfoPage = ({ initialData, onContinue, onBack }) => {
                     fontSize: "0.75rem",
                     fontWeight: 700,
                     color: "#ffffff",
-                    cursor: "pointer",
-                    boxShadow: "0 8px 20px rgba(14,165,233,0.3)",
+                    cursor: isFormValid ? "pointer" : "not-allowed",
+                    boxShadow: isFormValid ? "0 8px 20px rgba(14,165,233,0.3)" : "none",
                     transition: "all 0.15s",
                     fontFamily: "'Inter', sans-serif",
+                    opacity: isFormValid ? 1 : 0.5,
                   }}
-                  onMouseOver={(e) => { e.currentTarget.style.boxShadow = "0 12px 25px rgba(14,165,233,0.4)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseOut={(e) => { e.currentTarget.style.boxShadow = "0 8px 20px rgba(14,165,233,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                  onMouseOver={(e) => { if (isFormValid) { e.currentTarget.style.boxShadow = "0 12px 25px rgba(14,165,233,0.4)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+                  onMouseOut={(e) => { if (isFormValid) { e.currentTarget.style.boxShadow = "0 8px 20px rgba(14,165,233,0.3)"; e.currentTarget.style.transform = "translateY(0)"; } }}
                 >
                   {t("continue", "Continue")}`n                  <ArrowRight size={16} style={{ transition: "transform 0.15s" }} />
                 </button>
@@ -616,8 +626,8 @@ const InputField = ({ icon, placeholder, value, onChange, type = "text" }) => (
         paddingLeft: "38px",
         paddingRight: "12px",
         borderRadius: "12px",
-        border: "1px solid #cbd5e1",
-        background: "rgba(255,255,255,0.7)",
+        border: "1px solid var(--border-default)",
+        background: "var(--surface-default)",
         fontSize: "0.75rem",
         fontWeight: 600,
         color: "#1e293b",
@@ -626,8 +636,8 @@ const InputField = ({ icon, placeholder, value, onChange, type = "text" }) => (
         fontFamily: "'Inter', sans-serif",
         transition: "border 0.15s, box-shadow 0.15s",
       }}
-      onFocus={(e) => { e.target.style.border = "1px solid #0ea5e9"; e.target.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.15)"; e.target.style.background = "#ffffff"; }}
-      onBlur={(e) => { e.target.style.border = "1px solid #cbd5e1"; e.target.style.boxShadow = "none"; e.target.style.background = "rgba(255,255,255,0.7)"; }}
+      onFocus={(e) => { e.target.style.border = "1px solid var(--primary)"; e.target.style.boxShadow = "0 0 0 3px var(--primary-light)"; }}
+      onBlur={(e) => { e.target.style.border = "1px solid var(--border-default)"; e.target.style.boxShadow = "none"; }}
     />
   </div>
 );
