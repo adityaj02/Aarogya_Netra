@@ -77,11 +77,11 @@ function Accordion({ title, icon: Icon, children, defaultOpen = false }) {
 }
 
 /* ─── Grade Scale Legend ─────────────────────────────────────────── */
-function GradeScaleLegend({ currentGrade }) {
+function GradeScaleLegend({ currentGrade, t }) {
   return (
     <div style={{ marginTop: 16 }}>
       <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
-        DR Severity Scale
+        {t('drSeverityScale', 'DR Severity Scale')}
       </p>
       <div style={{ display: 'flex', gap: 4 }}>
         {[0, 1, 2, 3, 4].map((g) => {
@@ -173,7 +173,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
               <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-muted)', display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-                    Screening Report
+                    {t('screeningReport', 'Screening Report')}
                   </div>
                   {patient?.name && (
                     <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: 2 }}>
@@ -181,9 +181,9 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                     </h2>
                   )}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, fontSize: '0.8125rem', color: 'var(--text-tertiary)' }}>
-                    {patient?.age && <span>Age: {patient.age} yrs</span>}
-                    {patient?.gender && <span>· {patient.gender}</span>}
-                    {patient?.dob && <span>· DOB: {patient.dob}</span>}
+                    {patient?.age && <span>{t('ageFormat', 'Age: {{age}} yrs', { age: patient.age })}</span>}
+                    {patient?.gender && <span>· {t(`gender${patient.gender}`, patient.gender)}</span>}
+                    {patient?.dob && <span>· {t('dobFormat', 'DOB: {{dob}}', { dob: patient.dob })}</span>}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: '0.8125rem', color: 'var(--text-tertiary)' }}>
@@ -191,7 +191,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                     <Calendar size={13} aria-hidden="true" />
                     {screeningDate}
                   </div>
-                  <div style={{ marginTop: 4, fontSize: '0.75rem' }}>Model v2.1 · AarogyaNetra</div>
+                  <div style={{ marginTop: 4, fontSize: '0.75rem' }}>{t('modelInfo', 'Model v2.1 · AarogyaNetra')}</div>
                 </div>
               </div>
 
@@ -226,7 +226,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                       <div>
                         <div style={{ fontSize: '1.15rem', fontWeight: 700 }}>{t('outcomeNoDR', 'No Diabetic Retinopathy Detected')}</div>
                         <div style={{ fontSize: '0.9rem', marginTop: 4, lineHeight: 1.5 }}>{t('severityNoneDesc', 'No signs of DR were found in this image. Continue annual screening.')}</div>
-                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} />}
+                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} t={t} />}
                       </div>
                     </div>
                   )}
@@ -257,7 +257,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                             </motion.span>
                           </div>
                         )}
-                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} />}
+                        {gradeNum != null && <GradeScaleLegend currentGrade={gradeNum} t={t} />}
                       </div>
                     </div>
                   )}
@@ -269,10 +269,10 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                       <div>
                         <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--uncertain-text)' }}>{t('outcomeUncertain', 'Uncertain — Clinical Review Required')}</div>
                         <div style={{ fontSize: '0.9rem', color: 'var(--uncertain-text)', marginTop: 6, lineHeight: 1.5 }}>
-                          The AI model could not reach a confident determination. Schedule a clinical review or retake the image.
+                          {t('uncertainDesc', 'The AI model could not reach a confident determination. Schedule a clinical review or retake the image.')}
                         </div>
                         <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(124,58,237,0.08)', borderRadius: 8, fontSize: '0.8125rem', color: 'var(--uncertain-text)', fontWeight: 600 }}>
-                          Recommended action: Refer for clinical examination within 2 weeks.
+                          {t('uncertainRec', 'Recommended action: Refer for clinical examination within 2 weeks.')}
                         </div>
                       </div>
                     </div>
@@ -288,22 +288,22 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                   >
                     {[
                       {
-                        label: 'DR Probability',
+                        label: t('probLabelDR', 'DR Probability'),
                         value: drProbPct,
-                        hint: 'Likelihood of diabetic retinopathy in this image.',
+                        hint: t('probHintDR', 'Likelihood of diabetic retinopathy in this image.'),
                         color: 'var(--primary)',
                       },
                       {
-                        label: 'Referral Threshold',
+                        label: t('probLabelThreshold', 'Referral Threshold'),
                         value: thresholdPct,
-                        hint: 'Cases above this value are flagged for review.',
+                        hint: t('probHintThreshold', 'Cases above this value are flagged for review.'),
                         color: 'var(--text-tertiary)',
                       },
                       {
-                        label: 'Model Confidence',
+                        label: t('probLabelConf', 'Model Confidence'),
                         value: null,
-                        text: result.confidence === 'HIGH' ? 'High' : result.confidence === 'LOW' ? 'Low' : 'Medium',
-                        hint: 'How confident the AI model is in this result.',
+                        text: result.confidence === 'HIGH' ? t('confHigh', 'High') : result.confidence === 'LOW' ? t('confLow', 'Low') : t('confMedium', 'Medium'),
+                        hint: t('probHintConf', 'How confident the AI model is in this result.'),
                         color: result.confidence === 'HIGH' ? 'var(--success)' : result.confidence === 'LOW' ? 'var(--danger)' : 'var(--warning)',
                       },
                     ].map(({ label, value, text, hint, color }) => (
@@ -336,16 +336,16 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                     <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: 5, lineHeight: 1.6 }}>
                       {isHealthy ? (
                         <>
-                          <li>Routine annual comprehensive eye examination.</li>
-                          <li>Maintain controlled blood sugar, blood pressure, and cholesterol.</li>
-                          <li><strong>Referral urgency:</strong> Annual review — no immediate referral required.</li>
+                          <li>{t('recHealthy1', 'Routine annual comprehensive eye examination.')}</li>
+                          <li>{t('recHealthy2', 'Maintain controlled blood sugar, blood pressure, and cholesterol.')}</li>
+                          <li><strong>{t('refUrgencyLabel', 'Referral urgency:')}</strong> {t('recHealthy3', 'Annual review — no immediate referral required.')}</li>
                         </>
                       ) : isDRDetected ? (
                         <>
-                          <li>Schedule an ophthalmologist or retina specialist appointment.</li>
-                          <li>Bring this report to your consultation.</li>
-                          <li>Do not delay if you experience sudden vision changes.</li>
-                          <li><strong>Referral urgency:</strong> {gradeNum != null && gradeNum >= 3 ? 'Urgent — within 1 week.' : 'Within 2–4 weeks.'}</li>
+                          <li>{t('recDR1', 'Schedule an ophthalmologist or retina specialist appointment.')}</li>
+                          <li>{t('recDR2', 'Bring this report to your consultation.')}</li>
+                          <li>{t('recDR3', 'Do not delay if you experience sudden vision changes.')}</li>
+                          <li><strong>{t('refUrgencyLabel', 'Referral urgency:')}</strong> {gradeNum != null && gradeNum >= 3 ? t('recDR4urgent', 'Urgent — within 1 week.') : t('recDR4routine', 'Within 2–4 weeks.')}</li>
                         </>
                       ) : (
                         <>
@@ -368,9 +368,9 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                       {/* Scannable bullets first */}
                       <div style={{ marginBottom: 16 }}>
                         {[
-                          { heading: 'What we found', content: explanation.finding },
-                          explanation.guidance && { heading: 'What to do next', content: explanation.guidance },
-                          { heading: 'What this is not', content: 'This screening is not a definitive diagnosis. It is an AI-assisted assessment to support — not replace — clinical judgment.' },
+                          { heading: t('explFound', 'What we found'), content: explanation.finding },
+                          explanation.guidance && { heading: t('explNext', 'What to do next'), content: explanation.guidance },
+                          { heading: t('explNot', 'What this is not'), content: t('explNotDesc', 'This screening is not a definitive diagnosis. It is an AI-assisted assessment to support — not replace — clinical judgment.') },
                         ].filter(Boolean).map(({ heading, content }) => (
                           <div key={heading} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
                             <div style={{ width: 4, borderRadius: 2, background: 'var(--primary)', flexShrink: 0, marginTop: 3 }} />
@@ -414,7 +414,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                   </button>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => window.print()}>
                     <Printer size={14} aria-hidden="true" />
-                    Print / PDF
+                    {t('printPDF', 'Print / PDF')}
                   </button>
                   <button type="button" className="btn btn-primary" onClick={onViewReport} style={{ marginLeft: 'auto' }}>
                     <FileText size={16} aria-hidden="true" />
@@ -447,11 +447,11 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
               {/* Technical AI Details accordion */}
               {result.probabilities && (
                 <div className="clean-card" style={{ marginBottom: 0 }}>
-                  <Accordion title="Technical AI Details" icon={null} defaultOpen={false}>
+                  <Accordion title={t('techDetails', 'Technical AI Details')} icon={null} defaultOpen={false}>
                     {result.probabilities.Stage1 && (
                       <div style={{ marginBottom: 16 }}>
                         <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                          Stage 1: DR Detection
+                          {t('techStage1', 'Stage 1: DR Detection')}
                           <span title="Stage 1 uses two binary models (M0ALL and M01) fused into a final probability." style={{ cursor: 'help', marginLeft: 4, display: 'inline-flex', verticalAlign: 'middle' }}>
                             <Info size={10} strokeWidth={2} style={{ color: 'var(--text-tertiary)' }} />
                           </span>
@@ -487,7 +487,7 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                     {result.probabilities.Stage2?.Fused_Probs && (
                       <div>
                         <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                          Stage 2: Grade Probabilities
+                          {t('techStage2', 'Stage 2: Grade Probabilities')}
                           <span title="Final fused severity grade probabilities across all 5 DR levels." style={{ cursor: 'help', marginLeft: 4, display: 'inline-flex', verticalAlign: 'middle' }}>
                             <Info size={10} strokeWidth={2} style={{ color: 'var(--text-tertiary)' }} />
                           </span>

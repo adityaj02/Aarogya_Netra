@@ -12,6 +12,9 @@ services:
       - /opt/aarogyanetra/models:/app/models:ro
       # Persistent SQLite database on the EC2 host (survives rebuilds)
       - /opt/aarogyanetra/sqlite_data:/app/sqlite_data
+      # Persistent uploads directory (original images + GradCAM heatmaps)
+      # Without this, all images are lost on every container recreate
+      - /opt/aarogyanetra/uploads:/app/frontend/public/uploads
     env_file:
       - .env
     environment:

@@ -3,10 +3,30 @@ import { motion } from 'framer-motion';
 import {
   Download, RotateCcw, ShieldCheck, Calendar,
   CheckCircle2, AlertCircle, AlertTriangle, HelpCircle,
-  FileText, Flame, ChevronLeft, Building2, MapPin
+  FileText, Flame, ChevronLeft, Building2, MapPin, ImageOff
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import DoctorValidationPanel from '../components/DoctorValidationPanel';
+
+/* ─── Inline fallback for missing images ───────────────────────── */
+function ImgWithFallback({ src, alt, style }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <div style={{
+        ...style,
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', gap: 8,
+        background: '#f8fafc', color: '#94a3b8',
+        border: '1px dashed #cbd5e1'
+      }}>
+        <ImageOff size={28} strokeWidth={1.5} />
+        <span style={{ fontSize: '0.7rem', textAlign: 'center', padding: '0 4px' }}>Image not available</span>
+      </div>
+    );
+  }
+  return <img src={src} alt={alt} style={style} onError={() => setFailed(true)} />;
+}
 
 /* ─── Grade label map ──────────────────────────────────────────── */
 const GRADE_LABELS = {
@@ -313,7 +333,7 @@ export default function ReportViewPage({ report: initialReport, onStartNewScreen
               {report.imageData && (
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Original Fundus</div>
-                  <img
+                  <ImgWithFallback
                     src={report.imageData}
                     alt="Original retinal fundus photograph"
                     style={{ width: '100%', maxWidth: 280, aspectRatio: '1/1', objectFit: 'cover', borderRadius: 10, border: '1px solid #e2e8f0', display: 'block', margin: '0 auto' }}
@@ -323,7 +343,7 @@ export default function ReportViewPage({ report: initialReport, onStartNewScreen
               {(report.overlayDataUrl || report.heatmapDataUrl) && (
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>AI Attention Overlay</div>
-                  <img
+                  <ImgWithFallback
                     src={report.overlayDataUrl || report.heatmapDataUrl}
                     alt="Grad-CAM AI attention heatmap overlay"
                     style={{ width: '100%', maxWidth: 280, aspectRatio: '1/1', objectFit: 'cover', borderRadius: 10, border: '1px solid #e2e8f0', display: 'block', margin: '0 auto' }}

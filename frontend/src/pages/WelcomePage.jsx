@@ -3,27 +3,27 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Zap, ShieldCheck, Users, Loader2, BarChart2, Image, Lock, Building2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-const features = [
-  {
-    icon: Zap,
-    label: 'Fast & Simple',
-    sub: 'Upload a fundus image and get AI results in under 30 seconds.',
-  },
-  {
-    icon: ShieldCheck,
-    label: 'AI-Powered DR Detection',
-    sub: 'Trained on 88,000+ retinal images. Validated on diverse clinical datasets.',
-  },
-  {
-    icon: Users,
-    label: 'Clinician Support',
-    sub: 'Results are reviewed by ophthalmologists via the Doctor Portal.',
-  },
-];
-
 export default function WelcomePage({ onStartScreening }) {
   const { t } = useLanguage();
   const [isStarting, setIsStarting] = useState(false);
+
+  const features = [
+    {
+      icon: Zap,
+      label: t('featFastLabel', 'Fast & Simple'),
+      sub: t('featFastSub', 'Upload a fundus image and get AI results in under 30 seconds.'),
+    },
+    {
+      icon: ShieldCheck,
+      label: t('featAILabel', 'AI-Powered DR Detection'),
+      sub: t('featAISub', 'Trained on 88,000+ retinal images. Validated on diverse clinical datasets.'),
+    },
+    {
+      icon: Users,
+      label: t('featClinicianLabel', 'Clinician Support'),
+      sub: t('featClinicianSub', 'Results are reviewed by ophthalmologists via the Doctor Portal.'),
+    },
+  ];
 
   const handleStart = () => {
     if (isStarting) return;
@@ -167,14 +167,14 @@ export default function WelcomePage({ onStartScreening }) {
               }}
             >
               {isStarting ? (
-                <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true" /><span>Starting…</span></>
+                <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true" /><span>{t('starting', 'Starting…')}</span></>
               ) : (
                 <><span>{t('startScreening', 'Start Screening')}</span><ArrowRight size={18} aria-hidden="true" /></>
               )}
             </motion.button>
 
             <p style={{ fontSize: '0.8125rem', color: '#64748b', textAlign: 'center' }}>
-              Upload a retinal fundus photo to begin
+              {t('uploadPrompt', 'Upload a retinal fundus photo to begin')}
             </p>
           </div>
 
@@ -190,8 +190,8 @@ export default function WelcomePage({ onStartScreening }) {
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
             <p style={{ fontSize: '0.8125rem', color: '#92400e', lineHeight: 1.5, margin: 0 }}>
-              <strong>AI-assisted screening only.</strong>{' '}
-              Results must be reviewed by a qualified healthcare professional before any clinical decision.
+              <strong>{t('disclaimerBold', 'AI-assisted screening only.')}</strong>{' '}
+              {t('disclaimerText', 'Results must be reviewed by a qualified healthcare professional before any clinical decision.')}
             </p>
           </div>
         </motion.section>
@@ -246,10 +246,10 @@ export default function WelcomePage({ onStartScreening }) {
           style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}
         >
           {[
-            { icon: BarChart2, text: 'Model v2.1' },
-            { icon: Image,     text: 'Trained on 88,000+ images' },
-            { icon: Lock,      text: 'Data stays on device' },
-            { icon: Building2, text: 'Built for rural healthcare' },
+            { icon: BarChart2, text: t('trustModel', 'Model v2.1') },
+            { icon: Image,     text: t('trustTrained', 'Trained on 88,000+ images') },
+            { icon: Lock,      text: t('trustData', 'Data stays on device') },
+            { icon: Building2, text: t('trustRural', 'Built for rural healthcare') },
           ].map(({ icon: Icon, text }) => (
             <span
               key={text}

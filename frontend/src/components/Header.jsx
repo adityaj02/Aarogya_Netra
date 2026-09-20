@@ -110,9 +110,9 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
     { view: 'reports',      label: t('previousReports', 'My Reports'),      icon: FileText },
   ];
   const clinicianNavItems = [
-    { view: 'doctor_portal', label: 'Dashboard',       icon: LayoutDashboard },
-    { view: 'doctor_portal_pending', label: 'Pending Reviews', icon: Clock },
-    { view: 'doctor_portal_patients', label: 'My Patients',     icon: Users },
+    { view: 'doctor_portal', label: t('navDashboard', 'Dashboard'),       icon: LayoutDashboard },
+    { view: 'doctor_portal_pending', label: t('navPendingReviews', 'Pending Reviews'), icon: Clock },
+    { view: 'doctor_portal_patients', label: t('navMyPatients', 'My Patients'),     icon: Users },
   ];
   const navItems = isClinicianView ? clinicianNavItems : patientNavItems;
 
@@ -148,7 +148,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
 
   return (
     <>
-      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <a href="#main-content" className="skip-link">{t('skipToMain', 'Skip to main content')}</a>
 
       {/* ── Navbar ───────────────────────────────────────────────── */}
       <header
@@ -285,7 +285,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
               >
                 <MapPin size={14} strokeWidth={1.75} aria-hidden="true" />
                 <span style={{ maxWidth: 88, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
-                  {selectedState || 'Select State'}
+                  {selectedState || t('selectState', 'Select State')}
                 </span>
                 <motion.span
                   animate={{ rotate: isStateOpen ? 180 : 0 }}
@@ -330,7 +330,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                         fontWeight: 500,
                       }}
                     >
-                      All States
+                      {t('allStates', 'All States')}
                       {!selectedState && <Check size={14} strokeWidth={2.5} aria-hidden="true" />}
                     </button>
                     <div style={{ height: 1, background: 'var(--border-subtle)', margin: '4px 0' }} />
@@ -417,7 +417,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                         }}
                       >
                         <LogOut size={15} strokeWidth={1.5} aria-hidden="true" />
-                        Sign out
+                        {t('signOut', 'Sign out')}
                       </button>
                     </motion.div>
                   )}
@@ -431,7 +431,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                 aria-label="Doctor Portal — clinician access"
               >
                 <User size={15} strokeWidth={1.5} aria-hidden="true" />
-                <span>Doctor Portal</span>
+                <span>{t('doctorPortal', 'Doctor Portal')}</span>
               </button>
             )}
           </div>
@@ -534,7 +534,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                     }}
                   >
                     <LogOut size={20} strokeWidth={1.5} aria-hidden="true" />
-                    Sign out
+                    {t('signOut', 'Sign out')}
                   </motion.button>
                 ) : (
                   <motion.button
@@ -545,7 +545,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                     style={{ width: '100%', justifyContent: 'center', padding: '12px 16px' }}
                   >
                     <User size={18} strokeWidth={1.5} aria-hidden="true" />
-                    Doctor Portal
+                    {t('doctorPortal', 'Doctor Portal')}
                   </motion.button>
                 )}
               </div>
@@ -553,7 +553,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
               {/* State selector in drawer */}
               <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' }}>
                 <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <MapPin size={12} aria-hidden="true" /> Select State
+                  <MapPin size={12} aria-hidden="true" /> {t('selectState', 'Select State')}
                 </p>
                 <button
                   type="button"
@@ -567,7 +567,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
                     border: 'none', cursor: 'pointer', fontFamily: 'inherit', marginBottom: 2,
                   }}
                 >
-                  All States
+                  {t('allStates', 'All States')}
                   {!selectedState && <Check size={13} aria-hidden="true" />}
                 </button>
                 {STATE_LIST.map(s => (
@@ -592,7 +592,7 @@ export default function Header({ currentView, setCurrentView, onOpenHelp, doctor
               {/* Language at bottom */}
               <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border-subtle)' }}>
                 <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
-                  Language
+                  {t('language', 'Language')}
                 </p>
                 {languages.map((l) => (
                   <button

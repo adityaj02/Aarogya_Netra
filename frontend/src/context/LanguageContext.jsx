@@ -42,16 +42,26 @@ export function LanguageProvider({ children }) {
     }
   };
 
-  const t = (key, fallback) => {
+  const t = (key, fallback, variables) => {
     const currentDict = dictionaries[lang] || dictionaries.en;
+    let str = undefined;
+    
     if (currentDict && currentDict[key] !== undefined) {
-      return currentDict[key];
+      str = currentDict[key];
+    } else if (dictionaries.en && dictionaries.en[key] !== undefined) {
+      // Fallback to English
+      str = dictionaries.en[key];
+    } else {
+      str = fallback !== undefined ? fallback : key;
     }
-    // Fallback to English
-    if (dictionaries.en && dictionaries.en[key] !== undefined) {
-      return dictionaries.en[key];
+    
+    if (variables && typeof str === 'string') {
+      Object.keys(variables).forEach(k => {
+        str = str.replace(new RegExp(`{{${k}}}`, 'g'), variables[k]);
+      });
     }
-    return fallback !== undefined ? fallback : key;
+    
+    return str;
   };
 
   return (

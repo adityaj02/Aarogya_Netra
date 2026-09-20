@@ -1,7 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, Eye, Flame, AlertCircle } from 'lucide-react';
+import { Layers, Eye, Flame, AlertCircle, ImageOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+
+/* Inline placeholder shown when an image 404s (e.g. old reports after server wipe) */
+function ImgWithFallback({ src, alt, style }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <div style={{
+        ...style,
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', gap: 8,
+        background: '#0f172a', color: '#475569',
+      }}>
+        <ImageOff size={32} strokeWidth={1.5} />
+        <span style={{ fontSize: '0.75rem', textAlign: 'center', padding: '0 8px' }}>Image not available</span>
+      </div>
+    );
+  }
+  return <img src={src} alt={alt} style={style} onError={() => setFailed(true)} />;
+}
 
 const TABS = [
   { id: 'original', icon: Eye,    labelKey: 'viewOriginal', label: 'Original' },
@@ -113,12 +132,12 @@ export default function GradCAMViewer({ originalSrc, heatmapSrc, overlaySrc }) {
               transition={{ duration: 0.2 }}
               style={{ position: 'absolute', inset: 0 }}
             >
-              <img
+              <ImgWithFallback
                 src={originalSrc}
                 alt="Retinal fundus — original"
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
-              <img
+              <ImgWithFallback
                 src={heatmapSrc || overlaySrc}
                 alt="Grad-CAM AI attention overlay"
                 style={{
@@ -129,14 +148,18 @@ export default function GradCAMViewer({ originalSrc, heatmapSrc, overlaySrc }) {
               />
             </motion.div>
           ) : (
-            <motion.img
+            <motion.div
               key={activeTab}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              src={activeSrc[activeTab]}
-              alt={activeTab === 'original' ? 'Retinal fundus — original' : 'Grad-CAM attention heatmap'}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-            />
+              style={{ position: 'absolute', inset: 0 }}
+            >
+              <ImgWithFallback
+                src={activeSrc[activeTab]}
+                alt={activeTab === 'original' ? 'Retinal fundus — original' : 'Grad-CAM attention heatmap'}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

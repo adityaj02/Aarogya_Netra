@@ -18,28 +18,28 @@ function calculateAge(dob) {
 }
 
 /* ─── Field error check ───────────────────────────────────────────── */
-function validate(form) {
+function validate(form, t) {
   const errors = {};
-  if (!form.name.trim())             errors.name = 'Full name is required.';
-  if (!form.dob)                     errors.dob  = 'Date of birth is required.';
+  if (!form.name.trim())             errors.name = t('errNameReq', 'Full name is required.');
+  if (!form.dob)                     errors.dob  = t('errDobReq', 'Date of birth is required.');
   else {
     const age = calculateAge(form.dob);
-    if (age === null)                errors.dob  = 'Please enter a valid date of birth.';
-    if (age < 0 || age > 125)        errors.dob  = 'Age must be between 0 and 125.';
+    if (age === null)                errors.dob  = t('errDobInv', 'Please enter a valid date of birth.');
+    if (age < 0 || age > 125)        errors.dob  = t('errAgeRange', 'Age must be between 0 and 125.');
   }
-  if (!form.gender)                  errors.gender = 'Please select a gender.';
-  if (!form.diabetesDuration)        errors.diabetesDuration = 'Please select diabetes duration.';
+  if (!form.gender)                  errors.gender = t('errGenderReq', 'Please select a gender.');
+  if (!form.diabetesDuration)        errors.diabetesDuration = t('errDurationReq', 'Please select diabetes duration.');
   return errors;
 }
 
 /* ─── Input component ─────────────────────────────────────────────── */
-function Field({ label, required, optional, error, touched, hint, children }) {
+function Field({ label, required, optional, error, touched, hint, t, children }) {
   return (
     <div className="form-group" style={{ marginBottom: 20 }}>
       <label className="form-label">
         {label}
         {required && <span style={{ color: '#dc2626', marginLeft: 2 }} aria-hidden="true">*</span>}
-        {optional && <span className="form-label-optional">(Optional)</span>}
+        {optional && <span className="form-label-optional">{t ? t('optionalLabel', '(Optional)') : '(Optional)'}</span>}
       </label>
       {children}
       <AnimatePresence>
@@ -88,10 +88,25 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
     mobile:           initialData?.mobile           || '',
   });
 
+  const GENDER_OPTIONS = [
+    { value: 'Male',   label: t('genderMale', 'Male') },
+    { value: 'Female', label: t('genderFemale', 'Female') },
+    { value: 'Other',  label: t('genderOther', 'Other') },
+  ];
+
+  const DURATION_OPTIONS = [
+    { value: 'Less than 1 year',   label: t('dur1', 'Less than 1 year') },
+    { value: '1–5 years',          label: t('dur2', '1–5 years') },
+    { value: '5–10 years',         label: t('dur3', '5–10 years') },
+    { value: '10–15 years',        label: t('dur4', '10–15 years') },
+    { value: 'More than 15 years', label: t('dur5', 'More than 15 years') },
+    { value: 'Not diagnosed',      label: t('dur6', 'Not diagnosed / Unknown') },
+  ];
+
   const [touched, setTouched] = useState({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  const errors        = validate(form);
+  const errors        = validate(form, t);
   const isFormValid   = Object.keys(errors).length === 0;
   const age           = calculateAge(form.dob);
 
@@ -173,6 +188,7 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
               required
               error={errors.name}
               touched={touched.name}
+              t={t}
             >
               <div style={{ position: 'relative' }}>
                 <span style={iconWrap}><User size={16} strokeWidth={1.5} /></span>
@@ -196,7 +212,8 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
               required
               error={errors.dob}
               touched={touched.dob}
-              hint={age !== null ? undefined : 'Format: YYYY-MM-DD'}
+              hint={age !== null ? undefined : t('dobHint', 'Format: YYYY-MM-DD')}
+              t={t}
             >
               <div style={{ position: 'relative' }}>
                 <span style={iconWrap}><Calendar size={16} strokeWidth={1.5} /></span>
@@ -222,7 +239,10 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
                     style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginTop: 5, fontWeight: 500 }}
                     aria-live="polite"
                   >
-                    Calculated age: {age} {age === 1 ? 'year' : 'years'}
+                    {t('calculatedAgeFormat', 'Calculated age: {{age}} {{unit}}', { 
+                      age: age, 
+                      unit: age === 1 ? t('yearText', 'year') : t('yearsText', 'years') 
+                    })}
                   </motion.p>
                 )}
               </AnimatePresence>
@@ -234,6 +254,7 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
               required
               error={errors.gender}
               touched={touched.gender}
+              t={t}
             >
               <div
                 role="group"
@@ -276,6 +297,7 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
               required
               error={errors.diabetesDuration}
               touched={touched.diabetesDuration}
+              t={t}
             >
               <div style={{ position: 'relative' }}>
                 <span style={iconWrap}><Activity size={16} strokeWidth={1.5} /></span>
@@ -313,7 +335,8 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
               optional
               error={errors.mobile}
               touched={touched.mobile}
-              hint="Used only for report delivery — never shared."
+              hint={t('mobileHint', 'Used only for report delivery — never shared.')}
+              t={t}
             >
               <div style={{ position: 'relative' }}>
                 <span style={iconWrap}><Phone size={16} strokeWidth={1.5} /></span>
@@ -341,8 +364,9 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
             }}>
               <Lock size={14} strokeWidth={1.5} style={{ flexShrink: 0, color: 'var(--text-tertiary)', marginTop: 2 }} aria-hidden="true" />
               <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', margin: 0, lineHeight: 1.5 }}>
-                Your data is stored locally on this device and is not transmitted to third parties.
-                Mobile number is used only for report delivery.
+                {t('privacyNotice1', 'Your data is stored locally on this device and is not transmitted to third parties.')}
+                {' '}
+                {t('privacyNotice2', 'Mobile number is used only for report delivery.')}
               </p>
             </div>
 
@@ -388,7 +412,7 @@ export default function PatientInfoPage({ initialData, onContinue, onBack }) {
                   role="alert"
                 >
                   <AlertCircle size={14} aria-hidden="true" />
-                  Please fill in all required fields before continuing.
+                  {t('fillRequired', 'Please fill in all required fields before continuing.')}
                 </motion.div>
               )}
             </AnimatePresence>
