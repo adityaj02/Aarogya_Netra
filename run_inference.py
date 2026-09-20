@@ -15,7 +15,7 @@ from src.llm_explainer import LLMExplainer
 from src.iqa import assess_image_file
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-BASE_DIR = Path(r"d:\Projects\AarogyaNetra\archive (1)\master_dataset_baseline")
+BASE_DIR = Path(os.environ.get("MODELS_DIR", r"d:\Projects\AarogyaNetra\archive (1)\master_dataset_baseline"))
 
 
 
@@ -248,7 +248,7 @@ class InferencePipeline:
                 raw_cam_save_path = str(img_dir / f"{original_stem}_raw_cam_{model_name}_G{final_grade_num}.npy")
                 original_save_path = str(img_dir / f"{original_stem}_original.jpg")
                 
-                pil_img.save(original_save_path)
+                vis_img.save(original_save_path)
                 
                 try:
                     cam_generator = GradCAM(self.models["stage1"], target_layer_name="conv_head")
@@ -337,7 +337,7 @@ class InferencePipeline:
             original_save_path = str(img_dir / f"{original_stem}_original.jpg")
             
             # Save the original for clinical comparison
-            pil_img.save(original_save_path)
+            vis_img.save(original_save_path)
             
             try:
                 cam_generator = GradCAM(self.models["stage2"], target_layer_name="conv_head")

@@ -71,23 +71,36 @@ class MatlabIQA:
     """
     Persistent MATLAB engine wrapper for fundus image quality assessment.
 
-    All calls to the MATLAB engine are serialized with a threading.Lock
-    so concurrent FastAPI requests cannot race on the shared MATLAB session.
+    Uses the compiled FundusIQA package if available (e.g. in Docker),
+    otherwise falls back to the full matlab.engine (e.g. local dev).
     """
 
     def __init__(self, matlab_path=None):
+        self._lock = threading.Lock()
+        self.is_compiled = False
+        self.eng = None
+
+        # 1. Try compiled package first (Docker production)
+        try:
+            import FundusIQA
+            logger.info("Compiled FundusIQA package found. Initializing runtime...")
+            self.eng = FundusIQA.initialize()
+            self.is_compiled = True
+            logger.info("Compiled MATLAB Runtime started successfully.")
+            return
+        except ImportError:
+            logger.info("FundusIQA compiled package not found. Falling back to full matlab.engine.")
+
+        # 2. Fall back to full MATLAB engine (Local development)
         try:
             import matlab.engine as _me
-            self._eng_module = _me
         except ImportError as exc:
             raise ImportError(
-                "matlab.engine is not installed. Install it from your MATLAB root:\n"
-                "  python -m pip install matlabengine\n"
-                "or from: <matlabroot>/extern/engines/python  →  python -m pip install ."
+                "Neither compiled 'FundusIQA' nor 'matlab.engine' is installed."
             ) from exc
 
         logger.info("Starting MATLAB engine — first launch may take 30–60 s.")
-        self.eng = self._eng_module.start_matlab()
+        self.eng = _me.start_matlab()
         logger.info("MATLAB engine started successfully.")
 
         if matlab_path:
@@ -95,23 +108,16 @@ class MatlabIQA:
             self.eng.addpath(self.eng.genpath(resolved), nargout=0)
             logger.debug("Added MATLAB path: %s", resolved)
 
-        # Serialize all engine calls — concurrent requests share one session.
-        self._lock = threading.Lock()
-
     def assess(self, image_path):
         """
         Assess a fundus image and return a normalised IQA result dict.
-
-        Returns
-        -------
-        dict with keys: engine, status, reason, failed_checks, metrics
         """
         abs_path = os.path.abspath(image_path)
 
         with self._lock:
             try:
-                matlab_img = self.eng.imread(abs_path)
-                raw = self.eng.assessFundusQuality(matlab_img, nargout=1)
+                # Both compiled and uncompiled MATLAB functions now accept a string path
+                raw = self.eng.assessFundusQuality(abs_path, nargout=1)
             except Exception as exc:
                 logger.error("MATLAB assessFundusQuality failed: %s", exc)
                 raise
@@ -129,7 +135,7 @@ class MatlabIQA:
         failed_checks = _reason_to_failed_checks(reason) if status == "REJECT" else []
 
         result = {
-            "engine":        "MATLAB",
+            "engine":        "MATLAB (Compiled)" if self.is_compiled else "MATLAB (Engine)",
             "status":        status,
             "reason":        reason,
             "failed_checks": failed_checks,
@@ -149,7 +155,10 @@ class MatlabIQA:
         """Quit the MATLAB engine and release the session."""
         if self.eng is not None:
             try:
-                self.eng.quit()
+                if self.is_compiled:
+                    self.eng.terminate()
+                else:
+                    self.eng.quit()
                 logger.info("MATLAB engine closed cleanly.")
             except Exception as exc:
                 logger.warning("Error closing MATLAB engine: %s", exc)

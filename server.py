@@ -78,24 +78,41 @@ app.add_middleware(
 os.makedirs("frontend/public/uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="frontend/public/uploads"), name="uploads")
 
+os.makedirs("backend_generated/audio", exist_ok=True)
+app.mount("/audio", StaticFiles(directory="backend_generated/audio"), name="audio")
+
+from src.tts.indic_tts import get_tts_service
+from src.tts.script_generator import generate_speech_script
+from src.tts.cache import get_audio_url_from_path
+
 pipeline_instance = None
 matlab_iqa = None
 
 @app.on_event("startup")
 def load_models():
     global pipeline_instance, matlab_iqa
-    print("Starting MATLAB IQA engine...")
-    try:
-        matlab_iqa = MatlabIQA(matlab_path=IQA_MATLAB_PATH)
-        print("MATLAB IQA engine started.")
-    except Exception as e:
-        print(f"WARNING: MATLAB IQA engine failed to start ({e}). IQA gate will be skipped.")
+    iqa_engine_type = os.environ.get("IQA_ENGINE", "matlab").lower()
+    if iqa_engine_type == "python_fallback":
+        print("Explicitly configured to use Python Fallback for IQA.")
         matlab_iqa = None
+    else:
+        print("Starting MATLAB IQA engine...")
+        try:
+            matlab_iqa = MatlabIQA(matlab_path=IQA_MATLAB_PATH)
+            print("MATLAB IQA engine started.")
+        except Exception as e:
+            print(f"CRITICAL ERROR: MATLAB IQA engine failed to start ({e}).")
+            print("Set IQA_ENGINE=python_fallback in your environment if you want to bypass MATLAB.")
+            raise e
 
     print("Loading ML models...")
     pipeline_instance = InferencePipeline(iqa_engine=matlab_iqa)
     os.makedirs("frontend/public/uploads", exist_ok=True)
     print("Models loaded successfully!")
+
+    print("Loading TTS engine...")
+    get_tts_service()
+    print("TTS engine loaded successfully!")
 
 @app.on_event("shutdown")
 def shutdown():
@@ -428,3 +445,31 @@ def get_all_doctors():
         if any(kw in err_msg.lower() for kw in ("connection", "mongo", "socket", "timeout", "refused")):
             return [] # Fail gracefully if mongo is down
         raise HTTPException(status_code=500, detail=err_msg)
+
+class TTSRequest(BaseModel):
+    report_id: str
+    language: str
+
+@app.post("/api/tts")
+def generate_tts(req: TTSRequest, db: Session = Depends(get_db)):
+    try:
+        report = db.query(ScreeningReport).filter(ScreeningReport.id == req.report_id).first()
+        if not report:
+            raise HTTPException(status_code=404, detail="Report not found")
+            
+        report_dict = {
+            "id": report.id,
+            "stage1Outcome": report.stage1_outcome,
+            "grade": report.grade,
+            "iqaPassed": report.iqa_passed
+        }
+        
+        script = generate_speech_script(report_dict, req.language)
+        tts_service = get_tts_service()
+        filepath = tts_service.synthesize(script, req.language)
+        audio_url = get_audio_url_from_path(filepath)
+        
+        return {"success": True, "audio_url": audio_url, "language": req.language}
+    except Exception as e:
+        logger.error(f"TTS Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

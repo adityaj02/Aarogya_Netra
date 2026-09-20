@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, Trash2, ArrowLeft, ArrowRight, Video, AlertCircle, CheckCircle2, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -189,7 +189,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, color: 'var(--success)', fontSize: '0.875rem', fontWeight: 600 }}>
                         <CheckCircle2 size={16} aria-hidden="true" />
-                        Image selected â€” ready for analysis
+                        Image selected - ready for analysis
                       </div>
                     </motion.div>
                   ) : (
@@ -229,7 +229,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
                             {isDragging ? 'Drop to upload' : t('uploadImage', 'Click to upload or drag & drop')}
                           </p>
                           <p style={{ fontSize: '0.8125rem', color: 'var(--text-tertiary)', margin: 0 }}>
-                            JPEG or PNG Â· Max 15 MB
+                            JPEG or PNG · Max 15 MB
                           </p>
                         </div>
                       </motion.div>
@@ -251,7 +251,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
                   )}
                 </AnimatePresence>
 
-                {/* â”€â”€ Capture button (visually separated) â”€â”€ */}
+                {/* ── Capture button (visually separated) ── */}
                 {!selectedImage && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
                     <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} aria-hidden="true" />
@@ -275,7 +275,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
               </>
             )}
 
-            {/* â”€â”€ Footer Navigation â”€â”€ */}
+            {/* ── Footer Navigation ── */}
             <div style={{ display: 'flex', gap: 12, borderTop: '1px solid var(--border-subtle)', paddingTop: 20 }}>
               <button type="button" className="btn btn-secondary" onClick={onBack} style={{ flex: '0 0 auto', minWidth: 100 }}>
                 <ArrowLeft size={16} aria-hidden="true" />
@@ -302,7 +302,7 @@ export default function ImageUploadPage({ onImageSelected, onBack }) {
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   style={{ textAlign: 'center', fontSize: '0.8125rem', color: 'var(--text-tertiary)', marginTop: 10 }}
                 >
-                  â†‘ Upload or select an image to continue
+                  ↑ Upload or select an image to continue
                 </motion.p>
               )}
             </AnimatePresence>

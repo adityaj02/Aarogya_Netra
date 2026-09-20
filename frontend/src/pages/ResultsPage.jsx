@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import GradCAMViewer from '../components/GradCAMViewer';
+import TTSPlayer from '../components/TTSPlayer';
 
 /* ─── Grade scale config ─────────────────────────────────────────── */
 const GRADE_CONFIG = {
@@ -381,6 +382,17 @@ export default function ResultsPage({ result, patient, onViewReport, onStartNewS
                         ))}
                       </div>
                     </Accordion>
+                  </motion.div>
+                )}
+
+                {/* ── Voice Accessibility ── */}
+                {result.id && (
+                  <motion.div
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    style={{ marginBottom: 20 }}
+                  >
+                    <TTSPlayer reportId={result.id} disabled={false} />
                   </motion.div>
                 )}
 

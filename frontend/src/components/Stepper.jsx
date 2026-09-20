@@ -91,10 +91,6 @@ export default function Stepper({ currentStep }) {
                     ? <Check size={16} strokeWidth={3} aria-hidden="true" />
                     : <span aria-hidden="true">{id}</span>
                   }
-                  {/* Visually hidden status text */}
-                  <span className="sr-only">
-                    {isCompleted ? `${label} — completed` : isActive ? `${label} — current step` : `${label} — upcoming`}
-                  </span>
                 </motion.div>
 
                 {/* Label */}

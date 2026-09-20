@@ -55,13 +55,24 @@ class LLMExplainer:
 
         return True
 
+    def _get_fallback_explanation(self, grade_num: str, kb_entry: Dict[str, Any], kb_version: str, kb_metadata: Dict[str, Any], is_offline: bool = False) -> Dict[str, Any]:
+        offline_tag = " [Offline Mode]" if is_offline else ""
+        fallback_text = (
+            f"The AI screening system identified findings consistent with Grade {grade_num} "
+            f"({kb_entry.get('name', '')}). This is a screening assessment and not a definitive diagnosis. "
+            f"Professional evaluation is recommended. The heatmap highlights regions that contributed "
+            f"to the model's prediction. The visualization does not independently establish the presence of a specific retinal lesion. "
+            f"Guidance: {kb_entry.get('screening_guidance', '')}{offline_tag}"
+        )
+        return {
+            "generated": True,
+            "model": "Offline-Fallback" if is_offline else self.model_name,
+            "knowledge_base_version": kb_version,
+            "sources": [kb_metadata.get("source", "Unknown Source")],
+            "text": fallback_text
+        }
+
     def generate_explanation(self, inference_result: Dict[str, Any]) -> Dict[str, Any]:
-        if not self.is_available():
-            return {
-                "generated": False,
-                "error": "Groq API key missing or Knowledge Base not found."
-            }
-            
         final_grade_str = inference_result.get("Final_Grade", "")
         if not final_grade_str or "UNGRADABLE" in final_grade_str.upper():
             return {
@@ -81,6 +92,10 @@ class LLMExplainer:
         kb_metadata = self.kb.get("metadata", {})
         kb_version = self.kb.get("knowledge_base_version", "unknown")
         
+        # If offline or missing API key, return fallback immediately
+        if not self.is_available():
+            return self._get_fallback_explanation(grade_num, kb_entry, kb_version, kb_metadata, is_offline=True)
+            
         # Map language code to full language name
         lang_code = inference_result.get("language", "en")
         lang_map = {
@@ -149,13 +164,7 @@ Please generate the personalized explanation."""
             # Grounding Validation
             if not self._validate_explanation(explanation_text, grade_num, target_language):
                 # Fallback to a safe deterministic string if LLM hallucinates
-                explanation_text = (
-                    f"The AI screening system identified findings consistent with Grade {grade_num} "
-                    f"({kb_entry['name']}). This is a screening assessment and not a definitive diagnosis. "
-                    f"Professional evaluation is recommended. The heatmap highlights regions that contributed "
-                    f"to the model's prediction. The visualization does not independently establish the presence of a specific retinal lesion. "
-                    f"Guidance: {kb_entry['screening_guidance']}"
-                )
+                return self._get_fallback_explanation(grade_num, kb_entry, kb_version, kb_metadata, is_offline=False)
 
             return {
                 "generated": True,
@@ -166,7 +175,6 @@ Please generate the personalized explanation."""
             }
             
         except Exception as e:
-            return {
-                "generated": False,
-                "error": f"LLM Generation failed: {str(e)}"
-            }
+            # Fallback for network failures, rate limits, API down etc.
+            print(f"Warning: LLM generation failed ({str(e)}), using offline fallback.")
+            return self._get_fallback_explanation(grade_num, kb_entry, kb_version, kb_metadata, is_offline=True)

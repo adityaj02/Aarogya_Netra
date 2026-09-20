@@ -1,0 +1,37 @@
+.git
+.vscode
+__pycache__
+*.pyc
+.pytest_cache/
+
+# Large data — must NOT bake into image
+models/
+archive (1)/
+archive (1).zip
+*.zip
+
+# Local dev/runtime artifacts
+mongodb_data/
+backend_generated/
+*.db
+*.log
+
+# Secrets
+.env
+
+# Not needed for runtime
+tests/
+xai_audit/
+scripts/
+benchmark*.py
+run_*.py
+*.json
+*.csv
+*.xlsx
+*.txt
+out.txt
+srs_temp.txt
+srs_text.txt
+
+# Node modules (handled by frontend.Dockerfile)
+frontend/node_modules/

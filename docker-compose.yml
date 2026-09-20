@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the models directory as read-only from the EC2 host
+      - /opt/aarogyanetra/models:/app/models:ro
+      # Persistent SQLite database on the EC2 host (survives rebuilds)
+      - /opt/aarogyanetra/sqlite_data:/app/sqlite_data
+    env_file:
+      - .env
+    environment:
+      - IQA_ENGINE=matlab
+      - AGREE_TO_MATLAB_RUNTIME_LICENSE=yes
+      # IQA_Matlab directory inside the container
+      - IQA_MATLAB_PATH=/app/src/IQA_Matlab
+      # Point to the mounted models directory
+      - MODELS_DIR=/app/models
+      # Connect to the local mongodb container
+      - MONGO_URI=mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  # Local MongoDB for Phase 1 (Local Docker) testing
+  # For Phase 3 (AWS EC2), remove this service and point MONGO_URI to MongoDB Atlas.
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

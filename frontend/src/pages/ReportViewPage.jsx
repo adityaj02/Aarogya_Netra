@@ -309,7 +309,7 @@ export default function ReportViewPage({ report: initialReport, onStartNewScreen
               <Flame size={16} style={{ color: '#ea580c' }} aria-hidden="true" />
               Retinal Images — AI Attention Analysis (Grad-CAM)
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="print-images-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {report.imageData && (
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Original Fundus</div>

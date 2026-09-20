@@ -45,3 +45,8 @@ xai_audit/
 .vscode/
 .DS_Store
 Thumbs.db
+
+models/
+matlab_compiled/
+mongodb_data/
+backend_generated/

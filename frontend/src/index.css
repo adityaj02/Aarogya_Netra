@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @plugin "@tailwindcss/forms";
 @source "./";
 @theme {
@@ -1373,6 +1373,14 @@ input[type="date"]::-webkit-inner-spin-button {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 12pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    align-items: start;
+  }
+  
+  .print-images-row img {
+    max-height: 250px !important;
+    object-fit: contain !important;
   }
 
   /* â”€â”€ Probability bars â”€â”€ */
